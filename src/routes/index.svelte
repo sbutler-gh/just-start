@@ -131,7 +131,7 @@ import { goto } from "$app/navigation";
     <div class="md:px-8 md:py-4 py-2">
 
         <h1 class="text-lg">{action.name}</h1>
-        <p class="text-sm mb-2">{action.location}</p>
+        <p class="text-sm mb-2">{action.location}<a href="/new_action" class="ml-2 cursor-pointer underline text-blue-500">Bring it to Spokane, WA</a></p>
 
         <div class="relative w-4/6 m-auto">
             <div on:click={toggleParticipantsDisplay} class="cursor-pointer relative m-auto" style="height: {participants_display.height}; overflow: hidden;">
