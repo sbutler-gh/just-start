@@ -1,234 +1,175 @@
 <script>
-    import AddEmbedForm from "$lib/components/AddEmbedForm.svelte";
+import { goto } from "$app/navigation";
 
-    let topic = {
-        media: `<iframe width="560" height="315" src="https://www.youtube.com/embed/bhwUeDkcA84" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>`,
-        description: "Hemp batteries, as a sustainable replacement in supply chains for batteries (e.g. devices, light vehicles) and other uses?  Other innovations like hemp, that can reduce extraction?"
+
+    let action = {
+        name: "Feeding our community with a local food forest",
+        participants: 23,
+        description: "We're starting a food forest, where we'll grow native plant species and edible local produce, and provide a place for the community to gather, garden, and grow together.",
+        location: "Washington DC"
     }
 
-    let perspectives = [
+    let participants = [
         {
-            media: `<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/LEbi4hsPgVo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`,
-            date: ``
+            name: "Abby"
         },
         {
-            media: `<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/ehk7ry0Yqpk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`,
-            date: ``
+            name: "Bob"
         },
         {
-            media: `<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/UDjgSSO98VI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`,
-            date: ``
+            name: "Claire"
         },
         {
-            media: `<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/aCCK132OIGA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`,
-            date: ``
-        }
-    ]
+            name: "David"
+        },
+        {
+            name: "Elaine"
+        },
+        {
+            name: "Fred"
+        },
+        {
+            name: "Georgia"
+        },
+        {
+            name: "Hallie"
+        },
+        {
+            name: "Ionna"
+        },
+        {
+            name: "Kelvin"
+        },
+        {
+            name: "Loka"
+        },
+        {
+            name: "Michael"
+        },
+        {
+            name: "Nadine"
+        },
+        {
+            name: "Oscar"
+        },
+        {
+            name: "Petey"
+        },
+        {
+            name: "Monroe"
+        },
+        {
+            name: "Robert"
+        },
+        {
+            name: "Orry"
+        },
+        {
+            name: "Liza"
+        },
+        {
+            name: "Mandy"
+        },
+        {
+            name: "Anise"
+        },
+        {
+            name: "Delilah"
+        },
+        {
+            name: "Roc"
+        },
+        {
+            name: "Stew"
+        },
+]
 
-    let new_element;
-    let new_frame;
-
-    let elements = [
-        {
-            content: "Can hemp be grown everywhere?  If so, could that help localize the supply chains?",
-            date: ``
-        },
-        {
-            content: "There may be functional differences between hemp batteries and lithium batteries, which should be understood for different devices and end uses.",
-            date: ``
-        },
-        {
-            content: "How accessible is the kind of hemp required for these batteries?  Can it be grown in yards?",
-            date: ``
-        },
-        {
-            content: "Maybe we don't need to worry about exisiting devices, if we can build new devices/tools that can utilize hemp batteries.",
-            date: ``
-        },
-        {
-            content: "Are there any risks, if hemp becomes ubiquitous?  If it becomes commoditized?  If it becomes a monoculture?",
-            date: ``
-        },
-        {
-            content: "What other materials like hemp belong in this conversation, and for what uses?",
-            date: ``
-        },
-    ]
-
-    let frames = [
-        {
-            content: "An open-source hemp battery specification, that people can use to take any type of hemp, and transform it into batteries of various sizes and charging capacities.  So from this spec, you could understand how to create a hemp battery that could suit a smartphone (of given size / power), a tablet, a laptop, or an electric bike, a drone, a household appliance, or to store solar power, etc.",
-            date: ``
-        },
-        {
-            content: "A hemp battery distribution network, so local makerspacers and producers can start building them, and buyers can find those local producers in the network.  This could eventually build from the hemp batteries to more aspects of the verticals, such as open-source 3D printable devices, hardware, vehicles, and tools.",
-            date: ``
-        },
-        {
-            content: "Some type of media or content, so people can become aware of hemp batteries and it can become a consumer expectation.",
-            date: ``
-        },
-        {
-            content: "A hemp battery event / fair, where people can see and buy all the things made with hemp batteries, and see all that's possible.",
-            date: ``
-        },
-    ];
-
-    let add_new_frame = false;
-
-    let perspectives_previewed = 2;
-
-    let perspectives_displayed = perspectives_previewed;
-
-    let add_embed_form = false;
-
-    let add_element_form = false;
-
-    function toggleAddEmbedForm() {
-        console.log('logging');
-        if (add_embed_form) {
-            add_embed_form = false;
-            document.getElementById('addEmbedButton').classList.add('ml-auto');
-        }
-
-        else {
-            add_embed_form = true;
-            document.getElementById('addEmbedButton').classList.remove('ml-auto');
-        }
-        // (add_embed_form) ? (function() { add_embed_form = false; let button = document.getElementById('addEmbedButton'); button.classList.remove('ml-auto') } ) : (function() { add_embed_form = true; let button = document.getElementById('addEmbedButton'); button.classList.add('ml-auto') });
+    let participants_display = {
+        height: "min-content"
     }
 
-    function togglePerspectivesList() {
-        (perspectives_displayed == perspectives_previewed) ? (perspectives_displayed = perspectives.length) : (perspectives_displayed = perspectives_previewed);
+    let participants_index = 8;
+
+    let joined = false;
+
+    function toggleParticipantsDisplay() {
+    (participants_index == 8) ? (participants_index = participants.length) : (participants_index = 8);
     }
 
-    function addElement() {
-        let object = {
-            content: new_element,
-            date: ``
-        }
-
-        elements.push(object);
-
-        console.log(elements);
-
-        new_element = "";
-
-        elements = elements;
+    function joinAction() {
+       participants.push({name: "Jolene"});
+       participants_index = participants.length;
+       participants = participants;
+       console.log(participants.length);
+       joined = true;
+       action_store.push({name: action.name});
+       action_store = action_store;
     }
 
-    function toggleAddNewFrame() {
-        (add_new_frame) ? (add_new_frame = false) : (add_new_frame = true);
+    let copy_alert = false;
+
+    function copyLink() {
+        copy_alert = true;
+
+        setTimeout(() => {
+            copy_alert = false
+        }, 1500)
     }
 
-    function addFrame() {
-        let object = {
-            content: new_frame,
-            date: ``
-        }
+    let action_store = [];
 
-        frames.push(object);
-
-        console.log(frames);
-
-        new_frame = "";
-
-        frames = frames;
-
-        add_new_frame = false;
+    function goBack() {
+        goto('/wall');
     }
-
 </script>
 
-<div class="mt-10 md:text-center m-auto md:w-6/12 rounded-md border-2 px-2">
+<button class="absolute top-1 left-1" on:click|preventDefault={goBack}>Back</button>
+
+
+<div class="mt-10 md:text-center m-auto md:w-5/12 rounded-md border-2">
+
     <div class="md:px-8 md:py-4 py-2">
 
-        {@html topic.media}
-        <p class="mt-4">{topic.description}</p>
+        <h1 class="text-lg">{action.name}</h1>
+        <p class="text-sm mb-2">{action.location}</p>
 
-        <div class="mt-4 text-right block ml-auto w-8/12">
-            {#each perspectives.slice(0, perspectives_displayed)  as perspective, i}
-            <div class="bg-white rounded border-2 border-gray-300 ml-auto mb-2">
-                <p>{perspective.media}</p>
-            </div>
-            <!-- {@html perspective.media} -->
-            {/each}
-
-            <button on:click={togglePerspectivesList} class="underline">
-                {#if perspectives.length > perspectives_displayed}
-                View all perspectives
-                {:else}
-                Show less
-                {/if}
-            </button>
-
-            <button id="addEmbedButton" on:click={toggleAddEmbedForm} class="block mt-4 ml-auto rounded border border-gray-300 px-2 py-1">
-                {#if !add_embed_form}
-                + Share Perspective
-                {:else}
-                Close
-                {/if}
-            </button>
-            {#if add_embed_form}
-            <AddEmbedForm></AddEmbedForm>
-            {/if}
-        </div>
-
-        <div class="text-left mt-8 w-8/12">
-            <!-- <p>What are important elements of this topic that we should make sure to consider (or not consider?)</p> -->
-            <p>While exploring this topic, what are importnat elements we should make sure to consider — or not consider?</p>
-            <ul class="list-disc">
-            {#if elements}
-            {#each elements as element}
-            <li class="mt-4">{element.content}</li>
-            {/each}
-            {:else}
-            {/if}
-
-            <li class="mt-4 w-10/12"><textarea name="element" bind:value={new_element} style="border-bottom: solid gray 1px;" class="border-gray-300 block w-full mb-3 h-8"></textarea>
-                {#if new_element}
-                <button on:click={addElement} class="block mt-4 rounded border border-gray-300 px-2 py-1 ml-auto">Submit</button>
-                {/if}
-            </li>
-            
-            </ul>
-        </div>
-
-        <div class="text-left mt-8">
-        <p class="text-lg">Frames</p>
-        <p>Representations of the problem or possibility, so that they can be explored and we can compare + imagine alternatives (e.g. what if we changed X?  How would that be different?)</p>
-        <p class="italic text-sm">Hansel and Gretel example (?)</p>
-
-        <div class="mt-8">
-            {#if frames}
-            <div class="slider overflow-hidden">
-            <div class="frames flex overflow-x-auto">
-            {#each frames as frame}
-            <div style="min-width: 85%;" class="mr-4 frame h-52 block mt-4 rounded border border-gray-300 px-2 py-1">
-                <p>{frame.content}</p>
-            </div>
+        <div class="relative w-4/6 m-auto">
+            <div on:click={toggleParticipantsDisplay} class="cursor-pointer relative m-auto" style="height: {participants_display.height}; overflow: hidden;">
+            {#each participants.slice(0, participants_index) as participant, i}
+            <p class="text-left inline-flex"><svg xmlns="http://www.w3.org/2000/svg" class="inline-block icon icon-tabler icon-tabler-mood-kid" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <circle cx="12" cy="12" r="9" />
+                <line x1="9" y1="10" x2="9.01" y2="10" />
+                <line x1="15" y1="10" x2="15.01" y2="10" />
+                <path d="M9.5 15a3.5 3.5 0 0 0 5 0" />
+                <path d="M12 3a2 2 0 0 0 0 4" />
+              </svg></p>
             {/each}
             </div>
-            </div>
+
+            <!-- <p on:click={toggleParticipantsDisplay} class="inline-flex text-blue-500 text-black cursor-pointer">{participants.length} people</p> -->
+        </div>
+
+        {#if joined}
+        <button on:click={copyLink} class="mb-2 ml-2 m-auto rounded-full shadow bg-blue-200 px-2 py-1 inline-flex relative">Invite Others
+            {#if copy_alert}
+            <div class="ease-in-out transition absolute right-0 bg-gray-200 rounded p-1" style="margin-right: -100px; margin-top: -3px;">Link Copied</div>
             {/if}
+        </button>
+        {:else}
+        <button on:click={joinAction} class="mb-2 ml-2 m-auto rounded-full shadow bg-blue-200 px-2 py-1">Join Action</button>
+        {/if}
 
-            <button on:click={toggleAddNewFrame} class="block mt-4 rounded border border-gray-300 px-2 py-1">
-                {#if !add_new_frame}
-                Add Frame
-                {:else}
-                Close
-                {/if}
-            </button>
-            {#if add_new_frame}
-            <form class="w-12/12 mt-4">
-            <textarea bind:value={new_frame} class="rounded border border-gray-300 block w-full mb-3 h-20" placeholder="Describe a concrete frame, representation, or possibility, which we may want to act on."></textarea>
-            <button type="button" on:click={addFrame} class="block mt-4 rounded border border-gray-300 px-2 py-1 ml-auto">Submit</button>
-            </form>
-            {/if}
+        <p class="">{action.description}</p>
 
-        </div>
-        </div>
 
-        
-        </div>
+    </div>
+</div>
+
+<div class="flex">
+{#each action_store as action}
+<div class="mt-10 md:text-center m-auto md:w-2/12 rounded-md border-2">
+<p>{action.name}</p>
+</div>
+{/each}
 </div>
