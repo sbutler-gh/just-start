@@ -1,16 +1,28 @@
 <script>
     import { goto } from "$app/navigation";
-    
-    
-        let action = {
-            name: "Feeding our community with a local food forest",
+    import { new_action_store } from "$lib/stores";
+
+    let action;
+
+    if ($new_action_store.name) {
+        action = {
+            name: $new_action_store.name,
             participants: 23,
-            description: `We're starting a food forest, where we'll grow native plant species and edible local produce, and provide a place for the community to gather, garden, and grow together. <br><br> Requests: <br><br> 1. Meet in person to discuss and explore further, on Monday November 1st at 8:00pm.  <a href="" class="text-blue-500 underline">Add to calendar</a>`,
-            requests: `Requests:
-            
-            1. Meet in person to discuss.  Meeting at 8:00pm on Monday, November 1st at Oak Lode.  <a href="">Add to Calendar</a>`,
+            description: `Action description`,
+            requests: ``,
             location: "Spokane, WA",
         }
+    }
+
+    else {
+        action = {
+            name: "Action title",
+            participants: 23,
+            description: `Action description`,
+            requests: ``,
+            location: "Spokane, WA",
+        }
+    }
 
         let name_edit = false;
         let place_edit = false;
@@ -99,7 +111,7 @@
     
         let joined = true;
 
-        let published = true;
+        let published = false;
     
         function toggleParticipantsDisplay() {
         (participants_index == 8) ? (participants_index = participants.length) : (participants_index = 8);

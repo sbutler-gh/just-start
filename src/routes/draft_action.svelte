@@ -99,7 +99,7 @@
     
         let joined = true;
 
-        let published = true;
+        let published = false;
     
         function toggleParticipantsDisplay() {
         (participants_index == 8) ? (participants_index = participants.length) : (participants_index = 8);

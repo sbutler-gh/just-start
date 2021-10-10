@@ -5,8 +5,11 @@
         let action = {
             name: "Feeding our community with a local food forest",
             participants: 23,
-            description: "We're starting a food forest, where we'll grow native plant species and edible local produce, and provide a place for the community to gather, garden, and grow together.",
-            location: "Spokane, WA"
+            description: `We're starting a food forest, where we'll grow native plant species and edible local produce, and provide a place for the community to gather, garden, and grow together. <br><br> Requests: <br><br> 1. Meet in person to discuss and explore further, on Monday November 1st at 8:00pm.  <a href="" class="text-blue-500 underline">Add to calendar</a>`,
+            requests: `Requests:
+            
+            1. Meet in person to discuss.  Meeting at 8:00pm on Monday, November 1st at Oak Lode.  <a href="">Add to Calendar</a>`,
+            location: "Spokane, WA",
         }
 
         let name_edit = false;
@@ -95,6 +98,8 @@
         let participants_index = 8;
     
         let joined = true;
+
+        let published = true;
     
         function toggleParticipantsDisplay() {
         (participants_index == 8) ? (participants_index = participants.length) : (participants_index = 8);
@@ -112,7 +117,23 @@
     
         let copy_alert = false;
     
-        function copyLink() {
+       async function copyLink() {
+
+// if(navigator.share) {
+//       try {
+//         const shareData = {
+//           title: 'Web Share Demo',
+//           text: 'Wanted to share this with you',
+//           url: 'https://blahblah.com',
+//         }
+//         await navigator.share(shareData);
+//         console.log('Share successfull');
+//       } catch(err) {
+//         console.log('Error: ', err);
+//       }
+//     } else {
+//       console.warn('Native Web Sharing not supported');
+//     }
             copy_alert = true;
     
             setTimeout(() => {
@@ -123,7 +144,7 @@
         let action_store = [];
     
         function goBack() {
-            goto('/');
+            goto('/wall');
         }
         
         function toggleNameEdit() {
@@ -132,6 +153,14 @@
 
         function toggleDescriptionEdit() {
             (description_edit) ? (description_edit = false) : (description_edit = true);
+        }
+
+        function publishAction() {
+            published = "publishing";
+            setTimeout(() => {
+                published = true;
+                copy_alert = "publishing";
+            }, 3000)
         }
     </script>
     
@@ -190,14 +219,18 @@
                 <!-- <p on:click={toggleParticipantsDisplay} class="inline-flex text-blue-500 text-black cursor-pointer">{participants.length} people</p> -->
             </div>
     
+            {#if published}
             {#if joined}
             <button on:click={copyLink} class="mb-2 ml-2 m-auto rounded-full shadow bg-blue-200 px-2 py-1 inline-flex relative">Invite Others
-                {#if copy_alert}
+                {#if copy_alert == true}
                 <div class="ease-in-out transition absolute right-0 bg-gray-200 rounded p-1" style="margin-right: -100px; margin-top: -3px;">Link Copied</div>
+                {:else if copy_alert == "publishing"}
+                <div class="ease-in-out transition absolute right-0 bg-green-200 rounded p-1" style="margin-right: -150px; margin-top: -3px;">Now start sharing!</div>
                 {/if}
             </button>
             {:else}
             <button on:click={joinAction} class="mb-2 ml-2 m-auto rounded-full shadow bg-blue-200 px-2 py-1">Join Action</button>
+            {/if}
             {/if}
     
             <div class="relative">
@@ -209,7 +242,7 @@
                     <path d="M9 12l2 2l4 -4" />
                   </svg>
                 {:else}
-                <p class="">{action.description}</p>
+                <p class="">{@html action.description}</p>
                 <svg on:click={toggleDescriptionEdit} xmlns="http://www.w3.org/2000/svg" class=" absolute top-0 -right-3 icon icon-tabler icon-tabler-edit" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <path d="M9 7h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />
@@ -218,15 +251,34 @@
                   </svg>
                   {/if}
             </div>
+
+            <!-- <div class="relative">
+                {#if description_edit}
+                <textarea class="w-10/12" style="border-bottom: solid 1px black" rows="8" bind:value={action.requests}></textarea>
+                <svg on:click={toggleDescriptionEdit} xmlns="http://www.w3.org/2000/svg" class="absolute top-0 -right-3 icon icon-tabler icon-tabler-circle-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M9 12l2 2l4 -4" />
+                  </svg>
+                {:else}
+                <p class="mt-4">{@html action.requests}</p>
+                <svg on:click={toggleDescriptionEdit} xmlns="http://www.w3.org/2000/svg" class=" absolute top-0 -right-3 icon icon-tabler icon-tabler-edit" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M9 7h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />
+                    <path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />
+                    <line x1="16" y1="5" x2="19" y2="8" />
+                  </svg>
+                  {/if}
+            </div> -->
+
+            {#if !published}
+            <button on:click={publishAction} class="mt-4 mb-2 ml-2 m-auto rounded-full shadow bg-blue-200 px-2 py-1 inline-flex relative">Publish Action</button>
+            {:else if published == "publishing"}
+            <div class="ease-in-out transition bg-green-200 rounded p-1 mt-4" style="">
+                <p>Success!  This action is live.</p>
+            </div>
+            {/if}
     
     
         </div>
-    </div>
-    
-    <div class="flex">
-    {#each action_store as action}
-    <div class="mt-10 md:text-center m-auto md:w-2/12 rounded-md border-2">
-    <p>{action.name}</p>
-    </div>
-    {/each}
     </div>
