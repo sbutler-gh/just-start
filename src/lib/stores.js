@@ -2,4 +2,6 @@ import { writable } from "svelte/store";
 
 let new_action_store = writable([]);
 
-export { new_action_store };
+let events_store = writable([]);
+
+export { new_action_store, events_store };
