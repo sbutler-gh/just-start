@@ -109,7 +109,7 @@ import { goto } from "$app/navigation";
         </div>
     </div>
 
-    <button class="rounded p-1 block text-sm bg-gray-200 text-center m-auto">Share Event</button>
+    <button class="rounded p-1 block text-sm bg-gray-200 text-left mx-4">Share Event</button>
     
     </div>
 
