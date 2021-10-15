@@ -9,6 +9,6 @@
 <div style="width: 350px" class="md:text-center m-auto md:w-5/12">
     
     <div class="md:px-4 md:py-2 py-2">
-       <EventDynamic event={main_event}></EventDynamic>
+       <EventDynamic border="" overflow="overflow" event={main_event}></EventDynamic>
      </div>
 </div>

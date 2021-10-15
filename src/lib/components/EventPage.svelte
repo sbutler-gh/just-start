@@ -1,18 +1,7 @@
 <script>
-import { goto } from "$app/navigation";
-
-
     export let event;
 
     export let overflow;
-
-    export let border;
-
-    export let height;
-
-    export let cursor;
-
-    export let hover;
 
     let user_location = "Fairfax";
 
@@ -80,17 +69,8 @@ import { goto } from "$app/navigation";
 
         }
     }
-
-    function toggleOverflow() {
-        // height == "h-48" ? (height = "h-full") : (height = "h-48");
-    }
-    function openEvent() {
-        goto('/new_event');
-    }
 </script>
-<div class="md:px-4 md:py-2 py-2 relative">
-    <div class="rounded-md {border} mt-4 m-auto w-11/12 mb-2 {cursor} {hover}" on:click={openEvent}>
-        <div class="text-left p-4 pb-0 {height} {overflow}">
+        <div class="text-left p-4 pb-0 h-48 {overflow}">
             <p class="text-lg font-bold">{event.name}</p>
             <p class="text-sm">with <a href="/group" class="cursor-pointer text-blue-500">{event.group_name}</a></p>
 
@@ -107,10 +87,31 @@ import { goto } from "$app/navigation";
         <p class="mt-2 text-md text-blue-500 underline">Add details</p>
         {/if}
         </div>
-    </div>
 
-    <button class="rounded p-1 block text-sm bg-gray-200 text-center m-auto">Share Event</button>
-    
+        <div id="more-12" class="hidden text-left p-4 pb-4">
+            <div class="mb-4 ml-auto text-right" style=''>
+                <ul class='inline-flex'>
+                  <li on:click={updateMenu} class='py-2 px-3 bg-gray-100 rounded text-gray-500 bg-gray-200 cursor-pointer mr-1'>Discussion</li>
+                  <li on:click={updateMenu} class='active py-2 px-3 bg-gray-100 rounded cursor-default'>Location</li>
+                </ul>
+            </div>
+            {#if menu == "Discussion"}
+            <p>Discussion</p>
+            {/if}
+            <img id="location_img" class="" src="https://maps.google.com/maps/api/staticmap?markers=icon%3Ahttps%3A%2F%2Fsecure.meetupstatic.com%2Fs%2Fimg%2F5961591462445047%2Fmup-custom-google-map-pin.png%7C38.894615%2C-77.439980&zoom=17&size=480x300&sensor=false&key=AIzaSyA3fSxhHZNQNfMjJuMFvmULACXrBfFz9jQ&signature=UWDg01O1EMndIJNgK_EkV8q8IJE%3D">
+        </div>
+    <div class="hidden mb-4 flex px-1">
+        <button on:click={expandEvent} class="cursor-pointer block">
+            <svg xmlns="http://www.w3.org/2000/svg" class="hidden icon icon-tabler icon-tabler-share" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <circle cx="6" cy="12" r="3" />
+                <circle cx="18" cy="6" r="3" />
+                <circle cx="18" cy="18" r="3" />
+                <line x1="8.7" y1="10.7" x2="15.3" y2="7.3" />
+                <line x1="8.7" y1="13.3" x2="15.3" y2="16.7" />
+              </svg>
+            Share</button>
+        <button id={12} on:click={expandEvent} class="text-blue-500 ml-auto text-right cursor-pointer underline block">Toggle Details</button>
     </div>
 
     <style>

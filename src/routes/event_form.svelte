@@ -35,7 +35,16 @@ import { goto } from "$app/navigation";
         }
 
         console.log('need to handle group as well, automatically created with new event in this flow');
-        event.details = `The first meeting of the ${user_location} Action group.  Join us at ${event.where}!`;
+        event.details = `The first meeting of the ${user_location} Action group.  Join us at ${event.where}!<br><br>
+    Share with friends and neighbors in the community to get more people involved!  And make sure to click "join" above, to recieve updates on the event and help with headcount.<br><br>
+    To get prepared for the event, check out some of these resources:
+    <ol class="mt-2" style="list-style: disc; margin-left: 1rem;">
+        <li><a class="underline text-blue-500">CANs</a></li>
+        <li><a class="underline text-blue-500">Strong Towns</a></li>
+        <li><a class="underline text-blue-500">Systems Convening</a></li>
+    </ol><br>
+    Contact email:<br><br>
+    Contact phone:`;
         console.log(event);
         $events_store.push(event);
 
