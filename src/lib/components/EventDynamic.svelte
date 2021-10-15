@@ -89,7 +89,7 @@ import { goto } from "$app/navigation";
     }
 </script>
 <div class="md:px-4 md:py-2 py-2 relative">
-    <div class="rounded-md {border} mt-4 m-auto w-11/12 mb-2 {cursor} {hover}" on:click={openEvent}>
+    <div class="rounded-md {border} mt-4 m-auto w-11/12 mb-1 {cursor} {hover}" on:click={openEvent}>
         <div class="text-left p-4 pb-0 {height} {overflow}">
             <p class="text-lg font-bold">{event.name}</p>
             <p class="text-sm">with <a href="/group" class="cursor-pointer text-blue-500">{event.group_name}</a></p>
@@ -109,7 +109,10 @@ import { goto } from "$app/navigation";
         </div>
     </div>
 
+    <div class="flex w-11/12">
     <button class="rounded p-1 block text-sm bg-gray-200 text-left mx-4">Share Event</button>
+    <a class="text-blue-500 underline text-sm text-right ml-auto">Add to Calendar</a>
+    </div>
     
     </div>
 

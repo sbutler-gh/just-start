@@ -60,7 +60,7 @@ import { goto } from "$app/navigation";
     <div class="md:px-4 md:py-2 py-2">
 
         <form class="text-left">
-            <label class="text-sm" for="geocoder">Event Name</label><br/>
+            <label class="text-sm" for="name">Event Name</label><br/>
             <input name="name" bind:value={event.name} type="text" class="border-2 w-full mb-4 rounded-md h-8 p-1"/>
             <br>
 
