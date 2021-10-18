@@ -4,4 +4,6 @@ let new_action_store = writable([]);
 
 let events_store = writable([]);
 
-export { new_action_store, events_store };
+let user_store = writable([]);
+
+export { new_action_store, events_store, user_store };

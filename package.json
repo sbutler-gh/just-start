@@ -15,7 +15,8 @@
 		"autoprefixer": "^10.3.6",
 		"cssnano": "^5.0.8",
 		"tailwindcss": "next",
-		"mdsvex": "^0.9.8"
+		"mdsvex": "^0.9.8",
+		"@supabase/supabase-js": "^1.8.0"
 	},
 	"type": "module"
 }

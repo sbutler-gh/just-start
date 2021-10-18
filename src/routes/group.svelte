@@ -1,6 +1,7 @@
 <script>
-    import {events_store} from "$lib/stores";
+    import {events_store, user_store} from "$lib/stores";
     import EventDynamic from "$lib/components/EventDynamic.svelte";
+    import supabase from "$lib/db.js";
 
     let artifacts = [];
 
@@ -64,7 +65,54 @@
         artifacts = artifacts;
 
     }
+
+    async function signUp(e) {
+        var formData = new FormData(e.target);
+
+        let { user, error } = await supabase.auth.signUp({
+        email: formData.get('email_phone'),
+        password: formData.get('password')
+        })
+
+        if (user) {
+            console.log(user);
+
+            $user_store.id = user.id;
+            $user_store.email = user.email;
+
+            let { data: profiles, error } = await supabase
+            .from('profiles')
+            .update({ full_name: formData.get('name') })
+            .eq('user_id', user.id)
+
+            if (profiles) {
+                console.log(profiles);
+
+                $user_store.full_name = formData.get('name');
+            }
+            else {
+             console.log(error);   
+            }
+            }
+        else {
+            console.log(error);
+        }
+    }
 </script>
+
+{#if $user_store?.full_name}
+<p class="absolute top-1 right-1 font-semibold">{$user_store.full_name}</p>
+{:else}
+<form on:submit|preventDefault={signUp} class="absolute top-1 right-1">
+<label>Name</label><br>
+<input name="name" class="rounded-md border-2"><br>
+<label>Email</label><br>
+<input name="email_phone" class="rounded-md border-2"><br>
+<label>Password</label><br>
+<input name="password" class="rounded-md border-2"><br>
+<button>Submit</button>
+</form>
+{/if}
 
 <div style="width: 350px" class="md:text-center m-auto md:w-5/12">
     <p class="mt-4 text-center">{group}</p>
