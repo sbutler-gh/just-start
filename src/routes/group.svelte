@@ -6,6 +6,8 @@
 
     let group = "Fairfax Citizens Action";
 
+    let user;
+
     let location;
 
     let create_menu;
@@ -82,6 +84,9 @@
             </select>
 
             {#if create_menu == "Discussion"}
+            <!-- {#if !user?.name}
+            <p class="pl-4 mt-2  text-left">Who's writing this?  <a class="text-blue-500 underline">Sign in</a></p>
+            {/if} -->
             <textarea bind:value={discussion} class="m-auto rounded-md border-2 mt-4 w-10/12 text-left block"></textarea>
             <button type="button" on:click={publishDiscussion} class="mt-2 rounded-lg p-1 block text-sm bg-gray-200 ml-auto text-left">Publish</button>
             {:else if create_menu == "Event"}
@@ -120,10 +125,10 @@
             {#each artifacts as artifact}
             {#if artifact.type == "Event"}
             <EventDynamic cursor="cursor-pointer" hover="hover:shadow" height="h-48" border="border-2" overflow="overflow-hidden" event={artifact}></EventDynamic>
-            {:else}
-            <div class="border-2 rounded-md mt-4 m-auto w-11/12 mb-2 p-2 text-left">
-                {JSON.stringify(artifact)}
-                </div>
+            {:else if artifact.type == "Discussion"}
+            <div class="border-2 rounded-md mt-4 m-auto w-10/12 mb-2 p-2 text-left">
+                <p class="whitespace-pre">{@html artifact.details}</p>
+            </div>
             {/if}
             {/each}
         </div>
