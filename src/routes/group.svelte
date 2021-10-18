@@ -2,6 +2,8 @@
     import {events_store, user_store} from "$lib/stores";
     import EventDynamic from "$lib/components/EventDynamic.svelte";
     import supabase from "$lib/db.js";
+import { onMount } from "svelte";
+import { get } from 'svelte/store';
 
     let artifacts = [];
 
@@ -14,6 +16,15 @@
     let create_menu;
 
     let discussion;
+
+    onMount(() => {
+
+        console.log(localStorage.getItem('user'));
+
+        localStorage.getItem('user') ? ($user_store = JSON.parse(localStorage.getItem('user'))) : null;
+        
+        console.log($user_store);
+    })
 
     let now = new Date().toISOString();
     now = now.slice(0, -8);
@@ -87,8 +98,17 @@
 
             if (profiles) {
                 console.log(profiles);
-
                 $user_store.full_name = formData.get('name');
+
+                user = {
+                    id: user.id,
+                    email: user.email,
+                    full_name: formData.get('name')
+                }
+
+                localStorage.setItem('user', JSON.stringify(user));
+
+                console.log(JSON.parse(localStorage.getItem('user')));
             }
             else {
              console.log(error);   
@@ -100,7 +120,7 @@
     }
 </script>
 
-{#if $user_store?.full_name}
+{#if $user_store?.id}
 <p class="absolute top-1 right-1 font-semibold">{$user_store.full_name}</p>
 {:else}
 <form on:submit|preventDefault={signUp} class="absolute top-1 right-1">
