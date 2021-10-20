@@ -4,7 +4,38 @@
     import supabase from "$lib/db.js";
 import { onMount } from "svelte";
 import { get } from 'svelte/store';
+import FullCalendar from 'svelte-fullcalendar';
+import dayGridPlugin from '@fullcalendar/daygrid';
 
+    onMount(async () => {
+
+        const common = (await import('@fullcalendar/common')).default
+        options.plugins = [
+			(await import('@fullcalendar/daygrid')).default
+		];
+
+        console.log(localStorage.getItem('user'));
+
+        localStorage.getItem('user') ? ($user_store = JSON.parse(localStorage.getItem('user'))) : null;
+        
+        console.log($user_store);
+    })
+
+    let options = {
+    initialView: 'dayGridWeek',
+    plugins: [dayGridPlugin],
+    weekends: true,
+    events: [
+			{ title: 'event 1', date: '2021-10-25' },
+			{ title: 'event 2', date: '2021-10-27' },
+		],
+    };
+
+function toggleWeekends() {
+    options.weekends = !options.weekends;
+    options = { ...options };
+    }
+    
     let artifacts = [];
 
     let group = "Fairfax Citizens Action";
@@ -16,15 +47,6 @@ import { get } from 'svelte/store';
     let create_menu;
 
     let discussion;
-
-    onMount(() => {
-
-        console.log(localStorage.getItem('user'));
-
-        localStorage.getItem('user') ? ($user_store = JSON.parse(localStorage.getItem('user'))) : null;
-        
-        console.log($user_store);
-    })
 
     let now = new Date().toISOString();
     now = now.slice(0, -8);
@@ -41,7 +63,16 @@ import { get } from 'svelte/store';
         group_name: ""
     }
 
-    function publishDiscussion() {
+    function publishDiscussion(e) {
+
+//         var formData = new FormData(e.target);
+
+//         const { data, error } = await supabase
+//   .from('artifacts')
+//   .insert([
+//     { details: 'someValue', user_id: 'otherValue', group_id: },
+//   ])
+
         let new_artifact = {
         type: create_menu,
         details: discussion
@@ -120,10 +151,12 @@ import { get } from 'svelte/store';
     }
 </script>
 
+<div class="absolute top-1 right-1">
 {#if $user_store?.id}
-<p class="absolute top-1 right-1 font-semibold">{$user_store.full_name}</p>
-{:else}
-<form on:submit|preventDefault={signUp} class="absolute top-1 right-1">
+<p class="font-semibold">{$user_store.full_name}</p>
+<a class="text-blue-500">+ New Group</a>
+{:else if !$user_store?.id}
+<form on:submit|preventDefault={signUp} class="">
 <label>Name</label><br>
 <input name="name" class="rounded-md border-2"><br>
 <label>Email</label><br>
@@ -133,9 +166,14 @@ import { get } from 'svelte/store';
 <button>Submit</button>
 </form>
 {/if}
+</div>
 
 <div style="width: 350px" class="md:text-center m-auto md:w-5/12">
     <p class="mt-4 text-center">{group}</p>
+
+<button on:click="{toggleWeekends}">toggle weekends</button>
+<FullCalendar {options} />
+
         <EventDynamic cursor="cursor-pointer" hover="hover:shadow" height="h-48" border="border-2" overflow="overflow-hidden" event={$events_store[0]}></EventDynamic>
 
         <div class="w-11/12 m-auto">

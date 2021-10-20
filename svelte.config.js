@@ -9,6 +9,11 @@ const config = {
 		// hydrate the <div id="svelte"> element in src/app.html
 		target: '#svelte'
 	},
+    vite: {
+        optimizeDeps: {
+            include: ['@fullcalendar/core']
+        }
+    },
 
     preprocess: [preprocess({
         postcss: true
