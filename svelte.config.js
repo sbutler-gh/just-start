@@ -11,7 +11,7 @@ const config = {
 	},
     vite: {
         optimizeDeps: {
-            include: ['@fullcalendar/core']
+            include: ['@fullcalendar/core', '@fullcalendar/icalendar']
         }
     },
 

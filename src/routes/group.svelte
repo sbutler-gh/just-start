@@ -4,14 +4,32 @@
     import supabase from "$lib/db.js";
 import { onMount } from "svelte";
 import { get } from 'svelte/store';
-import FullCalendar from 'svelte-fullcalendar';
+import FullCalendar, { CalendarApi } from 'svelte-fullcalendar';
 import dayGridPlugin from '@fullcalendar/daygrid';
+// import iCalendarPlugin from '@fullcalendar/icalendar';
+import googleCalendarPlugin from '@fullcalendar/google-calendar';
+import ical from 'ical';
+
+let data = [];
+let parsed_data = [];
+let string_data;
+
+let calendar;
+
+let calendar_popup = {
+        title: '',
+        details: '',
+        x: '',
+        y: '',
+    }
 
     onMount(async () => {
 
         const common = (await import('@fullcalendar/common')).default
         options.plugins = [
-			(await import('@fullcalendar/daygrid')).default
+			(await import('@fullcalendar/daygrid')).default,
+            // (await import('@fullcalendar/icalendar')).default,
+            (await import('@fullcalendar/google-calendar')).default,
 		];
 
         console.log(localStorage.getItem('user'));
@@ -19,16 +37,101 @@ import dayGridPlugin from '@fullcalendar/daygrid';
         localStorage.getItem('user') ? ($user_store = JSON.parse(localStorage.getItem('user'))) : null;
         
         console.log($user_store);
+
+         data = ical.parseICS(`https://timelyapp.time.ly/api/calendars/5978221/export?format=ics`);
+
+        console.log(data);
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+
+        for (let k in data) {
+            if (data.hasOwnProperty(k)) {
+                var ev = data[k];
+                if (data[k].type == 'VEVENT') {
+                    console.log(`${ev.summary} is in ${ev.location} on the ${ev.start.getDate()} of ${months[ev.start.getMonth()]} at ${ev.start.toLocaleTimeString('en-GB')}`);
+                    parsed_data.push({
+                        start: ev.start.toISOString(),
+                        // end: ev.end.toISOString(),
+                        id: ev.uid,
+                        title: ev.summary
+                    })
+                }
+            }
+        }
+
+        // console.log(parsed_data);
+        console.log(typeof parsed_data);
+
+        string_data = JSON.stringify(parsed_data);
+
+        console.log(string_data);
+        
     })
 
+    // let string_data = JSON.stringify(parsed_data);
+
+    console.log(string_data);
+
     let options = {
-    initialView: 'dayGridWeek',
-    plugins: [dayGridPlugin],
+    initialView: 'dayGridMonth',
+    plugins: [dayGridPlugin, googleCalendarPlugin],
     weekends: true,
-    events: [
-			{ title: 'event 1', date: '2021-10-25' },
-			{ title: 'event 2', date: '2021-10-27' },
-		],
+    // events: parsed_data
+    // events: JSON.stringify(parsed_data)
+    googleCalendarApiKey: 'AIzaSyAYFvUdVW8ZDNHfdDJSc3ikM2EFXQhypiw',
+    eventSources: [
+        {
+        googleCalendarId: 'c_n87mvbr7pmoaqnc3gghk7anso8@group.calendar.google.com',
+        id: 'a'
+        },
+        {
+            googleCalendarId: '72dh5ehol3oufbkusqagta0qf8@group.calendar.google.com',
+            id: 'b'
+        }
+    ],
+    eventClick: function(info) {
+    info.jsEvent.preventDefault(); // don't let the browser navigate
+    // alert(`Event: ${info.event.title}
+    // Details: ${info.event.extendedProps.description} 
+    // Coordinates: ${info.jsEvent.pageX}, ${info.jsEvent.pageX}`);
+
+    calendar_popup.title = info.event.title;
+    calendar_popup.details = info.event.extendedProps.description;
+    calendar_popup.x = info.jsEvent.pageX;
+    calendar_popup.y = info.jsEvent.pageX;
+
+    let calendarAPI = calendar.getAPI();
+    console.log(calendarAPI.getEventSourceById('a'));
+
+    // calendarAPI.removeEventSource();
+    // calendarAPI.next();
+
+    console.log(JSON.stringify(calendarAPI.getEvents()));
+    // console.log(options.getEvents());
+
+    // var events = FullCalendar('clientEvents');
+
+    
+    // let stream = info.getEvents();
+    // console.log(events);
+    
+    // alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+    // alert('View: ' + info.view.type);
+
+    // change the border color just for fun
+    info.el.style.borderColor = 'red';
+  }
+//     https://clients6.google.com/calendar/v3/calendars/72dh5ehol3oufbkusqagta0qf8@group.calendar.google.com/events?calendarId=72dh5ehol3oufbkusqagta0qf8%40group.calendar.google.com&singleEvents=true&timeZone=America%2FLos_Angeles&maxAttendees=1&maxResults=250&sanitizeHtml=true&timeMin=2021-10-20T00%3A00%3A00-07%3A00&timeMax=2021-11-30T00%3A00%3A00-07%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs
+    //     events: {
+    //     // url: 'https://nayapdx.org/events/?ical=1&tribe_display=month/native-american-youth-and-family-center-43937ea1e05.ics',
+    //     url: 'https://timelyapp.time.ly/api/calendars/5978221/export?format=ics',
+    //     format: 'ics'
+    // }
+//   webcal://www.ccacoalition.org/en/events/calendar/ical/%2A/calendar.ics
+//     events: [
+// 			{ title: 'event 1', date: '2021-10-25' },
+// 			{ title: 'event 2', date: '2021-10-27' },
+// 		],
     };
 
 function toggleWeekends() {
@@ -149,6 +252,13 @@ function toggleWeekends() {
             console.log(error);
         }
     }
+
+    // function calendarClick(e) {
+
+    //     let event = e;
+
+    //     alert('Event: ' + event.extendedProps.description);
+    // }
 </script>
 
 <div class="absolute top-1 right-1">
@@ -168,11 +278,18 @@ function toggleWeekends() {
 {/if}
 </div>
 
-<div style="width: 350px" class="md:text-center m-auto md:w-5/12">
-    <p class="mt-4 text-center">{group}</p>
+<div>
+    {calendar_popup.title}<br>
+    {@html calendar_popup?.details}<br>
+    {calendar_popup.x}<br>
+    {calendar_popup.y}<br>
+</div>
 
 <button on:click="{toggleWeekends}">toggle weekends</button>
-<FullCalendar {options} />
+<FullCalendar bind:this="{calendar}" {options} />
+
+<div style="width: 350px" class="md:text-center m-auto md:w-5/12">
+    <p class="mt-4 text-center">{group}</p>
 
         <EventDynamic cursor="cursor-pointer" hover="hover:shadow" height="h-48" border="border-2" overflow="overflow-hidden" event={$events_store[0]}></EventDynamic>
 
