@@ -286,7 +286,7 @@ function toggleWeekends() {
 </div>
 
 <button on:click="{toggleWeekends}">toggle weekends</button>
-<FullCalendar bind:this="{calendar}" {options} />
+<!-- <FullCalendar bind:this="{calendar}" {options} /> -->
 
 <div style="width: 350px" class="md:text-center m-auto md:w-5/12">
     <p class="mt-4 text-center">{group}</p>
