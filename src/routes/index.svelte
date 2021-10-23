@@ -105,6 +105,8 @@ async function fetchEventSources() {
         if (eventSources) {
             console.log(eventSources)
 
+            eventSourcesArray = [];
+
             for (var i=0; i<eventSources.length; i++) {
 
                 let calendar_coordinates = turfPoint([eventSources[i].coordinates['lng'], eventSources[i].coordinates['lat']]);
@@ -349,6 +351,19 @@ const response = await fetch(`https://serene-journey-42564.herokuapp.com/https:/
             console.log(result);
 }
 
+function calculateEventAreaBuffer(coordinates) {
+
+    console.log(coordinates);
+
+        var point = turfPoint([coordinates['x'], coordinates['y']]);
+
+        event_area = turfBuffer(point, 25, {units: 'miles'});
+        console.log(event_area);
+
+        fetchEventSources();
+
+}
+
 async function geocodeAddress() {
 // let calendarAPI = calendar.getAPI();
 // calendarAPI.addEventSource(calEvent);
@@ -367,7 +382,10 @@ const response = await fetch(`https://serene-journey-42564.herokuapp.com/https:/
             console.log(result);
 
             if (result.result.addressMatches[0]) {
-                fetchCREData(result.result.addressMatches[0].geographies["Census Blocks"][0].GEOID.slice(0, -4))
+                // fetchCREData(result.result.addressMatches[0].geographies["Census Blocks"][0].GEOID.slice(0, -4))
+                location_coordinates = result.result.addressMatches[0].coordinates;
+                calculateEventAreaBuffer(result.result.addressMatches[0].coordinates);
+
             }
 
             else {
@@ -376,6 +394,7 @@ const response = await fetch(`https://serene-journey-42564.herokuapp.com/https:/
             // coordinatesToAirQuality(response_json.result.addressMatches[0].coordinates);
 
             // coordinatesToAirQuality(response_json.result.)
+
 
 
             // console.log(response_json.result);
@@ -477,7 +496,7 @@ function closeCalendarPopup() {
 
 <p class="font-semibold mb-2">{address_display}</p>
 
-<input class="rounded border-2 w-64 mb-2" bind:value={address}> <button class="rounded border-2 bg-gray-200 px-2 py-1">Search</button>
+<input class="rounded border-2 w-64 mb-2" bind:value={address}> <button on:click={geocodeAddress} class="rounded border-2 bg-gray-200 px-2 py-1">Search</button>
 
 <div class="w-5/12 m-auto">
 <FullCalendar bind:this="{calendar}" {options} />
