@@ -11,6 +11,10 @@ import googleCalendarPlugin from '@fullcalendar/google-calendar';
 import listPlugin from '@fullcalendar/list';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import ical from 'ical';
+import { parse } from "postcss";
+import turfBuffer from '@turf/buffer';
+import turfPoint from 'turf-point';
+import turfBooleanContains from '@turf/boolean-contains';
 
 let data_theme = "light";
 
@@ -18,13 +22,22 @@ let data = [];
 let parsed_data = [];
 let string_data;
 
+let location_buffer;
+let location_coordinates;
+let event_area;
+let point;
+let coordinates;
+
 let calendar;
 let calendarAPI;
 
 let eventSourcesArray = [];
+let eventFeed;
 let address;
 let address_display;
 let timezone;
+
+let first_event = true;
 
 let options;
 
@@ -42,9 +55,50 @@ let calendar_popup = {
 
         const common = (await import('@fullcalendar/common')).default
 
-        console.log(localStorage.getItem('user'));
+        fetchEventSources();
+        ipToCoordinates();
+        
+    });
 
-        let { data: eventSources, error } = await supabase
+    // let string_data = JSON.stringify(parsed_data);
+
+    console.log(string_data);
+
+async function ipToCoordinates() {
+        const request = await fetch("https://ipinfo.io/json?token=d41bed18e5fda2");
+        const json = await request.json()
+
+        console.log(json);
+        location_coordinates = json.loc;
+        timezone = json.timezone;
+        console.log(timezone);
+
+        address_display = `${json.city}, ${json.region}, ${json.postal}`;
+
+
+        console.log(json.loc);
+        coordinates = json.loc.split(',');
+        console.log(coordinates);
+
+        point = turfPoint([parseFloat(coordinates[1]), parseFloat(coordinates[0])]);
+        console.log(point);
+
+        event_area = turfBuffer(point, 25, {units: 'miles'});
+        console.log(event_area);
+
+        geocodeCoordinates(coordinates);
+}
+
+function loadUser() {
+        // localStorage.getItem('user') ? ($user_store = JSON.parse(localStorage.getItem('user'))) : null;
+        
+        // console.log($user_store);
+}
+
+async function fetchEventSources() {
+
+
+    let { data: eventSources, error } = await supabase
         .from('eventSources')
         .select('*')
 
@@ -52,88 +106,66 @@ let calendar_popup = {
             console.log(eventSources)
 
             for (var i=0; i<eventSources.length; i++) {
-                eventSourcesArray[i] = {
-                    googleCalendarId: eventSources[i].url
-                }
-            }
 
-            // console.log(eventSourcesArray);
-            // console.log([...eventSourcesArray]);
-            // console.log(eventSourcesArray[0])
+                let calendar_coordinates = turfPoint([eventSources[i].coordinates['lng'], eventSources[i].coordinates['lat']]);
+
+                if (turfBooleanContains(event_area, calendar_coordinates)) {
+                    console.log('match');
+
+                    eventSourcesArray.push({
+                    googleCalendarId: eventSources[i].url
+                })
+                }
+                
+                // eventSourcesArray.push({
+                //     googleCalendarId: eventSources[i].url
+                // })
+            }
             eventSourcesArray = JSON.stringify(eventSourcesArray, null, 2);
+            console.log(eventSourcesArray);
             // console.log(eventSourcesArray);
-            // console.log(eventSourcesObject);
-            // console.log(eventSourcesArray == eventSourcesObject);
-            // console.log(typeof eventSourcesArray);
-            // console.log(typeof eventSourcesObject);
-            // eventSourcesObject = eventSourcesArray;
-            // eventSourcesArray = eventSourcesObject;
+
         }
         else {
             console.log(error);
         }
 
-        localStorage.getItem('user') ? ($user_store = JSON.parse(localStorage.getItem('user'))) : null;
-        
-        console.log($user_store);
+        initializeCalendarOptions();
+}
 
-        // const request = await fetch("https://ipinfo.io/json?token=d41bed18e5fda2");
-        // const json = await request.json()
-
-        // console.log(json);
-        // timezone = json.timezone;
-        // console.log(timezone);
-
-        // address_display = `${json.city}, ${json.region}, ${json.postal}`;
-
-        // geocodeCoordinates(json.loc);
-
-
+async function initializeCalendarOptions() {
     calendarAPI = calendar.getAPI();
 
-    options = {
-    initialView: 'listWeek',
-    plugins: [
-			(await import('@fullcalendar/daygrid')).default,
-            (await import('@fullcalendar/list')).default,
-            (await import('@fullcalendar/timegrid')).default,
-            // (await import('@fullcalendar/icalendar')).default,
-            (await import('@fullcalendar/google-calendar')).default,
-		],
-    weekends: true,
-    googleCalendarApiKey: 'AIzaSyDYxnSEee64WAIFIyEft-sxjUhNYBMoPG4',
-    eventSources: JSON.parse(eventSourcesArray),
-    eventMouseEnter: function(info) {
-    // info.jsEvent.preventDefault(); // don't let the browser navigate
+options = {
+initialView: 'listWeek',
+plugins: [
+        (await import('@fullcalendar/daygrid')).default,
+        (await import('@fullcalendar/list')).default,
+        (await import('@fullcalendar/timegrid')).default,
+        // (await import('@fullcalendar/icalendar')).default,
+        (await import('@fullcalendar/google-calendar')).default,
+    ],
+weekends: true,
+googleCalendarApiKey: 'AIzaSyDYxnSEee64WAIFIyEft-sxjUhNYBMoPG4',
+eventSources: JSON.parse(eventSourcesArray),
+eventClick: function(info) {
+info.jsEvent.preventDefault(); // don't let the browser navigate
 
+console.log(info.event.extendedProps);
+calendar_popup.title = info.event.title;
+calendar_popup.details = info.event.extendedProps.description;
+calendar_popup.location = info.event.extendedProps.location;
+calendar_popup.x = info.jsEvent.pageX;
+calendar_popup.y = info.jsEvent.pageY;
 
-    calendar_popup.title = info.event.title;
-    calendar_popup.details = info.event.extendedProps.description;
-    calendar_popup.x = info.jsEvent.pageX;
-    calendar_popup.y = info.jsEvent.pageY;
-
-
-    console.log(info.event.extendedProps);
-
-    calendar_popup_show = true;
-    console.log(calendar_popup_show);
-
-    // console.log(calendar_popup);
-    // console.log(calendarAPI.getEventSourceById('a'));
-    
-    // calendarAPI.getEventSourceById('b').remove();
-    // console.log(JSON.stringify(calendarAPI.getEvents()));
-  },
-  eventMouseLeave: function(info) {
-      calendar_popup_show = false;
-  }
-    };
-        
-    });
-
-    // let string_data = JSON.stringify(parsed_data);
-
-    console.log(string_data);
+calendar_popup_show = true;
+console.log(calendar_popup_show);
+},
+//   eventMouseLeave: function(info) {
+//       calendar_popup_show = false;
+//   }
+};
+}
 
 
 function toggleWeekends() {
@@ -149,7 +181,7 @@ function toggleWeekends() {
 
     let location;
 
-    let create_menu;
+    let create_menu = "Event";
 
     let discussion;
 
@@ -251,7 +283,10 @@ function toggleWeekends() {
         let new_event = {
             title: formData.get("name"), // a property!
             start: formData.get("when"), // a property!
-            allDay: false
+            allDay: false,
+            extendedProps: {
+                description: formData.get('description')
+            }
         }
 
         let api = calendar.getAPI();
@@ -303,10 +338,8 @@ function toggleWeekends() {
 
     async function geocodeCoordinates(coordinates) {
 
-console.log(coordinates);
-var coordinate_pair = coordinates.split(',');
 
-const response = await fetch(`https://serene-journey-42564.herokuapp.com/https://geocoding.geo.census.gov/geocoder/geographies/coordinates?x=${coordinate_pair[1]}&y=${coordinate_pair[0]}&benchmark=Public_AR_Census2020&vintage=Census2020_Census2020&layers=10&format=json`, {
+const response = await fetch(`https://serene-journey-42564.herokuapp.com/https://geocoding.geo.census.gov/geocoder/geographies/coordinates?x=${coordinates[1]}&y=${coordinates[0]}&benchmark=Public_AR_Census2020&vintage=Census2020_Census2020&layers=10&format=json`, {
             method: 'GET',
             withCredentials: true,
             // headers: myHeaders
@@ -385,10 +418,14 @@ async function fetchCREData(geo_id) {
         console.log(error);
     }
 }
+
+function closeCalendarPopup() {
+    calendar_popup_show = false;
+}
 </script>
 
-<div style="width: 350px" class="md:text-center m-auto md:w-5/12">
-<div class="absolute top-1 right-1">
+<div style="" class="md:text-center m-auto md:w-10/12">
+<!-- <div class="absolute top-1 right-1">
 {#if $user_store?.id}
 <p class="font-semibold">{$user_store.full_name}</p>
 <a class="text-blue-500">+ New Group</a>
@@ -403,7 +440,7 @@ async function fetchCREData(geo_id) {
 <button>Submit</button>
 </form>
 {/if}
-</div>
+</div> -->
 
 <!-- <div>
     {calendar_popup.title}<br>
@@ -413,9 +450,23 @@ async function fetchCREData(geo_id) {
 </div> -->
 
 {#if calendar_popup_show}
-<div class="shadow rounded border-2 bg-white" style="position: absolute; z-index: 100; width: 300px; top: {calendar_popup.y}px; left: {calendar_popup.x}px">
-    {calendar_popup.title}<br>
-    {@html calendar_popup?.details}<br>
+<div class="shadow rounded-md border-2 bg-white text-left p-4 w-5/12" style="position: absolute; z-index: 100; top: {calendar_popup.y}px; left: {calendar_popup.x}px">
+    <button class="absolute top-1 right-1 cursor-pointer" on:click={closeCalendarPopup}><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <rect x="4" y="4" width="16" height="16" rx="2" />
+        <path d="M10 10l4 4m0 -4l-4 4" />
+      </svg></button>
+    <p class="mb-4">{calendar_popup.title}</p>
+    {#if calendar_popup?.location}
+    <div class="flex">
+    <svg xmlns="http://www.w3.org/2000/svg" class="inline-flex" height="20px" width="20px" viewBox="0 0 20 20" fill="gray">
+        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+      </svg><p class="inline-flex text-sm font-semibold mb-4">{calendar_popup.location}</p>
+    </div>
+    {/if}
+    {#if calendar_popup?.details}
+    {@html calendar_popup?.details}
+    {/if}
 </div>
 {/if}
 
@@ -424,11 +475,17 @@ async function fetchCREData(geo_id) {
     <h1 class="text-2xl mb-2">You're right on time.</h1>
 </div>
 
+<p class="font-semibold mb-2">{address_display}</p>
+
+<input class="rounded border-2 w-64 mb-2" bind:value={address}> <button class="rounded border-2 bg-gray-200 px-2 py-1">Search</button>
+
+<div class="w-5/12 m-auto">
 <FullCalendar bind:this="{calendar}" {options} />
+</div>
 
-    <p class="mt-4 text-center">{group}</p>
-
-        <EventDynamic cursor="cursor-pointer" hover="hover:shadow" height="h-48" border="border-2" overflow="overflow-hidden" event={$events_store[0]}></EventDynamic>
+{#if first_event}
+<p>gotta get some events</p>
+{/if}
 
         <div class="w-11/12 m-auto">
             <select bind:value={create_menu} class="w-20 rounded-lg p-1 block text-sm bg-gray-200 ml-auto text-left">
@@ -453,7 +510,7 @@ async function fetchCREData(geo_id) {
             <div class="rounded-md border-2 mt-4 p-2">
             <form on:submit|preventDefault={addEventToCalendar} class="text-left">
                 <label class="text-sm" for="name">Event Name</label><br/>
-                <input name="name" bind:value={event.name} type="text" class="border-2 w-full mb-4 rounded-md h-8 p-1"/>
+                <input name="name" type="text" class="border-2 w-full mb-4 rounded-md h-8 p-1"/>
                 <br>
     
                 <label class="text-sm" for="when">Date and Time</label><br/>
@@ -465,7 +522,6 @@ async function fetchCREData(geo_id) {
                 <input type="radio" bind:group={location} name="location" value="In-Person"><label class="ml-1 mr-2 text-sm" for="In-Person">In-Person</label>
                 <input type="radio" bind:group={location} name="location" value="Online"><label class="ml-1 mr-2 text-sm" for="Online">Online</label>
                 <!-- <input type="radio" bind:group={location} name="location" value="Hybrid"><label class="ml-1 text-sm" for="Hybrid">Hybrid</label> -->
-    
                 <p class="mt-1 text-sm">
                 {#if location == "In-Person"}
                 Enter the location of your meeting
@@ -474,6 +530,9 @@ async function fetchCREData(geo_id) {
                 {/if}
                 </p>
                 <input name="where" bind:value={event.where} type="text" class="border-2 w-full mb-4 rounded-md h-8 p-1"/>
+                <br>
+                <label class="text-sm" for="description">Description</label><br/>
+                <textarea name="description" type="text" class="rounded border border-gray-300 block w-full mb-3 h-20"></textarea>
                 <br>
                 <button type="submit" class="mt-2 mb-2 rounded-full shadow bg-blue-200 px-2 py-1 text-right block ml-auto">Publish Meeting</button>
             </form>
