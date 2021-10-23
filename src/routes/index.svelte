@@ -22,6 +22,8 @@ let data = [];
 let parsed_data = [];
 let string_data;
 
+let geo_id;
+
 let location_buffer;
 let location_coordinates;
 let event_area;
@@ -349,6 +351,9 @@ const response = await fetch(`https://serene-journey-42564.herokuapp.com/https:/
 
             let result = await response.json();
             console.log(result);
+
+            geo_id = result.result.geographies["Census Blocks"][0].GEOID.slice(0, -3);
+            fetchEJData(geo_id);
 }
 
 function calculateEventAreaBuffer(coordinates) {
@@ -383,8 +388,12 @@ const response = await fetch(`https://serene-journey-42564.herokuapp.com/https:/
 
             if (result.result.addressMatches[0]) {
                 // fetchCREData(result.result.addressMatches[0].geographies["Census Blocks"][0].GEOID.slice(0, -4))
+                geo_id = result.result.addressMatches[0].geographies["Census Blocks"][0].GEOID.slice(0, -3);
+                console.log(geo_id);
                 location_coordinates = result.result.addressMatches[0].coordinates;
-                calculateEventAreaBuffer(result.result.addressMatches[0].coordinates);
+                calculateEventAreaBuffer(result.result.addressMatches[0].coordinates)
+                fetchEJData(geo_id);
+                // 
 
             }
 
@@ -436,6 +445,23 @@ async function fetchCREData(geo_id) {
     else {
         console.log(error);
     }
+}
+
+async function fetchEJData(geo_id) {
+
+console.log(geo_id);
+
+let { data: ej, error } = await supabase
+.from('ejscreen_percentiles')
+.select('*')
+.eq('ID', geo_id);
+
+if (ej) {
+    console.log(ej);
+}
+else {
+    console.log(error);
+}
 }
 
 function closeCalendarPopup() {
