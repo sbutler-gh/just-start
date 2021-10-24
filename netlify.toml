@@ -5,4 +5,5 @@
     environment = { NODE_VERSION = "16.4.1" }
 
 [[plugins]]
+node_bundler = "esbuild"
 package = "@netlify/plugin-functions-install-core"
