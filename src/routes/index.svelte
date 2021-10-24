@@ -38,6 +38,8 @@ let add_to_calendar_url;
 let calendar;
 let calendarAPI;
 
+let display_ej_table = false;
+
 let eventSourcesArray = [];
 let eventsArray = [];
 let eventFeed;
@@ -578,9 +580,13 @@ function copyEventLink() {
                     });
             }    
         }
+
+        function toggleEJTable() {
+            display_ej_table ? display_ej_table = false : display_ej_table = true;
+        }
 </script>
 
-<div style="" class="text-center m-auto md:w-10/12">
+<div style="" class="text-center m-auto md:w-8/12">
 <!-- <div class="absolute top-1 right-1">
 {#if $user_store?.id}
 <p class="font-semibold">{$user_store.full_name}</p>
@@ -645,24 +651,27 @@ function copyEventLink() {
 
 <!-- <p class="text-lg">Start an event, invite a few friends and neighbors, and bring possibilities to life.</p> -->
 <!-- Or rich media message.  Could also include rich media message at the top. -->
-<div class="md:flex">
-<div class="md:w-5/12 xs:h-64 md:h-auto m-auto my-5">
+<div class="md:flex my-8">
+<div class="md:w-5/12 xs:h-64 md:h-auto xs:text-center md:m-auto my-5">
     <p class="text-xl mb-4">Events near you</p>
 
     <FullCalendar bind:this="{calendar}" {options} />
 </div>
 
-<div class="local-awareness m-auto text-center md:w-5/12">
+<div class="local-awareness m-auto text-center md:w-6/12">
     {#if location_coordinates}
     <iframe title="Local Air Quality" class="text-center m-auto" height="230" width="230" src='https://widget.airnow.gov/aq-dial-widget/?latitude={location_coordinates['lat']}&longitude={location_coordinates['lng']}&transparent=true' style="border: none; border-radius: 25px;"></iframe>
         {#if local_data}
             <!-- <p class="font-semibold mb-2 text-xl">{address_display}</p> -->
-       <div class="m-auto text-center overflow-x-auto md:mt-4" style="height: fit-content">
+        {#if !display_ej_table}
+        <button class="underline text-blue-500" on:click={toggleEJTable}>Show More Local Data</button>
+        {:else}
+       <div class="m-auto text-center md:mt-2" style="height: fit-content">
         <table id="table-example-1" class="m-auto text-center styled-table">
             <caption class="text-center">
                 <!-- <p class="font-semibold mb-1">{address_display?.slice(0,-7)}</p> -->
                 <p class="font-semibold mb-2">Environmental Justice Indicators</p>
-                <p class="mb-2">(0 to 100, lower is better)</p>
+                <p class="mb-2 italic">0 to 100, lower is better. <a href="https://ejscreen.epa.gov/mapper/" target="_blank" class="underline text-blue-800">Explore the map</a></p>
             </caption>
             <thead>
                 <tr class="">
@@ -670,7 +679,7 @@ function copyEventLink() {
                 <td class="">PM2.5 level</td>
                 <td class="">Ozone level</td>
                 <td class="">Diesel particulates</td>
-                <td class="">Cancer risks (air)</td>
+                <td class="">Cancer risks</td>
                 <!-- <td>Respiratory hazards (air)</td>
                 <td>Lead paint indicator</td>
                 <td>Risk management projects</td>
@@ -742,7 +751,9 @@ function copyEventLink() {
         "P_PWDIS": null, proximitty to major dischargers of water
         "P_VULEOPCT": 38 vulnerable population index
     } -->
+        <button class="underline text-blue-500 mt-1" on:click={toggleEJTable}>Hide</button>
         </div>
+        {/if}
         {/if}
     {/if}
 </div>
@@ -847,25 +858,26 @@ function copyEventLink() {
         <img id="location_img" class="hidden" src="https://maps.google.com/maps/api/staticmap?markers=icon%3Ahttps%3A%2F%2Fsecure.meetupstatic.com%2Fs%2Fimg%2F5961591462445047%2Fmup-custom-google-map-pin.png%7C38.894615%2C-77.439980&zoom=17&size=480x300&sensor=false&key=AIzaSyA3fSxhHZNQNfMjJuMFvmULACXrBfFz9jQ&signature=UWDg01O1EMndIJNgK_EkV8q8IJE%3D">
         </div>
 
-        <p class="text-lg mt-8">What do you want to organize?</p>
+        <div class="carousel-section">
+        <p class="text-xl mt-8 mb-4">What do you want to organize?</p>
         <Carousel perPage={{ 800: 3, 500: 2 }} dots={false}>
             <div class="md:mr-2 slide-content">
-                <div class="rounded bg-gray-200 md:h-64 px-4 py-2">
+                <div class="rounded bg-gray-200 h-64 px-4 py-2">
                     <h3 class="text-xl font-semibold my-2">Identify local issues, desires, and priorities.</h3>
                     <p class="mb-2">Convene with friends and neighbors in your community, listen and share to understand what each other are seeing and wanting, and start organizing for action.</p>
                     <a class="underline text-blue-500">Learn more</a>
                 </div>
             </div>
             <div class="md:mr-2 slide-content">
-                <div class="rounded bg-gray-200 md:h-64 px-4 py-2">
-                   <h3 class="text-xl font-semibold my-2">Climate Role-Play + Simulation</h3>
-                    <p class="mb-2">Want a live role-playing game, where you and your peers can simulate climate action towards the Paris Agreement?</p>
+                <div class="rounded bg-gray-200 h-64 px-4 py-2">
+                   <h3 class="text-xl font-semibold my-2">Climate Role-Play Event</h3>
+                    <p class="mb-2">Want a live role-playing game, where you and your peers can take climate action towards the Paris Agreement?</p>
                     <!-- <p>Here's how.</p> -->
                     <a class="underline text-blue-500">Learn more</a>
                 </div>
             </div>
             <div class="md:mr-2 slide-content">
-                <div class="rounded bg-gray-200 md:h-64 px-4 py-2">
+                <div class="rounded bg-gray-200 h-64 px-4 py-2">
                     <h3 class="text-xl font-semibold my-2">C.A.N.</h3>
                     <p class="mb-2">Citizens Action Network.  Community Action Network.  Cities and Neighborhoods.  Climate Action Network.</p>
                     <p class="mb-2">Whatever CAN means to you, you and your community can make it happen.</p>
@@ -880,7 +892,7 @@ function copyEventLink() {
                 </div>
             </div> -->
             <div class="md:mr-2 slide-content">
-                <div class="rounded bg-gray-200 md:h-64 px-4 py-2">
+                <div class="rounded bg-gray-200 h-64 px-4 py-2">
                     <h3 class="text-xl font-semibold my-2">Future Design Walk</h3>
                     <p class="mb-2">Put yourselves in the minds of the people living here 60 years in the future.</p>
                     <p class="mb-2">Walk around your community, discuss policies and solutions, and imagine from the perspective and on behalf of the people to come.</p>
@@ -888,7 +900,7 @@ function copyEventLink() {
                 </div>
             </div>
             <div class="md:mr-2 slide-content">
-                <div class="rounded bg-gray-200 md:h-64 px-4 py-2">
+                <div class="rounded bg-gray-200 h-64 px-4 py-2">
                     <h3 class="text-xl font-semibold my-2">Come Together</h3>
                     <p class="mb-2">Message some friends and neighbors, tell them where and when, and start connecting, learning about each other, and building community together.</p>
                     <!-- <p class="mb-2">Walk around your community, discuss policies and solutions, and imagine from the perspective and on behalf of the people to come.</p> -->
@@ -896,6 +908,7 @@ function copyEventLink() {
                 </div>
             </div>
         </Carousel>
+        </div>
         
 </div>
 <style>
@@ -904,7 +917,7 @@ function copyEventLink() {
     /* margin: 25px 0; */
     font-size: 0.9em;
     font-family: sans-serif;
-    min-width: 400px;
+    min-width: 300px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -916,7 +929,7 @@ function copyEventLink() {
 
 .styled-table th,
 .styled-table td {
-    padding: 12px 15px;
+    padding: 9px 12px;
 }
 
 .styled-table tbody tr {
