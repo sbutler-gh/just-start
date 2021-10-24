@@ -545,6 +545,33 @@ function toggleEventForm() {
 function closeEventDialogBox() {
     create_menu == "";
 }
+
+let copy_tooltip = false;
+
+function copyEventLink() {
+    console.log('clicked copy');
+    console.log(new_event);
+                if (!navigator.clipboard){
+                // use old commandExec() way
+                `${new_event?.url}`.select();
+                window.location.setSelectionRange(0, 99999)
+                document.execCommand("copy");
+                copy_tooltip = true;
+                setTimeout(function(){ copy_tooltip = false }, 2000)
+
+            } else{
+                navigator.clipboard.writeText(`${new_event?.url}`).then(
+                    function(){
+                        console.log("Copied URL");
+                        copy_tooltip = true;
+                        setTimeout(function(){ copy_tooltip = false }, 2000)
+                    })
+                    .catch(
+                    function() {
+                        console.log("Couldn't copy, try right-clicking to copy the URL isntead."); // error
+                    });
+            }    
+        }
 </script>
 
 <div style="" class="md:text-center m-auto md:w-10/12">
@@ -616,7 +643,14 @@ function closeEventDialogBox() {
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
         </svg></button>
-    <p>Success!  You can see your event on the calendar, and start inviting others to join you on <strong>{new Date(new_event?.start).toLocaleString('en-US', date_display_options).slice(0,-6).concat('th').concat(` at ${new Date(new_event?.start).toLocaleTimeString()}`)}.</strong>  <a href="" class="text-blue-800 underline"><span class="">Share event with friends</span> <span>✉️</span></a></p> 
+    <p>Success!  You can see your event on the calendar, and start inviting others to join you on <strong>{new Date(new_event?.start).toLocaleString('en-US', date_display_options).slice(0,-6).concat('th').concat(` at ${new Date(new_event?.start).toLocaleTimeString()}`)}.</strong>  <button on:click={copyEventLink} class="text-blue-800 underline"><span class="">Share event with friends</span> <span>✉️</span></button>
+    {#if copy_tooltip}
+    <svg xmlns="http://www.w3.org/2000/svg" class="absolute inline-flex icon icon-tabler icon-tabler-circle-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#009988" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M9 12l2 2l4 -4" />
+      </svg>
+    {/if}</p> 
 </div>
 {:else if create_menu == "Error"}
 <div class="bg-green-200 text-green w-5/12 m-auto p-4 pt-6 relative">
