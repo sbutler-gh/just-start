@@ -34,10 +34,17 @@ let calendar;
 let calendarAPI;
 
 let eventSourcesArray = [];
+let eventsArray = [];
 let eventFeed;
 let address;
 let address_display;
 let timezone;
+
+let new_event = {
+    "start": "2021-10-24T09:24:00.000Z"
+}
+let date_display_options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
 
 let first_event = true;
 
@@ -71,7 +78,6 @@ async function ipToCoordinates() {
         const json = await request.json()
 
         console.log(json);
-        location_coordinates = json.loc;
         timezone = json.timezone;
         console.log(timezone);
 
@@ -81,6 +87,8 @@ async function ipToCoordinates() {
         console.log(json.loc);
         coordinates = json.loc.split(',');
         console.log(coordinates);
+        location_coordinates = {"lat": coordinates[0], "lng": coordinates[1]};
+        console.log(location_coordinates);
 
         point = turfPoint([parseFloat(coordinates[1]), parseFloat(coordinates[0])]);
         console.log(point);
@@ -116,9 +124,16 @@ async function fetchEventSources() {
                 if (turfBooleanContains(event_area, calendar_coordinates)) {
                     console.log('match');
 
-                    eventSourcesArray.push({
-                    googleCalendarId: eventSources[i].url
-                })
+                    if (eventSources[i].event_object) {
+                        eventsArray.push(
+                            eventSources[i].event_object
+                        )
+                    }
+                    else {
+                        eventSourcesArray.push({
+                        googleCalendarId: eventSources[i].url
+                        })
+                    }
                 }
                 
                 // eventSourcesArray.push({
@@ -127,6 +142,8 @@ async function fetchEventSources() {
             }
             eventSourcesArray = JSON.stringify(eventSourcesArray, null, 2);
             console.log(eventSourcesArray);
+            eventsArray = JSON.stringify(eventsArray, null, 2);
+            console.log(eventsArray);
             // console.log(eventSourcesArray);
 
         }
@@ -152,6 +169,7 @@ plugins: [
 weekends: true,
 googleCalendarApiKey: 'AIzaSyDYxnSEee64WAIFIyEft-sxjUhNYBMoPG4',
 eventSources: JSON.parse(eventSourcesArray),
+events: JSON.parse(eventsArray),
 eventClick: function(info) {
 info.jsEvent.preventDefault(); // don't let the browser navigate
 
@@ -185,7 +203,7 @@ function toggleWeekends() {
 
     let location;
 
-    let create_menu = "Event";
+    let create_menu = "Success";
 
     let discussion;
 
@@ -260,7 +278,7 @@ function toggleWeekends() {
 
     }
 
-    function addEventToCalendar(e) {
+    async function addEventToCalendar(e) {
         console.log(e);
         var formData = new FormData(e.target);
         console.log([...formData]);
@@ -284,18 +302,56 @@ function toggleWeekends() {
 
         // console.log(new_artifact);
 
-        let new_event = {
+        new_event = {
             title: formData.get("name"), // a property!
             start: formData.get("when"), // a property!
             allDay: false,
             extendedProps: {
-                description: formData.get('description')
+                description: formData.get('description'),
+                location: formData.get('where')
             }
         }
 
-        let api = calendar.getAPI();
 
-        api.addEvent(new_event);
+        function generateUUID() { // Public Domain/MIT
+            var d = new Date().getTime();//Timestamp
+            var d2 = (performance && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16;//random number between 0 and 16
+                if(d > 0){//Use timestamp until depleted
+                    r = (d + r)%16 | 0;
+                    d = Math.floor(d/16);
+                } else {//Use microseconds since page-load if supported
+                    r = (d2 + r)%16 | 0;
+                    d2 = Math.floor(d2/16);
+                }
+                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            });
+        }
+
+        const { data, error } = await supabase
+        .from('eventSources')
+        .insert([
+            { id: generateUUID(), coordinates: location_coordinates, event_object: new_event, cal_format: 'event' },
+        ])
+
+        if (data) {
+            console.log(data);
+
+            let api = calendar.getAPI();
+
+            api.addEvent(new_event);
+
+            create_menu= "Success";
+        }
+        else {
+            console.log('error adding event, try again');
+            create_menu = "Error";
+        }
+
+        // setTimeout(() => {
+        //     create_menu = "";
+        // }, 5000)
     };
 
     async function signUp(e) {
@@ -360,6 +416,9 @@ function calculateEventAreaBuffer(coordinates) {
 
     console.log(coordinates);
 
+        location_coordinates = {"lat": coordinates['y'], "lng": coordinates['x']}
+        console.log(location_coordinates);
+
         var point = turfPoint([coordinates['x'], coordinates['y']]);
 
         event_area = turfBuffer(point, 25, {units: 'miles'});
@@ -390,7 +449,6 @@ const response = await fetch(`https://serene-journey-42564.herokuapp.com/https:/
                 // fetchCREData(result.result.addressMatches[0].geographies["Census Blocks"][0].GEOID.slice(0, -4))
                 geo_id = result.result.addressMatches[0].geographies["Census Blocks"][0].GEOID.slice(0, -3);
                 console.log(geo_id);
-                location_coordinates = result.result.addressMatches[0].coordinates;
                 calculateEventAreaBuffer(result.result.addressMatches[0].coordinates)
                 fetchEJData(geo_id);
                 // 
@@ -467,6 +525,14 @@ else {
 function closeCalendarPopup() {
     calendar_popup_show = false;
 }
+
+function toggleEventForm() {
+    create_menu == "Event" ? create_menu = "" : create_menu = "Event";
+}
+
+function closeEventDialogBox() {
+    create_menu == "";
+}
 </script>
 
 <div style="" class="md:text-center m-auto md:w-10/12">
@@ -522,18 +588,42 @@ function closeCalendarPopup() {
 
 <p class="font-semibold mb-2">{address_display}</p>
 
-<input class="rounded border-2 w-64 mb-2" bind:value={address}> <button on:click={geocodeAddress} class="rounded border-2 bg-gray-200 px-2 py-1">Search</button>
+<input class="rounded border-2 w-64 mb-2" bind:value={address}> <button on:click={geocodeAddress} class="rounded border-2 bg-gray-200 px-2 py-1">Update Location</button>
 
-<div class="w-5/12 m-auto">
+<div class="w-5/12 m-auto mb-5">
 <FullCalendar bind:this="{calendar}" {options} />
 </div>
+
+{#if create_menu == "Success"}
+<div class="bg-green-200 text-green w-5/12 m-auto p-4 pt-6 relative">
+    <button class="absolute top-1 right-1 cursor-pointer" on:click={closeEventDialogBox}><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+        </svg></button>
+    <p>Success!  You can see your event on the calendar, and start inviting others to join you on <strong>{new Date(new_event?.start).toLocaleString('en-US', date_display_options).slice(0,-6).concat('th').concat(` at ${new Date(new_event?.start).toLocaleTimeString()}`)}.</strong>  <a href="" class="text-blue-800 underline"><span class="">Share event with friends</span> <span>✉️</span></a></p> 
+</div>
+{:else if create_menu == "Error"}
+<div class="bg-green-200 text-green w-5/12 m-auto p-4 pt-6 relative">
+    <button class="absolute top-1 right-1 cursor-pointer" on:click={closeEventDialogBox}><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+        </svg></button>
+    <p>Error uploading event to database.  <button on:click={toggleEventForm} class="text-blue-800 underline"><span class="">Try again.</button></p> 
+</div>
+{/if}
 
 {#if first_event}
 <p>gotta get some events</p>
 {/if}
 
+<p class="text-lg">Start an event, invite a few friends and neighbors, and bring possibilities to life.</p>
+<!-- Or rich media message.  Could also include rich media message at the top. -->
+<button on:click={toggleEventForm} class="rounded bg-gray-200 px-2 py-1">Add Event to Calendar</button>
+
         <div class="w-11/12 m-auto">
-            <select bind:value={create_menu} class="w-20 rounded-lg p-1 block text-sm bg-gray-200 ml-auto text-left">
+            <select bind:value={create_menu} class="hidden w-20 rounded-lg p-1 block text-sm bg-gray-200 ml-auto text-left">
                 <option>Create</option>
                 <option>Discussion</option>
                 <option>Event</option>
@@ -563,20 +653,20 @@ function closeCalendarPopup() {
                 <!-- <input name="when" bind:value={event.when} type="text" class="border-2 w-full mb-4 rounded-md h-8 p-1"/> -->
                 <br>
     
-                <label class="text-sm" for="location">Location</label><br/>
+                <!-- <label class="text-sm" for="location">Location</label><br/>
                 <input type="radio" bind:group={location} name="location" value="In-Person"><label class="ml-1 mr-2 text-sm" for="In-Person">In-Person</label>
                 <input type="radio" bind:group={location} name="location" value="Online"><label class="ml-1 mr-2 text-sm" for="Online">Online</label>
-                <!-- <input type="radio" bind:group={location} name="location" value="Hybrid"><label class="ml-1 text-sm" for="Hybrid">Hybrid</label> -->
                 <p class="mt-1 text-sm">
                 {#if location == "In-Person"}
                 Enter the location of your meeting
                 {:else if location == "Online"}
                 Enter a link for your meeting
                 {/if}
-                </p>
+                </p> -->
+                <p class="mt-1 text-sm">Enter a location for your meeting (in-person or virtual)</p>
                 <input name="where" bind:value={event.where} type="text" class="border-2 w-full mb-4 rounded-md h-8 p-1"/>
                 <br>
-                <label class="text-sm" for="description">Description</label><br/>
+                <label class="text-sm" for="description">Why is this important?  Let people know.</label><br/>
                 <textarea name="description" type="text" class="rounded border border-gray-300 block w-full mb-3 h-20"></textarea>
                 <br>
                 <button type="submit" class="mt-2 mb-2 rounded-full shadow bg-blue-200 px-2 py-1 text-right block ml-auto">Publish Meeting</button>
