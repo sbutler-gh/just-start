@@ -36,5 +36,8 @@
 		"tailwindcss": "next",
 		"turf-point": "^2.0.1"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"encoding": "^0.1.13"
+	}
 }
