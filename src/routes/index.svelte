@@ -15,6 +15,7 @@ import { parse } from "postcss";
 import turfBuffer from '@turf/buffer';
 import turfPoint from 'turf-point';
 import turfBooleanContains from '@turf/boolean-contains';
+import Carousel from '@beyonk/svelte-carousel'
 
 let data_theme = "light";
 
@@ -66,7 +67,7 @@ let calendar_popup = {
 
         const common = (await import('@fullcalendar/common')).default
 
-        ipToCoordinates();
+        // ipToCoordinates();
         // need to think this through better
         
     });
@@ -210,7 +211,7 @@ function toggleWeekends() {
 
     let location;
 
-    let create_menu = "Success";
+    let create_menu = "";
 
     let discussion;
 
@@ -543,7 +544,8 @@ function toggleEventForm() {
 }
 
 function closeEventDialogBox() {
-    create_menu == "";
+    console.log('clicked');
+    create_menu = "";
 }
 
 let copy_tooltip = false;
@@ -664,7 +666,7 @@ function copyEventLink() {
 {/if}
 
 {#if first_event}
-<p>gotta get some events</p>
+<!-- <p>gotta get some events</p> -->
 {/if}
 
 <p class="text-lg">Start an event, invite a few friends and neighbors, and bring possibilities to life.</p>
@@ -741,4 +743,43 @@ function copyEventLink() {
         <p class="hidden text-right ml-auto">As you research, you can also pin relevant organizations and entities to the map, to save them for future reference and help others discover them as well!</p>
         <img id="location_img" class="hidden" src="https://maps.google.com/maps/api/staticmap?markers=icon%3Ahttps%3A%2F%2Fsecure.meetupstatic.com%2Fs%2Fimg%2F5961591462445047%2Fmup-custom-google-map-pin.png%7C38.894615%2C-77.439980&zoom=17&size=480x300&sensor=false&key=AIzaSyA3fSxhHZNQNfMjJuMFvmULACXrBfFz9jQ&signature=UWDg01O1EMndIJNgK_EkV8q8IJE%3D">
         </div>
+
+        <p class="text-lg mt-8">What do you want to organize?</p>
+        <Carousel perPage={{ 800: 3, 500: 2 }}>
+            <div class="ml-2 slide-content">
+                <div class="rounded bg-gray-200 md:h-64 px-4 py-2">
+                    <h3 class="text-xl font-semibold my-2">Identify local issues, desires, and priorities.</h3>
+                    <p>Convene with friends and neighbors in your community, listen and share to understand what each other are seeing and wanting, and start organizing for action.</p>
+                </div>
+            </div>
+            <div class="ml-2 slide-content">
+                <div class="rounded bg-gray-200 md:h-64 px-4 py-2">
+                   <h3 class="text-xl font-semibold my-2">Climate Role-Play + Simulation</h3>
+                    <p class="mb-2">Want a live role-playing game, where you and your peers can simulate climate action towards the Paris Agreement?</p>
+                    <p>Here's how.</p>
+                </div>
+            </div>
+            <div class="ml-2 slide-content">
+                <div class="rounded bg-gray-200 md:h-64 px-4 py-2">
+                    <h3 class="text-xl font-semibold my-2">C.A.N.</h3>
+                    <p class="mb-2">Citizens Action Network.  Community Action Network.  Cities and Neighborhoods.  Climate Action Network.</p>
+                    <p>Whatever CAN means to you, you and your community can make it happen.</p>
+                </div>
+            </div>
+            <!-- <div class="ml-2 slide-content">
+                <div class="rounded bg-gray-200 h-48 px-4 py-2">
+                    <h3 class="text-xl font-semibold">Strong Town</h3>
+                    <p>Strong Towns are about living well in the places we live, today and for future generations.  </p>
+                    <p>Whatever CAN means to you, you and your community can make it happen.</p>
+                </div>
+            </div> -->
+            <div class="ml-2 slide-content">
+                <div class="rounded bg-gray-200 md:h-64 px-4 py-2">
+                    <h3 class="text-xl font-semibold my-2">Future Design Walk</h3>
+                    <p class="mb-2">Put yourselves in the minds of your descendants — the people living here 60 years in the future.</p>
+                    <p>Walk around your community, think about how things are done, discuss policies and solutions, from the perspective and on behalf of the people to come.</p>
+                </div>
+            </div>
+        </Carousel>
+        
 </div>
