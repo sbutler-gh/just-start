@@ -431,10 +431,10 @@ const response = await fetch(`https://serene-journey-42564.herokuapp.com/https:/
 
 function calculateEventAreaBuffer(coordinates) {
 
-    console.log(coordinates);
+    // console.log(coordinates);
 
-        location_coordinates = {"lat": coordinates['y'], "lng": coordinates['x']}
-        console.log(location_coordinates);
+    //     location_coordinates = {"lat": coordinates['y'], "lng": coordinates['x']}
+    //     console.log(location_coordinates);
 
         var point = turfPoint([coordinates['x'], coordinates['y']]);
 
@@ -467,7 +467,11 @@ const response = await fetch(`https://serene-journey-42564.herokuapp.com/https:/
                 geo_id = result.result.addressMatches[0].geographies["Census Blocks"][0].GEOID.slice(0, -3);
                 address_display = `${result.result.addressMatches[0].addressComponents["city"]}, ${result.result.addressMatches[0].addressComponents["state"]}, ${result.result.addressMatches[0].addressComponents["zip"]}`
                 console.log(geo_id);
-                calculateEventAreaBuffer(result.result.addressMatches[0].coordinates)
+                coordinates = result.result.addressMatches[0].coordinates;
+                location_coordinates = {"lat": coordinates['y'], "lng": coordinates['x']}
+                console.log(location_coordinates);
+
+                calculateEventAreaBuffer(coordinates);
                 fetchEJData(geo_id);
                 // 
 
