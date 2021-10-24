@@ -650,7 +650,7 @@ function copyEventLink() {
 
 <!-- <p class="font-semibold mb-2">{address_display}</p> -->
 
-<input class="rounded border-2 w-64 my-4" bind:value={address}> <button on:click={geocodeAddress} class="rounded border-2 bg-gray-200 px-2 py-1">Update Location</button>
+<input class="rounded border-2 w-64 my-4" bind:value={address} placeholder="Enter full address (incl. street number)"> <button on:click={geocodeAddress} class="rounded border-2 bg-gray-200 px-2 py-1">Update Location</button>
 
 
 <!-- <p class="text-lg">Start an event, invite a few friends and neighbors, and bring possibilities to life.</p> -->
