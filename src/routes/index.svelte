@@ -642,15 +642,23 @@ function copyEventLink() {
 
 <input class="rounded border-2 w-64 my-4" bind:value={address}> <button on:click={geocodeAddress} class="rounded border-2 bg-gray-200 px-2 py-1">Update Location</button>
 
-<!-- <p class="font-semibold mb-2 text-xl">{address_display}</p> -->
 
-<div class="local-awareness md:flex md:text-center md:m-auto md:w-10/12 ">
+<!-- <p class="text-lg">Start an event, invite a few friends and neighbors, and bring possibilities to life.</p> -->
+<!-- Or rich media message.  Could also include rich media message at the top. -->
+<div class="md:flex">
+<div class="md:w-5/12 xs:h-64 md:h-auto m-auto my-5">
+    <p class="text-xl mb-4">Events near you</p>
+
+    <FullCalendar bind:this="{calendar}" {options} />
+</div>
+
+<div class="local-awareness m-auto text-center md:w-5/12">
     {#if location_coordinates}
-    <iframe title="Local Air Quality" class="text-center m-auto md:mr-4" height="230" width="230" src='https://widget.airnow.gov/aq-dial-widget/?latitude={location_coordinates['lat']}&longitude={location_coordinates['lng']}&transparent=true' style="border: none; border-radius: 25px;"></iframe>
+    <iframe title="Local Air Quality" class="text-center m-auto" height="230" width="230" src='https://widget.airnow.gov/aq-dial-widget/?latitude={location_coordinates['lat']}&longitude={location_coordinates['lng']}&transparent=true' style="border: none; border-radius: 25px;"></iframe>
         {#if local_data}
             <!-- <p class="font-semibold mb-2 text-xl">{address_display}</p> -->
-            <div class="relative overflow-x-auto md:mt-4" style="height: fit-content">
-        <table id="table-example-1" class="styled-table">
+       <div class="m-auto text-center overflow-x-auto md:mt-4" style="height: fit-content">
+        <table id="table-example-1" class="m-auto text-center styled-table">
             <caption class="text-center">
                 <!-- <p class="font-semibold mb-1">{address_display?.slice(0,-7)}</p> -->
                 <p class="font-semibold mb-2">Environmental Justice Indicators</p>
@@ -738,18 +746,7 @@ function copyEventLink() {
         {/if}
     {/if}
 </div>
-
-{#if first_event}
-<!-- <p>gotta get some events</p> -->
-{/if}
-
-<!-- <p class="text-lg">Start an event, invite a few friends and neighbors, and bring possibilities to life.</p> -->
-<!-- Or rich media message.  Could also include rich media message at the top. -->
-<div class="md:w-5/12 xs:h-64 md:h-auto m-auto my-5">
-    <p class="text-xl mb-4">Events near you</p>
-
-    <FullCalendar bind:this="{calendar}" {options} />
-    </div>
+</div>
     
     {#if create_menu == "Success"}
     <div class="bg-green-200 text-green w-5/12 m-auto p-4 pt-6 relative">
@@ -904,7 +901,7 @@ function copyEventLink() {
 <style>
 .styled-table {
     border-collapse: collapse;
-    margin: 25px 0;
+    /* margin: 25px 0; */
     font-size: 0.9em;
     font-family: sans-serif;
     min-width: 400px;
