@@ -16,6 +16,7 @@
 		"@fullcalendar/list": "^5.10.0",
 		"@fullcalendar/timegrid": "^5.10.0",
 		"@supabase/supabase-js": "^1.8.0",
+		"@sveltejs/adapter-static": "^1.0.0-next.21",
 		"@sveltejs/kit": "next",
 		"@turf/boolean-contains": "^6.5.0",
 		"@turf/buffer": "^6.5.0",
