@@ -2,7 +2,9 @@ const config = {
   content: ["./src/**/*.{html,js,svelte,ts}"],
 
   theme: {
+    extend: {
       colors: {
+        "color-range": {
           0: "#00FF00",
           1: "#00FF00",
           2: "#00FF00",
@@ -31,7 +33,7 @@ const config = {
           25: "#66ff00",
           26: "#66ff00",
           27: "#66ff00",
-          "28": "#66ff00",
+          28: "#66ff00",
           29: "#66ff00",
           30: "#99ff00",
           31: "#99ff00",
@@ -104,7 +106,9 @@ const config = {
           98: "#ff3300",
           99: "#ff3300",
           100: "#ff0000",
+        }
       },
+    }
   },
 
   plugins: [

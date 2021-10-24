@@ -653,7 +653,7 @@ function copyEventLink() {
         <table id="table-example-1" class="styled-table">
             <caption class="text-center">
                 <!-- <p class="font-semibold mb-1">{address_display?.slice(0,-7)}</p> -->
-                <p class="font-semibold mb-2">Environmental Justice Index</p>
+                <p class="font-semibold mb-2">Environmental Justice Indicators</p>
                 <p class="mb-2">(0 to 100, lower is better)</p>
             </caption>
             <thead>
@@ -745,7 +745,7 @@ function copyEventLink() {
 
 <!-- <p class="text-lg">Start an event, invite a few friends and neighbors, and bring possibilities to life.</p> -->
 <!-- Or rich media message.  Could also include rich media message at the top. -->
-<div class="w-5/12 m-auto my-5">
+<div class="md:w-5/12 xs:h-64 md:h-auto m-auto my-5">
     <p class="text-xl mb-4">Events near you</p>
 
     <FullCalendar bind:this="{calendar}" {options} />
