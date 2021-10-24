@@ -66,8 +66,8 @@ let calendar_popup = {
 
         const common = (await import('@fullcalendar/common')).default
 
-        fetchEventSources();
         ipToCoordinates();
+        // need to think this through better
         
     });
 
@@ -99,6 +99,7 @@ async function ipToCoordinates() {
         console.log(event_area);
 
         geocodeCoordinates(coordinates);
+        fetchEventSources();
 }
 
 function loadUser() {
@@ -594,8 +595,10 @@ function closeEventDialogBox() {
 {/if}
 
 <div class="text-center">
-    <h1 class="text-2xl mb-2">Want to make a difference?</h1>
-    <h1 class="text-2xl mb-2">You're right on time.</h1>
+    <!-- <h1 class="text-2xl mb-2">Want to make a difference?</h1>
+    <h1 class="text-2xl mb-2">You're right on time.</h1> -->
+    <h1 class="text-xl mb-2">Possibilities are all around us.</h1>
+    <h1 class="text-xl mb-2">You're right on time.</h1>
 </div>
 
 <p class="font-semibold mb-2">{address_display}</p>
