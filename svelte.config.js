@@ -13,7 +13,7 @@ const config = {
 	},
     vite: {
         optimizeDeps: {
-            include: ['@fullcalendar/core', '@fullcalendar/icalendar']
+            include: ['@fullcalendar/core', '@fullcalendar/icalendar', "fastq"]
         }
     },
 
