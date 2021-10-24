@@ -25,6 +25,8 @@ let string_data;
 
 let geo_id;
 
+let local_data;
+
 let location_buffer;
 let location_coordinates;
 let event_area;
@@ -67,7 +69,7 @@ let calendar_popup = {
 
         const common = (await import('@fullcalendar/common')).default
 
-        // ipToCoordinates();
+        ipToCoordinates();
         // need to think this through better
         
     });
@@ -84,8 +86,8 @@ async function ipToCoordinates() {
         timezone = json.timezone;
         console.log(timezone);
 
+        address = `${json.city}, ${json.region}, ${json.postal}`;
         address_display = `${json.city}, ${json.region}, ${json.postal}`;
-
 
         console.log(json.loc);
         coordinates = json.loc.split(',');
@@ -461,6 +463,7 @@ const response = await fetch(`https://serene-journey-42564.herokuapp.com/https:/
             if (result.result.addressMatches[0]) {
                 // fetchCREData(result.result.addressMatches[0].geographies["Census Blocks"][0].GEOID.slice(0, -4))
                 geo_id = result.result.addressMatches[0].geographies["Census Blocks"][0].GEOID.slice(0, -3);
+                address_display = `${result.result.addressMatches[0].addressComponents["city"]}, ${result.result.addressMatches[0].addressComponents["state"]}, ${result.result.addressMatches[0].addressComponents["zip"]}`
                 console.log(geo_id);
                 calculateEventAreaBuffer(result.result.addressMatches[0].coordinates)
                 fetchEJData(geo_id);
@@ -529,6 +532,7 @@ let { data: ej, error } = await supabase
 
 if (ej) {
     console.log(ej);
+    local_data = ej[0];
 }
 else {
     console.log(error);
@@ -576,7 +580,7 @@ function copyEventLink() {
         }
 </script>
 
-<div style="" class="md:text-center m-auto md:w-10/12">
+<div style="" class="text-center m-auto md:w-10/12">
 <!-- <div class="absolute top-1 right-1">
 {#if $user_store?.id}
 <p class="font-semibold">{$user_store.full_name}</p>
@@ -623,55 +627,157 @@ function copyEventLink() {
 </div>
 {/if}
 
-<div class="text-center">
+<div class="text-center bg-black text-white p-8">
     <!-- <h1 class="text-2xl mb-2">Want to make a difference?</h1>
     <h1 class="text-2xl mb-2">You're right on time.</h1> -->
-    <h1 class="text-xl mb-2">Possibilities are all around us.</h1>
-    <h1 class="text-xl mb-2">You're right on time.</h1>
+    <!-- <h1 class="text-xl mb-2">Possibilities are all around us.</h1>
+    <h1 class="text-xl mb-2">You're right on time.</h1> -->
+    <h1 class="text-2xl mb-2">Not sure how to take action?</h1>
+    <h1 class="text-2xl mb-2">Just start.</h1>
 </div>
 
-<p class="font-semibold mb-2">{address_display}</p>
+<p class="text-xl my-8">Find an event near your, or grab some friends and start your own.</p>
 
-<input class="rounded border-2 w-64 mb-2" bind:value={address}> <button on:click={geocodeAddress} class="rounded border-2 bg-gray-200 px-2 py-1">Update Location</button>
+<!-- <p class="font-semibold mb-2">{address_display}</p> -->
 
-<div class="w-5/12 m-auto mb-5">
-<FullCalendar bind:this="{calendar}" {options} />
-</div>
+<input class="rounded border-2 w-64 my-4" bind:value={address}> <button on:click={geocodeAddress} class="rounded border-2 bg-gray-200 px-2 py-1">Update Location</button>
 
-{#if create_menu == "Success"}
-<div class="bg-green-200 text-green w-5/12 m-auto p-4 pt-6 relative">
-    <button class="absolute top-1 right-1 cursor-pointer" on:click={closeEventDialogBox}><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-        </svg></button>
-    <p>Success!  You can see your event on the calendar, and start inviting others to join you on <strong>{new Date(new_event?.start).toLocaleString('en-US', date_display_options).slice(0,-6).concat('th').concat(` at ${new Date(new_event?.start).toLocaleTimeString()}`)}.</strong>  <button on:click={copyEventLink} class="text-blue-800 underline"><span class="">Share event with friends</span> <span>✉️</span></button>
-    {#if copy_tooltip}
-    <svg xmlns="http://www.w3.org/2000/svg" class="absolute inline-flex icon icon-tabler icon-tabler-circle-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#009988" fill="none" stroke-linecap="round" stroke-linejoin="round">
-        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M9 12l2 2l4 -4" />
-      </svg>
-    {/if}</p> 
+<!-- <p class="font-semibold mb-2 text-xl">{address_display}</p> -->
+
+<div class="local-awareness md:flex md:text-center md:m-auto md:w-10/12 ">
+    {#if location_coordinates}
+    <iframe title="Local Air Quality" class="text-center m-auto md:mr-4" height="230" width="230" src='https://widget.airnow.gov/aq-dial-widget/?latitude={location_coordinates['lat']}&longitude={location_coordinates['lng']}&transparent=true' style="border: none; border-radius: 25px;"></iframe>
+        {#if local_data}
+            <!-- <p class="font-semibold mb-2 text-xl">{address_display}</p> -->
+            <div class="relative overflow-x-auto md:mt-4" style="height: fit-content">
+        <table id="table-example-1" class="styled-table">
+            <caption class="text-center">
+                <!-- <p class="font-semibold mb-1">{address_display?.slice(0,-7)}</p> -->
+                <p class="font-semibold mb-2">Environmental Justice Index</p>
+                <p class="mb-2">(0 to 100, lower is better)</p>
+            </caption>
+            <thead>
+                <tr class="">
+                <td class="">Traffic proximity</td>
+                <td class="">PM2.5 level</td>
+                <td class="">Ozone level</td>
+                <td class="">Diesel particulates</td>
+                <td class="">Cancer risks (air)</td>
+                <!-- <td>Respiratory hazards (air)</td>
+                <td>Lead paint indicator</td>
+                <td>Risk management projects</td>
+                <td>National priority sites</td>
+                <td>TSD Facilities</td>
+                <td>Water dischargers</td>
+                <td>Vulnerable populations</td> -->
+                </tr>
+            </thead>
+            <tbody>
+                  <tr>
+                      <td class="{`bg-${local_data.P_PTRAF_D2}`}">{local_data.P_PTRAF_D2}</td>
+                      <td class="">{local_data.P_PM25_D2}</td>
+                      <td>{local_data.P_OZONE_D2}</td>
+                      <td>{local_data.P_DSLPM_D2}</td>
+                      <td>{local_data.P_CANCR_D2}</td>
+                      <!-- <td>{local_data.P_RESP_D2}</td>
+                      <td>{local_data.P_LDPNT_D2}</td>
+                      <td>{local_data.P_PRMP_D2}</td>
+                      <td>{local_data.P_PNPL_D2}</td>
+                      <td>{local_data.P_PTSDF_D2}</td>
+                      <td>{local_data.P_PWDIS_D2}</td>
+                      <td>{local_data.P_VULEOPCT}</td> -->
+                  </tr>
+              </tbody>
+        </table>
+        <!-- <table>
+            <thead>
+                <tr>
+                  {#each local_data[0] as columnHeading}
+                    <th>{columnHeading}</th>
+                  {/each}
+                <tr/>
+              </thead>
+              <tbody>
+                {#each Object.values(local_data) as row}
+                  <tr>
+                    {#each Object.values(row) as cell}
+                      <td>{cell}</td>
+                    {/each}
+                  </tr>
+                {/each}
+              </tbody>
+        </table> -->
+    <!-- {
+        "ID": 511076110053,
+        "P_PM25_D2": 28, ej index for pm2.5 level in air
+        "P_OZONE_D2": 29, ej index ozone level in air
+        "P_DSLPM_D2": 17, ej index for diesel particulate matter in air
+        "P_CANCR_D2": 28, ej index air toxics cancer risks
+        "P_RESP_D2": 25, ej index for air toxic respiratory hazards
+        "P_PTRAF_D2": 28, ej index for traffic proximity and volume
+        "P_LDPNT_D2": 52, EJ index for pre-1960 housing lead -=oaint indicator
+        "P_PNPL_D2": 9, EJ index proximity to national priority sites list
+        "P_PRMP_D2": 15, ej index for proximity to risk management projects
+        "P_PTSDF_D2": 22, EJ Index for  Proximity to Treatment Storage and Disposal (TSDF) facilities
+        "P_PWDIS_D2": null, ejindex proximitty to major dischargers of water
+        "PM25": 8.2194495890411,
+        "P_PM25": 66, pm2.5 level in air
+        "P_OZONE": 92, ozone level in air
+        "P_DSLPM": 77, iesel particulate matter in air
+        "P_CANCR": 58, air toxics cancer risks
+        "P_RESP": 71, air toxic respiratory hazads index
+        "P_PTRAF": 44, traffic proximity and volume 
+        "P_LDPNT": 13, pre-1960 housing, lead paint indicator
+        "P_PNPL": 86, proximity to national priority sites list
+        "P_PRMP": 70, proximity to risk management projects
+        "P_PTSDF": 49, Proximity to Treatment Storage and Disposal (TSDF) facilities
+        "P_PWDIS": null, proximitty to major dischargers of water
+        "P_VULEOPCT": 38 vulnerable population index
+    } -->
+        </div>
+        {/if}
+    {/if}
 </div>
-{:else if create_menu == "Error"}
-<div class="bg-green-200 text-green w-5/12 m-auto p-4 pt-6 relative">
-    <button class="absolute top-1 right-1 cursor-pointer" on:click={closeEventDialogBox}><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-        </svg></button>
-    <p>Error uploading event to database.  <button on:click={toggleEventForm} class="text-blue-800 underline"><span class="">Try again.</button></p> 
-</div>
-{/if}
 
 {#if first_event}
 <!-- <p>gotta get some events</p> -->
 {/if}
 
-<p class="text-lg">Start an event, invite a few friends and neighbors, and bring possibilities to life.</p>
+<!-- <p class="text-lg">Start an event, invite a few friends and neighbors, and bring possibilities to life.</p> -->
 <!-- Or rich media message.  Could also include rich media message at the top. -->
-<button on:click={toggleEventForm} class="rounded bg-gray-200 px-2 py-1">Add Event to Calendar</button>
+<div class="w-5/12 m-auto my-5">
+    <p class="text-xl mb-4">Events near you</p>
+
+    <FullCalendar bind:this="{calendar}" {options} />
+    </div>
+    
+    {#if create_menu == "Success"}
+    <div class="bg-green-200 text-green w-5/12 m-auto p-4 pt-6 relative">
+        <button class="absolute top-1 right-1 cursor-pointer" on:click={closeEventDialogBox}><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+            </svg></button>
+        <p>Success!  You can see your event on the calendar, and start inviting others to join you on <strong>{new Date(new_event?.start).toLocaleString('en-US', date_display_options).slice(0,-6).concat('th').concat(` at ${new Date(new_event?.start).toLocaleTimeString()}`)}.</strong>  <button on:click={copyEventLink} class="text-blue-800 underline"><span class="">Share event with friends</span> <span>✉️</span></button>
+        {#if copy_tooltip}
+        <svg xmlns="http://www.w3.org/2000/svg" class="absolute inline-flex icon icon-tabler icon-tabler-circle-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#009988" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <circle cx="12" cy="12" r="9" />
+            <path d="M9 12l2 2l4 -4" />
+          </svg>
+        {/if}</p> 
+    </div>
+    {:else if create_menu == "Error"}
+    <div class="bg-green-200 text-green w-5/12 m-auto p-4 pt-6 relative">
+        <button class="absolute top-1 right-1 cursor-pointer" on:click={closeEventDialogBox}><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+            </svg></button>
+        <p>Error uploading event to database.  <button on:click={toggleEventForm} class="text-blue-800 underline"><span class="">Try again.</button></p> 
+    </div>
+    {/if}
+<button on:click={toggleEventForm} class="rounded bg-gray-200 px-2 py-1">Start your own event</button>
 
         <div class="w-11/12 m-auto">
             <select bind:value={create_menu} class="hidden w-20 rounded-lg p-1 block text-sm bg-gray-200 ml-auto text-left">
@@ -745,25 +851,28 @@ function copyEventLink() {
         </div>
 
         <p class="text-lg mt-8">What do you want to organize?</p>
-        <Carousel perPage={{ 800: 3, 500: 2 }}>
-            <div class="ml-2 slide-content">
+        <Carousel perPage={{ 800: 3, 500: 2 }} dots={false}>
+            <div class="md:mr-2 slide-content">
                 <div class="rounded bg-gray-200 md:h-64 px-4 py-2">
                     <h3 class="text-xl font-semibold my-2">Identify local issues, desires, and priorities.</h3>
-                    <p>Convene with friends and neighbors in your community, listen and share to understand what each other are seeing and wanting, and start organizing for action.</p>
+                    <p class="mb-2">Convene with friends and neighbors in your community, listen and share to understand what each other are seeing and wanting, and start organizing for action.</p>
+                    <a class="underline text-blue-500">Learn more</a>
                 </div>
             </div>
-            <div class="ml-2 slide-content">
+            <div class="md:mr-2 slide-content">
                 <div class="rounded bg-gray-200 md:h-64 px-4 py-2">
                    <h3 class="text-xl font-semibold my-2">Climate Role-Play + Simulation</h3>
                     <p class="mb-2">Want a live role-playing game, where you and your peers can simulate climate action towards the Paris Agreement?</p>
-                    <p>Here's how.</p>
+                    <!-- <p>Here's how.</p> -->
+                    <a class="underline text-blue-500">Learn more</a>
                 </div>
             </div>
-            <div class="ml-2 slide-content">
+            <div class="md:mr-2 slide-content">
                 <div class="rounded bg-gray-200 md:h-64 px-4 py-2">
                     <h3 class="text-xl font-semibold my-2">C.A.N.</h3>
                     <p class="mb-2">Citizens Action Network.  Community Action Network.  Cities and Neighborhoods.  Climate Action Network.</p>
-                    <p>Whatever CAN means to you, you and your community can make it happen.</p>
+                    <p class="mb-2">Whatever CAN means to you, you and your community can make it happen.</p>
+                    <a class="underline text-blue-500">Learn more</a>
                 </div>
             </div>
             <!-- <div class="ml-2 slide-content">
@@ -773,13 +882,55 @@ function copyEventLink() {
                     <p>Whatever CAN means to you, you and your community can make it happen.</p>
                 </div>
             </div> -->
-            <div class="ml-2 slide-content">
+            <div class="md:mr-2 slide-content">
                 <div class="rounded bg-gray-200 md:h-64 px-4 py-2">
                     <h3 class="text-xl font-semibold my-2">Future Design Walk</h3>
-                    <p class="mb-2">Put yourselves in the minds of your descendants — the people living here 60 years in the future.</p>
-                    <p>Walk around your community, think about how things are done, discuss policies and solutions, from the perspective and on behalf of the people to come.</p>
+                    <p class="mb-2">Put yourselves in the minds of the people living here 60 years in the future.</p>
+                    <p class="mb-2">Walk around your community, discuss policies and solutions, and imagine from the perspective and on behalf of the people to come.</p>
+                    <a class="underline text-blue-500">Learn more</a>
+                </div>
+            </div>
+            <div class="md:mr-2 slide-content">
+                <div class="rounded bg-gray-200 md:h-64 px-4 py-2">
+                    <h3 class="text-xl font-semibold my-2">Come Together</h3>
+                    <p class="mb-2">Message some friends and neighbors, tell them where and when, and start connecting, learning about each other, and building community together.</p>
+                    <!-- <p class="mb-2">Walk around your community, discuss policies and solutions, and imagine from the perspective and on behalf of the people to come.</p> -->
+                    <a class="underline text-blue-500">Learn more</a>
                 </div>
             </div>
         </Carousel>
         
 </div>
+<style>
+.styled-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+</style>
