@@ -30,6 +30,8 @@ let event_area;
 let point;
 let coordinates;
 
+let add_to_calendar_url;
+
 let calendar;
 let calendarAPI;
 
@@ -74,7 +76,7 @@ let calendar_popup = {
     console.log(string_data);
 
 async function ipToCoordinates() {
-        const request = await fetch("https://ipinfo.io/json?token=d41bed18e5fda2");
+        const request = await fetch("https://serene-journey-42564.herokuapp.com/https://ipinfo.io/json?token=d41bed18e5fda2");
         const json = await request.json()
 
         console.log(json);
@@ -116,6 +118,7 @@ async function fetchEventSources() {
             console.log(eventSources)
 
             eventSourcesArray = [];
+            eventsArray = [];
 
             for (var i=0; i<eventSources.length; i++) {
 
@@ -172,6 +175,9 @@ eventSources: JSON.parse(eventSourcesArray),
 events: JSON.parse(eventsArray),
 eventClick: function(info) {
 info.jsEvent.preventDefault(); // don't let the browser navigate
+
+console.log(info);
+add_to_calendar_url = info.event.url;
 
 console.log(info.event.extendedProps);
 calendar_popup.title = info.event.title;
@@ -309,8 +315,13 @@ function toggleWeekends() {
             extendedProps: {
                 description: formData.get('description'),
                 location: formData.get('where')
-            }
+            },
+            url: `http://www.google.com/calendar/event?action=TEMPLATE&dates=${formData.get("when")}&text=${formData.get("name")}&location=${formData.get('where')}&details=${encodeURI(formData.get('description'))}`
         }
+
+        // https://www.google.com/calendar/event?eid=M2ludjkybzUwOHVndmo2c3FwNXU2YnVqaHVfMjAyMTEwMjdUMjMwMDAwWiByY24wdmZsN2dha2dzMG40amluN3A5NzE3Y0Bn
+        //             // url: `http://www.google.com/calendar/event?action=TEMPLATE&dates=${formData.get("when")}&text=${formData.get("name")}&location=${formData.get('where')}&details=${formData.get('description')}`
+
 
 
         function generateUUID() { // Public Domain/MIT
@@ -561,7 +572,7 @@ function closeEventDialogBox() {
 </div> -->
 
 {#if calendar_popup_show}
-<div class="shadow rounded-md border-2 bg-white text-left p-4 w-5/12" style="position: absolute; z-index: 100; top: {calendar_popup.y}px; left: {calendar_popup.x}px">
+<div class="shadow rounded-md border-2 bg-white text-left p-4 w-auto" style="position: absolute; z-index: 100; top: {calendar_popup.y}px; left: {calendar_popup.x}px">
     <button class="absolute top-1 right-1 cursor-pointer" on:click={closeCalendarPopup}><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
         <rect x="4" y="4" width="16" height="16" rx="2" />
@@ -578,6 +589,7 @@ function closeEventDialogBox() {
     {#if calendar_popup?.details}
     {@html calendar_popup?.details}
     {/if}
+    <a href={add_to_calendar_url} target="_blank" class="mt-2 block underline text-blue-500">Add to Calendar</a>
 </div>
 {/if}
 
@@ -666,7 +678,7 @@ function closeEventDialogBox() {
                 <p class="mt-1 text-sm">Enter a location for your meeting (in-person or virtual)</p>
                 <input name="where" bind:value={event.where} type="text" class="border-2 w-full mb-4 rounded-md h-8 p-1"/>
                 <br>
-                <label class="text-sm" for="description">Why is this important?  Let people know.</label><br/>
+                <label class="text-sm" for="description">Why is this important to you and your community?  Let people know why they should show up.</label><br/>
                 <textarea name="description" type="text" class="rounded border border-gray-300 block w-full mb-3 h-20"></textarea>
                 <br>
                 <button type="submit" class="mt-2 mb-2 rounded-full shadow bg-blue-200 px-2 py-1 text-right block ml-auto">Publish Meeting</button>
