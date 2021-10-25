@@ -371,6 +371,121 @@ function toggleWeekends() {
         // }, 5000)
     };
 
+    async function addressToCoordinates(e) {
+
+     var formData = new FormData(e.target);
+
+    console.log(encodeURI(formData.get('address')));
+    const request = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURI(formData.get('address'))}&key=8dd39718fde641f68b107f57511f4644`);
+    const json = await request.json()
+    console.log(json);
+    console.log(json?.results[0]?.geometry);
+    // return(json.results[0].geometry);
+
+    if (json?.results[0]?.geometry) {
+
+        e.target.coordinates = json.results[0].geometry;
+
+        return(shareCalendarFeed(e));
+    }
+
+    else {
+        console.log(json);
+        create_menu = "Error_Calendar";
+    }
+    
+    }
+    
+
+    async function shareCalendarFeed(e) {
+
+        // console.log(formData);
+
+        var formData = new FormData(e.target);
+        console.log([...formData]);
+
+        function generateUUID() { // Public Domain/MIT
+            var d = new Date().getTime();//Timestamp
+            var d2 = (performance && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16;//random number between 0 and 16
+                if(d > 0){//Use timestamp until depleted
+                    r = (d + r)%16 | 0;
+                    d = Math.floor(d/16);
+                } else {//Use microseconds since page-load if supported
+                    r = (d2 + r)%16 | 0;
+                    d2 = Math.floor(d2/16);
+                }
+                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            });
+        }
+
+        // async function addressToCoordinates() {
+
+        //     console.log(encodeURI(formData.get('address')));
+        //     const request = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURI(formData.get('address'))}&key=8dd39718fde641f68b107f57511f4644`);
+        //     const json = await request.json()
+        //     console.log(json);
+        //     console.log(json.results[0].geometry);
+        //     return(json.results[0].geometry);
+        // }
+
+        // async function geocodeAddress() {
+
+        //     let url_query = encodeURIComponent(formData.get('address'));
+        //     console.log(url_query);
+
+        //     const response = await fetch(`https://serene-journey-42564.herokuapp.com/https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress?address=${url_query}&benchmark=Public_AR_Census2020&vintage=Census2020_Census2020&layers=10&format=json`, {
+        //     method: 'GET',
+        //     withCredentials: true,
+        //     // headers: myHeaders
+        //     })
+
+        //     let result = await response.json();
+        //     console.log(result);
+
+        //     if (result.result.addressMatches[0]) {
+        //         // fetchCREData(result.result.addressMatches[0].geographies["Census Blocks"][0].GEOID.slice(0, -4))
+        //         // geo_id = result.result.addressMatches[0].geographies["Census Blocks"][0].GEOID.slice(0, -3);
+        //         // address_display = `${result.result.addressMatches[0].addressComponents["city"]}, ${result.result.addressMatches[0].addressComponents["state"]}, ${result.result.addressMatches[0].addressComponents["zip"]}`
+        //         // console.log(geo_id);
+        //         let address_coordinates = result.result.addressMatches[0].coordinates;
+        //         let full_coordinates = {"lat": address_coordinates['y'], "lng": address_coordinates['x']}
+        //         console.log(full_coordinates);
+        //         return(full_coordinates);
+        //     }
+
+        //     else {
+        //         console.log('error with address input');
+        //         create_menu = "Error"
+        //     }
+        // }
+
+        // geocodeAddress();
+        // addressToCoordinates();
+        // need to parse address into coordinates;
+
+        const { data, error } = await supabase
+        .from('eventSources')
+        .insert([
+            { id: generateUUID(), coordinates: e.target.coordinates, url: formData.get('url'), organization: formData.get('organization')  },
+        ])
+
+        if (data) {
+            console.log(data);
+
+            let api = calendar.getAPI();
+
+            api.addEventSource(formData.get('url'));
+
+            create_menu= "Success_Calendar";
+        }
+        else {
+            console.log('error adding calendar, try again');
+            create_menu = "Error_Calendar";
+        }
+    }
+
     async function signUp(e) {
         var formData = new FormData(e.target);
 
@@ -588,6 +703,10 @@ function copyEventLink() {
         function toggleEJTable() {
             display_ej_table ? display_ej_table = false : display_ej_table = true;
         }
+
+        function toggleCalendarForm() {
+            create_menu == "Calendar" ? create_menu = "" : create_menu = "Calendar";
+        }
 </script>
 
 <div style="" class="text-center m-auto md:w-8/12">
@@ -779,8 +898,17 @@ function copyEventLink() {
           </svg>
         {/if}</p> 
     </div>
-    {:else if create_menu == "Error"}
+    {:else if create_menu == "Success_Calendar"}
     <div class="bg-green-200 text-green w-5/12 m-auto p-4 pt-6 relative">
+        <button class="absolute top-1 right-1 cursor-pointer" on:click={closeEventDialogBox}><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+            </svg></button>
+        <p class="">Success!  If you refresh the page and load an area near your calendar, you should be able to view your events in the feed.  (Note, this is only for Google Calendar URLs at the moment.  Support for ICAL URLs coming soon.)</p>
+    </div>
+    {:else if create_menu == "Error"}
+    <div class="bg-red-200 text-green w-5/12 m-auto p-4 pt-6 relative">
         <button class="absolute top-1 right-1 cursor-pointer" on:click={closeEventDialogBox}><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                 <line x1="18" y1="6" x2="6" y2="18" />
@@ -788,8 +916,22 @@ function copyEventLink() {
             </svg></button>
         <p>Error uploading event to database.  <button on:click={toggleEventForm} class="text-blue-800 underline"><span class="">Try again.</button></p> 
     </div>
+    {:else if create_menu == "Error_Calendar"}
+    <div class="bg-red-200 text-green w-5/12 m-auto p-4 pt-6 relative">
+        <button class="absolute top-1 right-1 cursor-pointer" on:click={closeEventDialogBox}><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+            </svg></button>
+        <p>Error uploading event to database.  <button on:click={toggleCalendarForm} class="text-blue-800 underline"><span class="">Try again.</button></p> 
+    </div>
     {/if}
-<button on:click={toggleEventForm} class="rounded bg-gray-200 px-2 py-1">Start your own event</button>
+    <div class="flex m-auto text-center mt-2">
+<button on:click={toggleEventForm} class="ml-auto text-center rounded bg-gray-200 px-2 py-1">Start your own event</button>
+<button on:click={toggleCalendarForm} class="ml-2 m-auto rounded bg-gray-200 px-2 py-1">Share your calendar feed</button>
+    </div>
+
+
 
         <div class="w-11/12 m-auto">
             <select bind:value={create_menu} class="hidden w-20 rounded-lg p-1 block text-sm bg-gray-200 ml-auto text-left">
@@ -841,6 +983,26 @@ function copyEventLink() {
                 <button type="submit" class="mt-2 mb-2 rounded-full shadow bg-blue-200 px-2 py-1 text-right block ml-auto">Publish Meeting</button>
             </form>
             </div>
+            {:else if create_menu == "Calendar"}
+            <div class="rounded-md border-2 mt-4 p-2">
+                <form on:submit|preventDefault={addressToCoordinates} class="text-left">
+                    <label class="text-sm" for="organization">Organization Name</label><br/>
+                    <input name="organization" type="text" class="border-2 w-full mb-4 rounded-md h-8 p-1"/>
+                    <br>
+
+                    <label class="text-sm" for="url">Calendar URL</label><br/>
+                    <label class="text-xs" for="url">If using Google Calendar, this could be a <em>account@gmail.com</em> address or <em>XXXXXX@group.calendar.google.com</em> URL. </label><br/>
+                    <input name="url" type="text" class="border-2 w-full mb-4 rounded-md h-8 p-1"/>
+                    <br>
+
+                    <label class="text-sm" for="address">Organization Address</label><br/>
+                    <label class="text-xs" for="address">Enter an address for your organization, so this calendar can be shown to people in nearby locations.</label><br/>
+                    <input name="address" type="text" class="border-2 w-full mb-4 rounded-md h-8 p-1"/>
+                    <br>
+    
+                    <button type="submit" class="mt-2 mb-2 rounded-full shadow bg-blue-200 px-2 py-1 text-right block ml-auto">Share Calendar</button>
+                </form>
+                </div>
             {/if}
         </div>
 
