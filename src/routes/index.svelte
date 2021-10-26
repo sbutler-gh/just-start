@@ -114,7 +114,10 @@ async function ipToCoordinates() {
         coordinates = json.loc.split(',');
         console.log(coordinates);
         coordinates = {"lat": coordinates[0], "lng": coordinates[1]};
-        // console.log(location_coordinates);
+//         coordinates = {
+//     "lat": 37.7790262,
+//     "lng": -122.419906
+// }
 
         point = turfPoint([parseFloat(coordinates["lng"]), parseFloat(coordinates["lat"])]);
         console.log(point);
@@ -339,6 +342,12 @@ if (json?.results[0]?.geometry) {
 
    coordinates = json.results[0].geometry;
 
+    point = turfPoint([parseFloat(coordinates["lng"]), parseFloat(coordinates["lat"])]);
+    console.log(point);
+
+    event_area = turfBuffer(point, 25, {units: 'miles'});
+    console.log(event_area);
+
    return(coordinates);
 }
 
@@ -420,6 +429,8 @@ else {
 
     async function coordinatesToGeoID(coordinates) {
 
+        console.log(coordinates);
+
 
 const response = await fetch(`https://serene-journey-42564.herokuapp.com/https://geocoding.geo.census.gov/geocoder/geographies/coordinates?x=${coordinates["lng"]}&y=${coordinates["lat"]}&benchmark=Public_AR_Census2020&vintage=Census2020_Census2020&layers=10&format=json`, {
             method: 'GET',
@@ -451,14 +462,16 @@ async function updateLocation() {
     geocodeAddress(address)
     .then(() => {
 
-        calculateEventAreaBuffer(coordinates)
-        .then(() => {
-            fetchEventSources()
-            // .then(()=> {
-            //     initializeCalendarOptions();
-            // })
-            // updateCalendarEvents()
-        })
+        updateCalendarEvents();
+
+        // calculateEventAreaBuffer(coordinates)
+        // .then(() => {
+        //     fetchEventSources()
+        //     // .then(()=> {
+        //     //     initializeCalendarOptions();
+        //     // })
+        //     // updateCalendarEvents()
+        // })
 
         updateLocalData();
     })
