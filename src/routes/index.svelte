@@ -47,9 +47,8 @@ let address;
 let address_display;
 let timezone;
 
-let new_event = {
-    "start": "2021-10-24T09:24:00.000Z"
-}
+let new_event;
+
 let date_display_options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
 
@@ -67,18 +66,38 @@ let calendar_popup = {
     }
 
 
+let create_menu = "";
+
+let discussion;
+
+var offset = new Date().getTimezoneOffset();
+console.log(offset);
+
+let now = new Date();
+now.setMinutes(now.getMinutes() - offset)
+now = now.toISOString();
+now = now.slice(0, -8);
+console.log(now);
+
+let event = {
+        when: now,
+}
+
+
     onMount(async () => {
 
         const common = (await import('@fullcalendar/common')).default
 
-        ipToCoordinates();
+        ipToCoordinates()
+        .then(() => {
+
+            updateLocalData();
+
+            updateCalendarEvents();
+        });
         // need to think this through better
         
     });
-
-    // let string_data = JSON.stringify(parsed_data);
-
-    console.log(string_data);
 
 async function ipToCoordinates() {
         const request = await fetch("https://serene-journey-42564.herokuapp.com/https://ipinfo.io/json?token=d41bed18e5fda2");
@@ -94,18 +113,19 @@ async function ipToCoordinates() {
         console.log(json.loc);
         coordinates = json.loc.split(',');
         console.log(coordinates);
-        location_coordinates = {"lat": coordinates[0], "lng": coordinates[1]};
-        console.log(location_coordinates);
+        coordinates = {"lat": coordinates[0], "lng": coordinates[1]};
+//         coordinates = {
+//     "lat": 37.7790262,
+//     "lng": -122.419906
+// }
 
-        point = turfPoint([parseFloat(coordinates[1]), parseFloat(coordinates[0])]);
+        point = turfPoint([parseFloat(coordinates["lng"]), parseFloat(coordinates["lat"])]);
         console.log(point);
 
         event_area = turfBuffer(point, 25, {units: 'miles'});
         console.log(event_area);
-
-        geocodeCoordinates(coordinates);
-        fetchEventSources();
 }
+
 
 function loadUser() {
         // localStorage.getItem('user') ? ($user_store = JSON.parse(localStorage.getItem('user'))) : null;
@@ -121,7 +141,9 @@ async function fetchEventSources() {
         .select('*')
 
         if (eventSources) {
-            console.log(eventSources)
+            console.log(eventSources);
+
+            console.log(event_area);
 
             eventSourcesArray = [];
             eventsArray = [];
@@ -129,6 +151,8 @@ async function fetchEventSources() {
             for (var i=0; i<eventSources.length; i++) {
 
                 let calendar_coordinates = turfPoint([eventSources[i].coordinates['lng'], eventSources[i].coordinates['lat']]);
+
+                console.log(calendar_coordinates);
 
                 if (turfBooleanContains(event_area, calendar_coordinates)) {
                     console.log('match');
@@ -153,14 +177,14 @@ async function fetchEventSources() {
             console.log(eventSourcesArray);
             eventsArray = JSON.stringify(eventsArray, null, 2);
             console.log(eventsArray);
-            // console.log(eventSourcesArray);
+            console.log(eventSourcesArray);
+
+            initializeCalendarOptions();
 
         }
         else {
             console.log(error);
         }
-
-        initializeCalendarOptions();
 }
 
 async function initializeCalendarOptions() {
@@ -201,136 +225,27 @@ console.log(calendar_popup_show);
 };
 }
 
+async function updateCalendarEvents() {
+    fetchEventSources()
+    // .then(()=> {
+    //     initializeCalendarOptions();
+    // })
+}
+
+async function updateLocalData() {
+    coordinatesToGeoID(coordinates)
+       .then(() => {
+        fetchEJData(geo_id);
+    })
+}
+
 
 function toggleWeekends() {
     options.weekends = !options.weekends;
     options = { ...options };
     }
-    
-    let artifacts = [];
 
-    let group = "Fairfax Citizens Action";
-
-    let user;
-
-    let location;
-
-    let create_menu = "";
-
-    let discussion;
-
-    var offset = new Date().getTimezoneOffset();
-    console.log(offset);
-
-    let now = new Date();
-    now.setMinutes(now.getMinutes() - offset)
-    now = now.toISOString();
-    // let now = new Date().toLocaleString('en-US', { timeZone: timezone })
-    now = now.slice(0, -8);
-    console.log(now);
-
-    // now.setMinutes(now.getMinutes() + offset);
-    // console.log(now);
-
-    // var dt = new Date();
-    // dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset())
-    // console.log(dt)
-
-    let event = {
-        name: `${group} Meeting`,
-        when: now,
-        where: "",
-        details: ``,
-        group_id: "",
-        group_name: ""
-    }
-
-    function publishDiscussion(e) {
-
-//         var formData = new FormData(e.target);
-
-//         const { data, error } = await supabase
-//   .from('artifacts')
-//   .insert([
-//     { details: 'someValue', user_id: 'otherValue', group_id: },
-//   ])
-
-        let new_artifact = {
-        type: create_menu,
-        details: discussion
-        }
-        artifacts.unshift(new_artifact);
-        console.log(new_artifact);
-        discussion = "";
-        create_menu = "Create";
-        artifacts = artifacts;
-    }
-
-    function publishEvent(e) {
-        console.log(e);
-        var formData = new FormData(e.target);
-        console.log([...formData]);
-
-        let new_artifact = {
-        name: formData.get("name"),
-        when: formData.get("when"),
-        where: formData.get("where"),
-        details: ``,
-        group_id: "",
-        group_name: group,
-        type: create_menu
-        }
-
-        console.log(new_artifact);
-
-        artifacts.unshift(new_artifact);
-
-        create_menu = "Create";
-        artifacts = artifacts;
-
-    }
-
-    async function addEventToCalendar(e) {
-        console.log(e);
-        var formData = new FormData(e.target);
-        console.log([...formData]);
-
-        let start = new Date(formData.get("when"));
-        console.log(start);
-
-        start = start.toISOString();
-        console.log(start);
-        
-
-        // let new_artifact = {
-        // name: formData.get("name"),
-        // when: formData.get("when"),
-        // where: formData.get("where"),
-        // details: ``,
-        // group_id: "",
-        // group_name: group,
-        // type: create_menu
-        // }
-
-        // console.log(new_artifact);
-
-        new_event = {
-            title: formData.get("name"), // a property!
-            start: formData.get("when"), // a property!
-            allDay: false,
-            extendedProps: {
-                description: formData.get('description'),
-                location: formData.get('where')
-            },
-            url: `http://www.google.com/calendar/event?action=TEMPLATE&dates=${formData.get("when")}&text=${formData.get("name")}&location=${formData.get('where')}&details=${encodeURI(formData.get('description'))}`
-        }
-
-        // https://www.google.com/calendar/event?eid=M2ludjkybzUwOHVndmo2c3FwNXU2YnVqaHVfMjAyMTEwMjdUMjMwMDAwWiByY24wdmZsN2dha2dzMG40amluN3A5NzE3Y0Bn
-        //             // url: `http://www.google.com/calendar/event?action=TEMPLATE&dates=${formData.get("when")}&text=${formData.get("name")}&location=${formData.get('where')}&details=${formData.get('description')}`
-
-
-
-        function generateUUID() { // Public Domain/MIT
+    function generateUUID() { // Public Domain/MIT
             var d = new Date().getTime();//Timestamp
             var d2 = (performance && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -346,10 +261,33 @@ function toggleWeekends() {
             });
         }
 
+    async function addEventToCalendar(e) {
+        console.log(e);
+        var formData = new FormData(e.target);
+        console.log([...formData]);
+
+        let start = new Date(formData.get("when"));
+        console.log(start);
+
+        start = start.toISOString();
+        console.log(start);
+        
+
+        new_event = {
+            title: formData.get("name"), // a property!
+            start: formData.get("when"), // a property!
+            allDay: false,
+            extendedProps: {
+                description: formData.get('description'),
+                location: formData.get('where')
+            },
+            url: `http://www.google.com/calendar/event?action=TEMPLATE&dates=${formData.get("when")}&text=${formData.get("name")}&location=${formData.get('where')}&details=${encodeURI(formData.get('description'))}`
+        }
+
         const { data, error } = await supabase
         .from('eventSources')
         .insert([
-            { id: generateUUID(), coordinates: location_coordinates, event_object: new_event, cal_format: 'event' },
+            { id: generateUUID(), coordinates: coordinates, event_object: new_event, cal_format: 'event' },
         ])
 
         if (data) {
@@ -365,10 +303,6 @@ function toggleWeekends() {
             console.log('error adding event, try again');
             create_menu = "Error";
         }
-
-        // setTimeout(() => {
-        //     create_menu = "";
-        // }, 5000)
     };
 
     async function addressToCoordinates(e) {
@@ -395,80 +329,45 @@ function toggleWeekends() {
     }
     
     }
+
+    async function geocodeAddress(address) {
+
+const request = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURI(address)}&key=8dd39718fde641f68b107f57511f4644`);
+const json = await request.json()
+console.log(json);
+console.log(json?.results[0]?.geometry);
+// return(json.results[0].geometry);
+
+if (json?.results[0]?.geometry) {
+
+   coordinates = json.results[0].geometry;
+
+    point = turfPoint([parseFloat(coordinates["lng"]), parseFloat(coordinates["lat"])]);
+    console.log(point);
+
+    event_area = turfBuffer(point, 25, {units: 'miles'});
+    console.log(event_area);
+
+   return(coordinates);
+}
+
+else {
+    console.log(error);
+   console.log(json);
+}
+
+}
     
 
     async function shareCalendarFeed(e) {
 
-        // console.log(formData);
-
         var formData = new FormData(e.target);
         console.log([...formData]);
-
-        function generateUUID() { // Public Domain/MIT
-            var d = new Date().getTime();//Timestamp
-            var d2 = (performance && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                var r = Math.random() * 16;//random number between 0 and 16
-                if(d > 0){//Use timestamp until depleted
-                    r = (d + r)%16 | 0;
-                    d = Math.floor(d/16);
-                } else {//Use microseconds since page-load if supported
-                    r = (d2 + r)%16 | 0;
-                    d2 = Math.floor(d2/16);
-                }
-                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-            });
-        }
-
-        // async function addressToCoordinates() {
-
-        //     console.log(encodeURI(formData.get('address')));
-        //     const request = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURI(formData.get('address'))}&key=8dd39718fde641f68b107f57511f4644`);
-        //     const json = await request.json()
-        //     console.log(json);
-        //     console.log(json.results[0].geometry);
-        //     return(json.results[0].geometry);
-        // }
-
-        // async function geocodeAddress() {
-
-        //     let url_query = encodeURIComponent(formData.get('address'));
-        //     console.log(url_query);
-
-        //     const response = await fetch(`https://serene-journey-42564.herokuapp.com/https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress?address=${url_query}&benchmark=Public_AR_Census2020&vintage=Census2020_Census2020&layers=10&format=json`, {
-        //     method: 'GET',
-        //     withCredentials: true,
-        //     // headers: myHeaders
-        //     })
-
-        //     let result = await response.json();
-        //     console.log(result);
-
-        //     if (result.result.addressMatches[0]) {
-        //         // fetchCREData(result.result.addressMatches[0].geographies["Census Blocks"][0].GEOID.slice(0, -4))
-        //         // geo_id = result.result.addressMatches[0].geographies["Census Blocks"][0].GEOID.slice(0, -3);
-        //         // address_display = `${result.result.addressMatches[0].addressComponents["city"]}, ${result.result.addressMatches[0].addressComponents["state"]}, ${result.result.addressMatches[0].addressComponents["zip"]}`
-        //         // console.log(geo_id);
-        //         let address_coordinates = result.result.addressMatches[0].coordinates;
-        //         let full_coordinates = {"lat": address_coordinates['y'], "lng": address_coordinates['x']}
-        //         console.log(full_coordinates);
-        //         return(full_coordinates);
-        //     }
-
-        //     else {
-        //         console.log('error with address input');
-        //         create_menu = "Error"
-        //     }
-        // }
-
-        // geocodeAddress();
-        // addressToCoordinates();
-        // need to parse address into coordinates;
 
         const { data, error } = await supabase
         .from('eventSources')
         .insert([
-            { id: generateUUID(), coordinates: e.target.coordinates, url: formData.get('url'), organization: formData.get('organization')  },
+            { id: generateUUID(), coordinates: geocodeAddress(formData.get('address')), url: formData.get('url'), organization: formData.get('organization')  },
         ])
 
         if (data) {
@@ -528,10 +427,12 @@ function toggleWeekends() {
         }
     }
 
-    async function geocodeCoordinates(coordinates) {
+    async function coordinatesToGeoID(coordinates) {
+
+        console.log(coordinates);
 
 
-const response = await fetch(`https://serene-journey-42564.herokuapp.com/https://geocoding.geo.census.gov/geocoder/geographies/coordinates?x=${coordinates[1]}&y=${coordinates[0]}&benchmark=Public_AR_Census2020&vintage=Census2020_Census2020&layers=10&format=json`, {
+const response = await fetch(`https://serene-journey-42564.herokuapp.com/https://geocoding.geo.census.gov/geocoder/geographies/coordinates?x=${coordinates["lng"]}&y=${coordinates["lat"]}&benchmark=Public_AR_Census2020&vintage=Census2020_Census2020&layers=10&format=json`, {
             method: 'GET',
             withCredentials: true,
             // headers: myHeaders
@@ -541,74 +442,39 @@ const response = await fetch(`https://serene-journey-42564.herokuapp.com/https:/
             console.log(result);
 
             geo_id = result.result.geographies["Census Blocks"][0].GEOID.slice(0, -3);
-            fetchEJData(geo_id);
+            return(geo_id);
+            // fetchEJData(geo_id);
 }
 
-function calculateEventAreaBuffer(coordinates) {
+async function calculateEventAreaBuffer(coordinates) {
 
-    // console.log(coordinates);
 
-    //     location_coordinates = {"lat": coordinates['y'], "lng": coordinates['x']}
-    //     console.log(location_coordinates);
-
-        var point = turfPoint([coordinates['x'], coordinates['y']]);
+        var point = turfPoint([coordinates['lat'], coordinates['lng']]);
 
         event_area = turfBuffer(point, 25, {units: 'miles'});
         console.log(event_area);
-
-        fetchEventSources();
+        return(event_area);
 
 }
 
-async function geocodeAddress() {
-// let calendarAPI = calendar.getAPI();
-// calendarAPI.addEventSource(calEvent);
-// console.log('loaded');
+async function updateLocation() {
 
-let url_query = encodeURIComponent(address);
-console.log(url_query);
+    geocodeAddress(address)
+    .then(() => {
 
-const response = await fetch(`https://serene-journey-42564.herokuapp.com/https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress?address=${url_query}&benchmark=Public_AR_Census2020&vintage=Census2020_Census2020&layers=10&format=json`, {
-            method: 'GET',
-            withCredentials: true,
-            // headers: myHeaders
-            })
+        updateCalendarEvents();
 
-            let result = await response.json();
-            console.log(result);
+        // calculateEventAreaBuffer(coordinates)
+        // .then(() => {
+        //     fetchEventSources()
+        //     // .then(()=> {
+        //     //     initializeCalendarOptions();
+        //     // })
+        //     // updateCalendarEvents()
+        // })
 
-            if (result.result.addressMatches[0]) {
-                // fetchCREData(result.result.addressMatches[0].geographies["Census Blocks"][0].GEOID.slice(0, -4))
-                geo_id = result.result.addressMatches[0].geographies["Census Blocks"][0].GEOID.slice(0, -3);
-                address_display = `${result.result.addressMatches[0].addressComponents["city"]}, ${result.result.addressMatches[0].addressComponents["state"]}, ${result.result.addressMatches[0].addressComponents["zip"]}`
-                console.log(geo_id);
-                coordinates = result.result.addressMatches[0].coordinates;
-                location_coordinates = {"lat": coordinates['y'], "lng": coordinates['x']}
-                console.log(location_coordinates);
-
-                calculateEventAreaBuffer(coordinates);
-                fetchEJData(geo_id);
-                // 
-
-            }
-
-            else {
-                console.log('error with address input');
-            }
-            // coordinatesToAirQuality(response_json.result.addressMatches[0].coordinates);
-
-            // coordinatesToAirQuality(response_json.result.)
-
-
-
-            // console.log(response_json.result);
-            // $user_store.coordinates = response_json.result.addressMatches[0].coordinates;
-            // $user_store.matchedAddress = response_json.result.addressMatches[0].matchedAddress;
-            // $user_store.tigerLine = response_json.result.addressMatches[0].tigerLine;
-
-            // $user_store = $user_store;
-
-            // console.log($user_store);
+        updateLocalData();
+    })
 }
 
 
@@ -769,7 +635,7 @@ function copyEventLink() {
 
 <!-- <p class="font-semibold mb-2">{address_display}</p> -->
 
-<input class="rounded border-2 w-64 my-4" bind:value={address} placeholder="Enter full address (incl. street number)"> <button on:click={geocodeAddress} class="rounded border-2 bg-gray-200 px-2 py-1">Update Location</button>
+<input class="rounded border-2 w-64 my-4" bind:value={address} placeholder="Enter full address (incl. street number)"> <button on:click={updateLocation} class="rounded border-2 bg-gray-200 px-2 py-1">Update Location</button>
 
 
 <!-- <p class="text-lg">Start an event, invite a few friends and neighbors, and bring possibilities to life.</p> -->
@@ -782,8 +648,8 @@ function copyEventLink() {
 </div>
 
 <div class="local-awareness m-auto text-center md:w-6/12">
-    {#if location_coordinates}
-    <iframe title="Local Air Quality" class="text-center m-auto" height="230" width="230" src='https://widget.airnow.gov/aq-dial-widget/?latitude={location_coordinates['lat']}&longitude={location_coordinates['lng']}&transparent=true' style="border: none; border-radius: 25px;"></iframe>
+    {#if coordinates}
+    <iframe title="Local Air Quality" class="text-center m-auto" height="230" width="230" src='https://widget.airnow.gov/aq-dial-widget/?latitude={coordinates['lat']}&longitude={coordinates['lng']}&transparent=true' style="border: none; border-radius: 25px;"></iframe>
         {#if local_data}
             <!-- <p class="font-semibold mb-2 text-xl">{address_display}</p> -->
         {#if !display_ej_table}
@@ -1004,18 +870,6 @@ function copyEventLink() {
                 </form>
                 </div>
             {/if}
-        </div>
-
-        <div class="w-11/12 m-auto">
-            {#each artifacts as artifact}
-            {#if artifact.type == "Event"}
-            <EventDynamic cursor="cursor-pointer" hover="hover:shadow" height="h-48" border="border-2" overflow="overflow-hidden" event={artifact}></EventDynamic>
-            {:else if artifact.type == "Discussion"}
-            <div class="border-2 rounded-md mt-4 m-auto w-10/12 mb-2 p-2 text-left">
-                <p class="whitespace-pre">{@html artifact.details}</p>
-            </div>
-            {/if}
-            {/each}
         </div>
 
         <div class="hidden">
