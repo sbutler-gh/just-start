@@ -685,7 +685,7 @@ function copyEventLink() {
             <caption class="text-center">
                 <!-- <p class="font-semibold mb-1">{address_display?.slice(0,-7)}</p> -->
                 <p class="font-semibold mb-2">Environmental Justice Indicators</p>
-                <p class="mb-2 italic">0 to 100, lower is better. <a href="https://ejscreen.epa.gov/mapper/" target="_blank" class="underline text-blue-800">Explore the map</a></p>
+                <p class="mb-2 italic">0 to 100, lower is better. <a href="https://svi.cdc.gov/map.html" target="_blank" class="underline text-blue-800">Explore the map</a></p>
             </caption>
             <thead>
                 <tr class="">
@@ -718,7 +718,7 @@ function copyEventLink() {
             <caption class="text-center">
                 <!-- <p class="font-semibold mb-1">{address_display?.slice(0,-7)}</p> -->
                 <p class="font-semibold mb-2">Social Vulnerability Indicators</p>
-                <p class="mb-2 italic">0 to 1, closer to 1 means higher vulnerability.</p>
+                <p class="mb-2 italic">0 to 1, closer to 1 means higher vulnerability. <a href="https://ejscreen.epa.gov/mapper/" target="_blank" class="underline text-blue-800">Explore the map</a></p>
             </caption>
             <thead>
                 <tr class="">
@@ -763,7 +763,8 @@ function copyEventLink() {
                         "Rent_Vac_PE": "15.9",
                         "Rent_Vac_PF": "0"
                     } -->
-                <td class="">Socioeconomics</td>
+                <td class="">Socio
+                    economics</td>
                 <td class="">Household Composition</td>
                 <td class="">Minority / Language</td>
                 <td class="">Housing and Transportation</td>
@@ -792,6 +793,7 @@ function copyEventLink() {
             <caption class="text-center">
                 <!-- <p class="font-semibold mb-1">{address_display?.slice(0,-7)}</p> -->
                 <p class="font-semibold mb-2">Community Resilience Indicators</p>
+                <p class="mb-2 italic">Percentage of population in different categories</p>
                 <!-- <p class="mb-2 italic">0 to 100, lower is better. <a href="https://ejscreen.epa.gov/mapper/" target="_blank" class="underline text-blue-800">Explore the map</a></p> -->
             </caption>
             <thead>
@@ -825,12 +827,12 @@ function copyEventLink() {
                         "Rent_Vac_PE": "15.9",
                         "Rent_Vac_PF": "0"
                     } -->
-                <td class="">Income Inequality Index (0-1)</td>
-                <td class="">Poverty %</td>
-                <td class="">Single Mothers %</td>
-                <td class="">Single Fathers %</td>
-                <td class="">HS Graduation %</td>
-                <td class="">Health Insurance %</td>
+                <!-- <td class="">Income Inequality Index (0-1)</td> -->
+                <td class="">Poverty</td>
+                <td class="">Single Mothers</td>
+                <td class="">Single Fathers</td>
+                <td class="">HS Graduation</td>
+                <td class="">No Health Insurance</td>
                 <!-- <td>Respiratory hazards (air)</td>
                 <td>Lead paint indicator</td>
                 <td>Risk management projects</td>
@@ -842,12 +844,12 @@ function copyEventLink() {
             </thead>
             <tbody>
                   <tr>
-                      <td >{svi_cre_data.GINI_IND_Inequality_E}</td>
-                      <td class="">{svi_cre_data.Blw_Pov_Lvl_PE}</td>
-                      <td class="">{svi_cre_data.Female_no_partner_w_child_PE}</td>
-                      <td class="">{svi_cre_data.Male_no_partner_w_child_PE}</td>
-                      <td class="">{svi_cre_data.HS_Grad_PE}</td>
-                      <td>{svi_cre_data.No_Health_Ins_PE}</td>
+                      <!-- <td >{svi_cre_data.GINI_IND_Inequality_E}</td> -->
+                      <td class="">{svi_cre_data.Blw_Pov_Lvl_PE} %</td>
+                      <td class="">{svi_cre_data.Female_no_partner_w_child_PE} %</td>
+                      <td class="">{svi_cre_data.Male_no_partner_w_child_PE} %</td>
+                      <td class="">{svi_cre_data.HS_Grad_PE} %</td>
+                      <td>{svi_cre_data.No_Health_Ins_PE}% </td>
                   </tr>
               </tbody>
         </table>
