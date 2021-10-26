@@ -25,6 +25,8 @@ let string_data;
 
 let geo_id;
 
+let svi_cre_data;
+
 let local_data;
 
 let location_buffer;
@@ -492,16 +494,17 @@ async function coordinatesToAirQuality(coordinates) {
      console.log(response_json);
 }
 
-async function fetchCREData(geo_id) {
+async function fetchCREandSVIdata(geo_id) {
 
     console.log(geo_id);
-    let { data: cre, error } = await supabase
-    .from('cre')
+    let { data: svi_cre, error } = await supabase
+    .from('svi_cre')
     .select('*')
-    .eq('GEO_ID', geo_id)
+    .eq('GEO_ID', geo_id.slice(0,-1))
 
-    if (cre) {
-        console.log(cre);
+    if (svi_cre) {
+        console.log(svi_cre);
+        svi_cre_data = svi_cre[0];
     }
     else {
         console.log(error);
@@ -520,6 +523,8 @@ let { data: ej, error } = await supabase
 if (ej) {
     console.log(ej);
     local_data = ej[0];
+
+    fetchCREandSVIdata(geo_id);
 
     if (!ej[0]) {
 
@@ -705,61 +710,147 @@ function copyEventLink() {
                       <td>{local_data.P_OZONE_D2}</td>
                       <td>{local_data.P_DSLPM_D2}</td>
                       <td>{local_data.P_CANCR_D2}</td>
-                      <!-- <td>{local_data.P_RESP_D2}</td>
-                      <td>{local_data.P_LDPNT_D2}</td>
-                      <td>{local_data.P_PRMP_D2}</td>
-                      <td>{local_data.P_PNPL_D2}</td>
-                      <td>{local_data.P_PTSDF_D2}</td>
-                      <td>{local_data.P_PWDIS_D2}</td>
-                      <td>{local_data.P_VULEOPCT}</td> -->
                   </tr>
               </tbody>
         </table>
-        <!-- <table>
+
+        <table id="table-example-1" class="m-auto text-center styled-table mt-4">
+            <caption class="text-center">
+                <!-- <p class="font-semibold mb-1">{address_display?.slice(0,-7)}</p> -->
+                <p class="font-semibold mb-2">Social Vulnerability Indicators</p>
+                <p class="mb-2 italic">0 to 1, closer to 1 means higher vulnerability.</p>
+            </caption>
             <thead>
-                <tr>
-                  {#each local_data[0] as columnHeading}
-                    <th>{columnHeading}</th>
-                  {/each}
-                <tr/>
-              </thead>
-              <tbody>
-                {#each Object.values(local_data) as row}
+                <tr class="">
+                    <!-- {
+                        "GEO_ID": 51107611005,
+                        "AREA_SQMI": 6.193283030672,
+                        "RPL_THEME1": 0.1115,
+                        "RPL_THEME2": 0.1095,
+                        "RPL_THEME3": 0.6096,
+                        "RPL_THEME4": 0.1314,
+                        "RPL_THEMES": 0.1118,
+                        "F_THEME1": "0",
+                        "F_THEME2": "0",
+                        "F_THEME3": "0",
+                        "F_THEME4": "0",
+                        "F_TOTAL": "0",
+                        "GINI_IND_Inequality_E": 0.3543,
+                        "GINI_IND_Inequality_M": 0.0233,
+                        "GINI_IND_Inequality_F": "-1",
+                        "Blw_Pov_Lvl_PE": 2.2,
+                        "Blw_Pov_Lvl_PF": "-1",
+                        "Female_no_partner_w_child_PE": 3.2,
+                        "Female_no_partner_w_child_PF": "0",
+                        "Male_no_partner_w_child_PE": 1.9,
+                        "Male_no_partner_w_child_PF": "0",
+                        "crowd_occ_PE": "0",
+                        "crowd_occ_PF": "0",
+                        "HS_Grad_PE": 97.7,
+                        "HS_Grad_PF": "1",
+                        "ENG_LVW_PM": 1.3,
+                        "ENG_LVW_PF": -1,
+                        "WRK_FT_YR_PE": 62.2,
+                        "WRK_FT_YR_PF": "1",
+                        "No_Health_Ins_PE": 1.3,
+                        "No_Health_Ins_PF": "-1",
+                        "Broadband_PE": 97.6,
+                        "Broadband_PF": "1",
+                        "No_Veh_PE": 1.4,
+                        "No_Veh_PF": -1,
+                        "HO_Vac_PE": "2.7",
+                        "HO_Vac_PF": "0",
+                        "Rent_Vac_PE": "15.9",
+                        "Rent_Vac_PF": "0"
+                    } -->
+                <td class="">Socioeconomics</td>
+                <td class="">Household Composition</td>
+                <td class="">Minority / Language</td>
+                <td class="">Housing and Transportation</td>
+                <td class="">Overall</td>
+                <!-- <td>Respiratory hazards (air)</td>
+                <td>Lead paint indicator</td>
+                <td>Risk management projects</td>
+                <td>National priority sites</td>
+                <td>TSD Facilities</td>
+                <td>Water dischargers</td>
+                <td>Vulnerable populations</td> -->
+                </tr>
+            </thead>
+            <tbody>
                   <tr>
-                    {#each Object.values(row) as cell}
-                      <td>{cell}</td>
-                    {/each}
+                        <td class="">{svi_cre_data.RPL_THEME1}</td>
+                        <td class="">{svi_cre_data.RPL_THEME2}</td>
+                        <td class="">{svi_cre_data.RPL_THEME3}</td>
+                        <td class="">{svi_cre_data.RPL_THEME4}</td>
+                        <td class="">{svi_cre_data.RPL_THEMES}</td>
                   </tr>
-                {/each}
               </tbody>
-        </table> -->
-    <!-- {
-        "ID": 511076110053,
-        "P_PM25_D2": 28, ej index for pm2.5 level in air
-        "P_OZONE_D2": 29, ej index ozone level in air
-        "P_DSLPM_D2": 17, ej index for diesel particulate matter in air
-        "P_CANCR_D2": 28, ej index air toxics cancer risks
-        "P_RESP_D2": 25, ej index for air toxic respiratory hazards
-        "P_PTRAF_D2": 28, ej index for traffic proximity and volume
-        "P_LDPNT_D2": 52, EJ index for pre-1960 housing lead -=oaint indicator
-        "P_PNPL_D2": 9, EJ index proximity to national priority sites list
-        "P_PRMP_D2": 15, ej index for proximity to risk management projects
-        "P_PTSDF_D2": 22, EJ Index for  Proximity to Treatment Storage and Disposal (TSDF) facilities
-        "P_PWDIS_D2": null, ejindex proximitty to major dischargers of water
-        "PM25": 8.2194495890411,
-        "P_PM25": 66, pm2.5 level in air
-        "P_OZONE": 92, ozone level in air
-        "P_DSLPM": 77, iesel particulate matter in air
-        "P_CANCR": 58, air toxics cancer risks
-        "P_RESP": 71, air toxic respiratory hazads index
-        "P_PTRAF": 44, traffic proximity and volume 
-        "P_LDPNT": 13, pre-1960 housing, lead paint indicator
-        "P_PNPL": 86, proximity to national priority sites list
-        "P_PRMP": 70, proximity to risk management projects
-        "P_PTSDF": 49, Proximity to Treatment Storage and Disposal (TSDF) facilities
-        "P_PWDIS": null, proximitty to major dischargers of water
-        "P_VULEOPCT": 38 vulnerable population index
-    } -->
+        </table>
+
+        <table id="table-example-1" class="m-auto text-center styled-table mt-4">
+            <caption class="text-center">
+                <!-- <p class="font-semibold mb-1">{address_display?.slice(0,-7)}</p> -->
+                <p class="font-semibold mb-2">Community Resilience Indicators</p>
+                <!-- <p class="mb-2 italic">0 to 100, lower is better. <a href="https://ejscreen.epa.gov/mapper/" target="_blank" class="underline text-blue-800">Explore the map</a></p> -->
+            </caption>
+            <thead>
+                <tr class="">
+                    <!-- {
+                        "GINI_IND_Inequality_E": 0.3543,
+                        "GINI_IND_Inequality_M": 0.0233,
+                        "GINI_IND_Inequality_F": "-1",
+                        "Blw_Pov_Lvl_PE": 2.2,
+                        "Blw_Pov_Lvl_PF": "-1",
+                        "Female_no_partner_w_child_PE": 3.2,
+                        "Female_no_partner_w_child_PF": "0",
+                        "Male_no_partner_w_child_PE": 1.9,
+                        "Male_no_partner_w_child_PF": "0",
+                        "crowd_occ_PE": "0",
+                        "crowd_occ_PF": "0",
+                        "HS_Grad_PE": 97.7,
+                        "HS_Grad_PF": "1",
+                        "ENG_LVW_PM": 1.3,
+                        "ENG_LVW_PF": -1,
+                        "WRK_FT_YR_PE": 62.2,
+                        "WRK_FT_YR_PF": "1",
+                        "No_Health_Ins_PE": 1.3,
+                        "No_Health_Ins_PF": "-1",
+                        "Broadband_PE": 97.6,
+                        "Broadband_PF": "1",
+                        "No_Veh_PE": 1.4,
+                        "No_Veh_PF": -1,
+                        "HO_Vac_PE": "2.7",
+                        "HO_Vac_PF": "0",
+                        "Rent_Vac_PE": "15.9",
+                        "Rent_Vac_PF": "0"
+                    } -->
+                <td class="">Income Inequality Index (0-1)</td>
+                <td class="">Poverty %</td>
+                <td class="">Single Mothers %</td>
+                <td class="">Single Fathers %</td>
+                <td class="">HS Graduation %</td>
+                <td class="">Health Insurance %</td>
+                <!-- <td>Respiratory hazards (air)</td>
+                <td>Lead paint indicator</td>
+                <td>Risk management projects</td>
+                <td>National priority sites</td>
+                <td>TSD Facilities</td>
+                <td>Water dischargers</td>
+                <td>Vulnerable populations</td> -->
+                </tr>
+            </thead>
+            <tbody>
+                  <tr>
+                      <td >{svi_cre_data.GINI_IND_Inequality_E}</td>
+                      <td class="">{svi_cre_data.Blw_Pov_Lvl_PE}</td>
+                      <td class="">{svi_cre_data.Female_no_partner_w_child_PE}</td>
+                      <td class="">{svi_cre_data.Male_no_partner_w_child_PE}</td>
+                      <td class="">{svi_cre_data.HS_Grad_PE}</td>
+                      <td>{svi_cre_data.No_Health_Ins_PE}</td>
+                  </tr>
+              </tbody>
+        </table>
         <button class="underline text-blue-500 mt-1" on:click={toggleEJTable}>Hide</button>
         </div>
         {/if}
