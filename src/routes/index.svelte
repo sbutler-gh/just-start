@@ -102,7 +102,19 @@ let event = {
     });
 
 async function ipToCoordinates() {
-        const request = await fetch("https://serene-journey-42564.herokuapp.com/https://ipinfo.io/json?token=d41bed18e5fda2");
+
+        const ip = await fetch("https://serene-journey-42564.herokuapp.com/https://api.ipify.org?format=json&callback=getIP");
+
+        const ip_json = await ip.json();
+        console.log(ip_json);
+
+        const request = await fetch(`https://serene-journey-42564.herokuapp.com/ipinfo.io/${ip_json["ip"]}/geo?token=d41bed18e5fda2`, {
+            method: 'GET',
+            "Access-Control-Allow-Origin": "https://a492-108-62-49-158.ngrok.io/",
+            "Content-Type": "application/json",
+            "charset": "utf-8"
+        });
+
         const json = await request.json()
 
         console.log(json);
@@ -857,7 +869,7 @@ function copyEventLink() {
         </div>
         {/if}
         {:else if local_data == "no_data"}
-        <p class="bg-red-200 px-2 py-1">No data found for geo_id {geo_id}.  Try searching a different address.</p>
+        <p class="bg-red-200 px-2 py-1 mt-3">No data found for geo_id {geo_id}.  Try searching a different address.</p>
         {/if}
     {/if}
 </div>
