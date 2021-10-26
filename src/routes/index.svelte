@@ -972,7 +972,7 @@ function copyEventLink() {
                     <br>
 
                     <label class="text-sm" for="url">Calendar URL</label><br/>
-                    <label class="text-xs" for="url">If using Google Calendar, this could be a <em>account@gmail.com</em> address or <em>XXXXXX@group.calendar.google.com</em> URL. </label><br/>
+                    <label class="text-xs" for="url">If using Google Calendar, this could be <em>[youraccount]@gmail.com</em> or <em>[calendarid]@group.calendar.google.com</em></label><br/>
                     <input name="url" type="text" class="border-2 w-full mb-4 rounded-md h-8 p-1"/>
                     <br>
 
