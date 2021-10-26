@@ -685,7 +685,7 @@ function copyEventLink() {
             <caption class="text-center">
                 <!-- <p class="font-semibold mb-1">{address_display?.slice(0,-7)}</p> -->
                 <p class="font-semibold mb-2">Environmental Justice Indicators</p>
-                <p class="mb-2 italic">0 to 100, lower is better. <a href="https://svi.cdc.gov/map.html" target="_blank" class="underline text-blue-800">Explore the map</a></p>
+                <p class="mb-2 italic">0 to 100, lower is better. <a href="https://ejscreen.epa.gov/mapper/" target="_blank" class="underline text-blue-800">Explore the map</a></p>
             </caption>
             <thead>
                 <tr class="">
@@ -718,7 +718,7 @@ function copyEventLink() {
             <caption class="text-center">
                 <!-- <p class="font-semibold mb-1">{address_display?.slice(0,-7)}</p> -->
                 <p class="font-semibold mb-2">Social Vulnerability Indicators</p>
-                <p class="mb-2 italic">0 to 1, closer to 1 means higher vulnerability. <a href="https://ejscreen.epa.gov/mapper/" target="_blank" class="underline text-blue-800">Explore the map</a></p>
+                <p class="mb-2 italic">0 to 1, closer to 1 means higher vulnerability. <a href="https://svi.cdc.gov/map.html" target="_blank" class="underline text-blue-800">Explore the map</a></p>
             </caption>
             <thead>
                 <tr class="">
