@@ -520,11 +520,31 @@ let { data: ej, error } = await supabase
 if (ej) {
     console.log(ej);
     local_data = ej[0];
+
+    if (!ej[0]) {
+
+        console.log('No data found for this location.  Try searching a more specific address.');
+        local_data = "no_data";
+
+    //     if (geo_id.slice(0,-2) == "01") {
+    //         geo_id = geo_id.slice(0,-2) + "02";
+    //         fetchEJData(geo_id);
+    //     }
+    //     else if (geo_id.slice(0,-2) != "01") {
+    //         geo_id = geo_id.slice(0,-2) + "02";
+    //         fetchEJData(geo_id);
+    //     }
+    // }
+    }
 }
 else {
     console.log(error);
 }
 }
+
+// async function fetchCREData(geo_id) {
+
+// }
 
 function closeCalendarPopup() {
     calendar_popup_show = false;
@@ -650,7 +670,7 @@ function copyEventLink() {
 <div class="local-awareness m-auto text-center md:w-6/12">
     {#if coordinates}
     <iframe title="Local Air Quality" class="text-center m-auto" height="230" width="230" src='https://widget.airnow.gov/aq-dial-widget/?latitude={coordinates['lat']}&longitude={coordinates['lng']}&transparent=true' style="border: none; border-radius: 25px;"></iframe>
-        {#if local_data}
+        {#if local_data && local_data != "no_data"}
             <!-- <p class="font-semibold mb-2 text-xl">{address_display}</p> -->
         {#if !display_ej_table}
         <button class="underline text-blue-500" on:click={toggleEJTable}>Show More Local Data</button>
@@ -743,6 +763,8 @@ function copyEventLink() {
         <button class="underline text-blue-500 mt-1" on:click={toggleEJTable}>Hide</button>
         </div>
         {/if}
+        {:else if local_data == "no_data"}
+        <p class="bg-red-200 px-2 py-1">No data found for geo_id {geo_id}.  Try searching a different address.</p>
         {/if}
     {/if}
 </div>
