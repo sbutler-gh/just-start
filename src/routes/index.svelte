@@ -6,16 +6,18 @@ import { onMount } from "svelte";
 import { get } from 'svelte/store';
 import FullCalendar, { CalendarApi } from 'svelte-fullcalendar';
 import dayGridPlugin from '@fullcalendar/daygrid';
+// import iCalendarPlugin from '$lib/icalendar';
 // import iCalendarPlugin from '@fullcalendar/icalendar';
 import googleCalendarPlugin from '@fullcalendar/google-calendar';
 import listPlugin from '@fullcalendar/list';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import ical from 'ical';
+// import ical from 'ical';
 import { parse } from "postcss";
 import turfBuffer from '@turf/buffer';
 import turfPoint from 'turf-point';
 import turfBooleanContains from '@turf/boolean-contains';
 import Carousel from '@beyonk/svelte-carousel'
+import { variables } from '$lib/variables';
 
 let data_theme = "light";
 
@@ -210,11 +212,12 @@ plugins: [
         (await import('@fullcalendar/daygrid')).default,
         (await import('@fullcalendar/list')).default,
         (await import('@fullcalendar/timegrid')).default,
+        // (await import('$lib/icalendar')).default,
         // (await import('@fullcalendar/icalendar')).default,
         (await import('@fullcalendar/google-calendar')).default,
     ],
 weekends: true,
-googleCalendarApiKey: 'AIzaSyDYxnSEee64WAIFIyEft-sxjUhNYBMoPG4',
+googleCalendarApiKey: variables.basePath,
 eventSources: JSON.parse(eventSourcesArray),
 events: JSON.parse(eventsArray),
 eventClick: function(info) {
