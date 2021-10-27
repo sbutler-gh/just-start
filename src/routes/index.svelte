@@ -35,6 +35,7 @@ let location_coordinates;
 let event_area;
 let point;
 let coordinates;
+let cal_coordinates;
 
 let add_to_calendar_url;
 
@@ -336,7 +337,9 @@ function toggleWeekends() {
 
         e.target.coordinates = json.results[0].geometry;
 
-        return(shareCalendarFeed(e));
+        return
+
+        // return(shareCalendarFeed(e));
     }
 
     else {
@@ -373,6 +376,17 @@ else {
 }
 
 }
+
+async function getCalendarCoordinates(address) {
+    const request = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURI(address)}&key=${variables.openCage}`);
+    const json = await request.json()
+    console.log(json);
+    console.log(json?.results[0]?.geometry);
+
+    cal_coordinates = json?.results[0]?.geometry;
+
+    return(json?.results[0]?.geometry);
+}
     
 
     async function shareCalendarFeed(e) {
@@ -380,10 +394,15 @@ else {
         var formData = new FormData(e.target);
         console.log([...formData]);
 
-        const { data, error } = await supabase
+        getCalendarCoordinates(formData.get('address'))
+        .then(async () => {
+
+            console.log(cal_coordinates);
+
+            const { data, error } = await supabase
         .from('eventSources')
         .insert([
-            { id: generateUUID(), coordinates: geocodeAddress(formData.get('address')), url: formData.get('url'), organization: formData.get('organization')  },
+            { id: generateUUID(), coordinates: cal_coordinates, url: formData.get('url'), organization: formData.get('organization')  },
         ])
 
         if (data) {
@@ -399,6 +418,8 @@ else {
             console.log('error adding calendar, try again');
             create_menu = "Error_Calendar";
         }
+
+        })
     }
 
     async function signUp(e) {
@@ -980,7 +1001,7 @@ function copyEventLink() {
             </div>
             {:else if create_menu == "Calendar"}
             <div class="rounded-md border-2 mt-4 p-2">
-                <form on:submit|preventDefault={addressToCoordinates} class="text-left">
+                <form on:submit|preventDefault={shareCalendarFeed} class="text-left">
                     <label class="text-sm" for="organization">Organization Name</label><br/>
                     <input name="organization" type="text" class="border-2 w-full mb-4 rounded-md h-8 p-1"/>
                     <br>
