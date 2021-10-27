@@ -1,39 +1,32 @@
-# create-svelte
+# Just Start
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte);
+To run this project locally, clone the repository and run `npm install.`  Then:
 
-## Creating a project
+1. Determine a source for your calendar eventSources and events.  Currently, the repository pulls these from a Supabase postgres table.  You can instead pull these URLs from a local source (e.g. local JSON data, hardcoded), or you can configure another source (e.g. your own Supabase table.)  If you opt to create a table in postgres and pull from that, you can see the default eventSources table configuration in `eventSourcesExample.csv`.
 
-If you're seeing this, you've probably already done this step. Congrats!
+2. Create a .env file and enter your keys for the services connected.
 
-```bash
-# create a new project in the current directory
-npm init svelte@next
-
-# create a new project in my-app
-npm init svelte@next my-app
+```
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+VITE_GOOGLE_CALENDAR_API_KEY=
+VITE_OPEN_CAGE_API_KEY=
+VITE_AIR_NOW_KEY=
+VITE_IP_INFO_KEY=
 ```
 
-> Note: the `@next` is temporary
+In terms of functionality, on page load, the application pulls the IP via an api request to api.ipify.org.  It then requests the coordinates of that IP from ipinfo (requires ipinfo token).
 
-## Developing
+It then pulls the calendar eventSources from the Supabase table (requires Supabase credentials), pulls local air quality data from airnowapi.org (requires token), and pulls local community data from other Supabase tables (requires Supabase credentials).
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+After pulling the calendar eventSources, the FullCalendar component is initialized with those calendar sources.  Since this only works with @fullcalendar/googleCalendar for now, a Google Calendar API Key is also required.
 
-```bash
-npm run dev
+When you use the input bar at the top of the application to update location, it sends the request to Open Cage (requires token).
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+When you "add a new event" or "share a calendar feed", those forms are currently configured to submit to the Supabase eventSources tables, which also requires Supabase credentials.
 
-## Building
+3. Once you have set-up those keys and the place where you'll pull / push eventSources, you can run `npm run dev` and the application should work locally.
 
-Before creating a production version of your app, install an [adapter](https://kit.svelte.dev/docs#adapters) for your target environment. Then:
+4. For deployment, this repository currently uses the netlify adapter for deployment on netlify.  If you want to deploy using a different provider (e.g. Cloudflare), look up the appropriate adapter for SvelteKit.  It's easy to find this.
 
-```bash
-npm run build
-```
-
-> You can preview the built app with `npm run preview`, regardless of whether you installed an adapter. This should _not_ be used to serve your app in production.
-# real
+5. When deploying to Netlify (and other services), you may need to populate your environmental variables in the build settings for that service.  For Netlify and some others, you also may need to specify the environmental variable `NODE_VERSION = 14` in the build settings.

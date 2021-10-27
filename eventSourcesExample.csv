@@ -1,0 +1,11 @@
+id,url,active,created_at,cal_format,coordinates,profile_id,organization,edit_creds,event_object
+uuid,calendarurl,true,2021-10-23T08:57:20.000Z,google,"{""lat"":34.1155,""lng"":-118.1844}”
+",,name of organization that calendar belongs to,,"if storing a single event, instead of an event source, the event json can go here.  Example json object: {
+  ""start"": ""2021-10-24T12:34"",
+  ""title"": ""Virginia Climate Action"",
+  ""allDay"": false,
+  ""extendedProps"": {
+    ""location"": ""Town Hall Ashburn"",
+    ""description"": ""We need to start taking action, to make a difference and make life better.""
+  }
+}"

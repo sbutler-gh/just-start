@@ -109,7 +109,7 @@ async function ipToCoordinates() {
         const ip_json = await ip.json();
         console.log(ip_json);
 
-        const request = await fetch(`https://serene-journey-42564.herokuapp.com/ipinfo.io/${ip_json["ip"]}/geo?token=d41bed18e5fda2`, {
+        const request = await fetch(`https://serene-journey-42564.herokuapp.com/ipinfo.io/${ip_json["ip"]}/geo?token=${variables.ipInfo}`, {
             method: 'GET',
             "Access-Control-Allow-Origin": "https://a492-108-62-49-158.ngrok.io/",
             "Content-Type": "application/json",
@@ -216,7 +216,7 @@ plugins: [
         (await import('@fullcalendar/google-calendar')).default,
     ],
 weekends: true,
-googleCalendarApiKey: variables.basePath,
+googleCalendarApiKey: variables.googleCalendar,
 eventSources: JSON.parse(eventSourcesArray),
 events: JSON.parse(eventsArray),
 eventClick: function(info) {
@@ -326,7 +326,7 @@ function toggleWeekends() {
      var formData = new FormData(e.target);
 
     console.log(encodeURI(formData.get('address')));
-    const request = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURI(formData.get('address'))}&key=8dd39718fde641f68b107f57511f4644`);
+    const request = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURI(formData.get('address'))}&key=${variables.openCage}`);
     const json = await request.json()
     console.log(json);
     console.log(json?.results[0]?.geometry);
@@ -348,7 +348,7 @@ function toggleWeekends() {
 
     async function geocodeAddress(address) {
 
-const request = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURI(address)}&key=8dd39718fde641f68b107f57511f4644`);
+const request = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURI(address)}&key=${variables.openCage}`);
 const json = await request.json()
 console.log(json);
 console.log(json?.results[0]?.geometry);
@@ -499,7 +499,7 @@ async function coordinatesToAirQuality(coordinates) {
     let longitude = coordinates.x;
     let latitude = coordinates.y;
 
-    const response = await fetch(`https://www.airnowapi.org/aq/forecast/latLong/?format=application/json&latitude=${latitude}&longitude=${longitude}&date=2021-10-22&distance=50&API_KEY=19AF03DF-1A45-4ECC-BDDF-3EB306A0834A`,
+    const response = await fetch(`https://www.airnowapi.org/aq/forecast/latLong/?format=application/json&latitude=${latitude}&longitude=${longitude}&date=2021-10-22&distance=50&API_KEY=${variables.airNow}`,
     {method: 'GET',
     withCredentials: true,
     })
@@ -1000,13 +1000,6 @@ function copyEventLink() {
                 </div>
             {/if}
         </div>
-
-        <div class="hidden">
-        <p class="text-right ml-auto">Your first event is live!  Now start researching local organizations who'd like to join the conversation, and send invites their way.  Likewiwse, start having conversations with friends and neighbors, and invite them to get involved.</p>
-        <p class="hidden text-right ml-auto">As you research, you can also pin relevant organizations and entities to the map, to save them for future reference and help others discover them as well!</p>
-        <img id="location_img" class="hidden" src="https://maps.google.com/maps/api/staticmap?markers=icon%3Ahttps%3A%2F%2Fsecure.meetupstatic.com%2Fs%2Fimg%2F5961591462445047%2Fmup-custom-google-map-pin.png%7C38.894615%2C-77.439980&zoom=17&size=480x300&sensor=false&key=AIzaSyA3fSxhHZNQNfMjJuMFvmULACXrBfFz9jQ&signature=UWDg01O1EMndIJNgK_EkV8q8IJE%3D">
-        </div>
-
         <div class="carousel-section mb-2">
         <p class="text-xl mt-8 mb-4">What do you want to organize?</p>
         <Carousel perPage={{ 800: 3, 500: 2 }} dots={false}>
