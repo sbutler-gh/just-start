@@ -1,6 +1,5 @@
 <script>
     import {events_store, user_store} from "$lib/stores";
-    import EventDynamic from "$lib/components/EventDynamic.svelte";
     import supabase from "$lib/db.js";
 import { onMount } from "svelte";
 import { get } from 'svelte/store';
