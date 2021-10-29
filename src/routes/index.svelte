@@ -635,6 +635,17 @@ function copyEventLink() {
         }
 </script>
 
+<svelte:head>
+<title>Just Start</title>
+<meta name="description" content="How can you take action?  Just start organizing!  Find where you can plug-in, and start your own organizing events as well."/>
+
+<meta property="og:title" content="Just Start" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.rebrand.ly/just-start" />
+<meta property="og:description" content="How can you take action?  Just start organizing!  Discover local events where you can make a difference, and start your own organizing for change as well."/>
+<meta property="og:image" content="https://www.openglobalrights.org/userfiles/image/Scheepers_Design(1).jpg">
+</svelte:head>
+
 <div style="" class="text-center m-auto md:w-8/12">
 <!-- <div class="absolute top-1 right-1">
 {#if $user_store?.id}
