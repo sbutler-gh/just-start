@@ -51,9 +51,9 @@
     <h1 class="text-2xl mb-2">Just start.</h1>
 </div>
 
-<div class="m-auto">
+<div class="m-auto md:px-0 px-6">
 <h2 class="text-2xl text-center mt-8 font-semibold">Our Communal Journey — Starts With <span class="underline">Voting</span>, <em>Today</em></h2>
-<p class="text-center mt-6">What is the world you wish to live in?</p>
+<p class="text-center mt-6 text-md">What is the world you wish to live in?</p>
 
 <div class="mt-6 text-left md:w-6/12 m-auto">
 <!-- <p>Voting, organizing, citizen action — these are tools to help us realize it.  Make the choices that will get us closest to where we want to go, and invite others onboard.  The more of us who show up — the more caretakers and organizers and listeners warming the space around us — the more likely we’ll get there.</p> -->
