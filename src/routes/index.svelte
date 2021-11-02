@@ -736,6 +736,7 @@ function copyEventLink() {
     <h1 class="text-2xl mb-2">Just start.</h1>
 </div>
 
+<div class="text-black">
 <p class="text-xl my-8">Find an event near your, or grab some friends and start your own.</p>
 
 <!-- <p class="font-semibold mb-2">{address_display}</p> -->
@@ -1118,8 +1119,10 @@ function copyEventLink() {
         </Carousel>
         </div>
         
+        </div>
 </div>
 <style>
+
 .styled-table {
     border-collapse: collapse;
     /* margin: 25px 0; */

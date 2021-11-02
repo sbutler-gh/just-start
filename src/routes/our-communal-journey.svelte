@@ -51,7 +51,7 @@
     <h1 class="text-2xl mb-2">Just start.</h1>
 </div>
 
-<div class="m-auto md:px-0 px-6">
+<div class="m-auto md:px-0 px-6 text-black">
 <h2 class="text-2xl text-center mt-8 font-semibold">Our Communal Journey — Starts With <span class="underline">Voting</span>, <em>Today</em></h2>
 <p class="text-center mt-6 text-md">What is the world you wish to live in?</p>
 
