@@ -90,7 +90,7 @@ function copyPostLink() {
 <div class="m-auto md:px-0 px-6 md:w-8/12 text-black text-left">
 <h2 class="text-2xl text-center mt-8 font-semibold">Just Start.</h2>
 
-<p>Just Start is a tool to help you organize with your community.  Find activities near you, straight from the calendars of local organizations.  Discover resources and best practices to come together and make change.  Publish your own activities and events to the broader community.  Find important insights and data, to learn more about local issues and what matters to you.</p>
+<!-- <p>Just Start is a tool to help you organize with your community.  Find activities near you, straight from the calendars of local organizations.  Discover resources and best practices to come together and make change.  Publish your own activities and events to the broader community.  Find important insights and data, to learn more about local issues and what matters to you.</p> -->
 <p>After 3 years of grappling with “what can we do about climate change?”, I’ve come around to a simple perspective:</p>
 <p>The way we respond to climate change, and any challenges we’re facing, is <strong>organizing in our communities</strong>.</p>
 <p>This is nothing new.  Communities around the world have organized to overcome challenges for millennia.  Ants build bridges to cross gaps.  Bonobos make love to build relations.  Whales traverse oceans to give birth in warm waters.  Trees and plants exchange nutrients to support their biosystem.  Human communities organize to survive, share knowledge, live in relation with each other and the non-human world, advance equality, dismantle injustice, make decisions about our futures together.</p>
