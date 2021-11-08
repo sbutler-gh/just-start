@@ -31,6 +31,10 @@ function copyPostLink() {
   function clickLink() {
     return false;
   }
+
+  function printPage() {
+    window.print();
+  }
   
 </script>
 <svelte:head>
@@ -101,50 +105,53 @@ function copyPostLink() {
 <p>Earlier this year, I built a <a href="https://placeflow.net/welcome">tool for just that</a> — helping people lead and coordinate sustainable transitions in their communities.  It sounds great, even as I type it.  It was missing an important piece of wisdom, however, about how communities get things done in reality:</p>
 <p class="font-semibold">Connection before agenda.</p>
 <p>Organizing is a process.  It requires trust, relationship building, listening, and sharing perspectives.  At first glance, it can seem easier and more straightforward to skip the human stuff, and just apply solutions that we “know” (so we think) could address a problem in a community:</p>
-<p><em>Every community in the West has a plastic problem.  Here’s an open-source machine to recycle in your backyards, that every community can use!</em></p>
+<p><em>Every community in the West has a plastic problem.  Here’s an open-source machine to recycle plastic in your backyards, that every community can use!</em></p>
 <p>This goes along with the refrain, that <em>“we have all of the solutions to climate change”</em> (often said ironically, given that we’re struggling to implement any of them at scale). And though prescribing clear solutions seems the most direct route to systems change, there are a few reasons why this approach may be flawed — and why the practice of <em>connection before agenda</em>, could be a more straightforward route to change than we think.</p>
 <hr>
-<p><strong>First</strong>, each of us have limited perspectives.  By listening, connecting, and sharing perspectives with others, we can see more of the world and see more possibilities.  In the words of Donella Meadows, the ability to change paradigms (ways we see the world) is the most impactful change we can make.</p>
-<p>If we can evaluate and explore more perspectives, we’ll have more possibilities to choose from, which gives us the opportunity to find better courses of action.</p>
-<p>As David Graeber puts it, when we’re working together to solve problems, different perspectives are a benefit — because diversity of thinking means more ways to get things done.</p>
+<p><strong>First</strong>, each of us have limited perspectives.  By listening, connecting, and sharing perspectives with others, we can see more of the world and see more possibilities.  In the words of Donella Meadows, the ability to change paradigms (ways we see the world) is <a href="https://donellameadows.org/archives/leverage-points-places-to-intervene-in-a-system/">the most impactful change we can make</a>.</p>
+<p class="">If we can evaluate and explore more perspectives, we’ll have more possibilities to choose from, which gives us the opportunity to find better courses of action.</p>
+<p>As David Graeber puts it, when we’re working together to solve problems, <em>"our differences are a resource"</em> — because diversity of thinking means more ways to get things done.</p>
+<iframe class="mb-4" width="560" height="315" src="https://www.youtube.com/embed/5eR_95slEFw?start=177" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<!-- <iframe src="https://youtu.be/5eR_95slEFw?t=177"></iframe> -->
 <hr>
-<p><strong>Second,</strong> there is a difference between <em>technological capacity</em> and <em>adoptive capacity</em>.  Knowing the right thing to do is not the same as knowing how to adopt it.  Consider that for any habit you’ve struggled to adopt — you know it’s good for you, why don’t you just do it?</p>
+<p><strong>Second,</strong> there is a difference between <em>technological capacity</em> and <em>adaptive capacity</em>.  Knowing the right thing to do is not the same as knowing how to adopt it.  Consider that for any habit you’ve struggled to adopt — you know it’s good for you, why don’t you just do it?</p>
 <p>We know clean electricity, plant-based diets, buying local, driving less are all good for us.  Why don’t we just do them?</p>
-<p>According to Karen O’Brien, when we struggle to make important changes in our lives and communities, we are missing <strong>adoptive capacity</strong>.  That could reside in an attachment to worldviews, distraction (e.g. digital addiction), despair and hopelessness, or lack of awareness / understanding of the challenges we’re facing.</p>
-<p>How can we build adoptive capacity in our communities?  How we can explore new worldviews, look up from our phones, find hope and inspiration, and learn about what’s happenings around us?</p>
+<p>According to Karen O’Brien, when we struggle to make important changes in our lives and communities, we are missing <strong>adaptive capacity</strong>.  That could reside in an attachment to worldviews, distraction (e.g. digital addiction), despair and hopelessness, or lack of awareness / understanding of the challenges we’re facing.</p>
+<iframe class="mb-4" width="560" height="315" src="https://www.youtube.com/embed/Znu1IfxvBKc?start=558" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<p>How can we build adaptive capacity in our communities?  How we can explore new worldviews, look up from our phones, find hope and inspiration, and learn about what’s happenings around us?</p>
 <p><strong><em>Organizing</em> in our communities.</strong></p>
 <p>As O’Brien highlights, this may not only unlock systems-level change in our communities.  The organizing processes in themselves — connection, listening, sharing, solving problems together — may also widen perspectives, prompt self-inquiry and reflection, and lead to <em>individual transformation</em> as well (more fulfilling lives, less consumption, more engagement).</p>
-<p>What’s more important, starting a plant-based food campaign or reducing meat consumption in my house?  According to O'Brien, <strong>both/and.</strong></p>
+<p>What’s more important: starting a plant-based food campaign or reducing meat consumption in my house?  According to O'Brien, <strong>both/and</strong> — we want both.</p>
 <p>And community organizing is a <strong>[both/and]</strong>, <strong>[I/we]</strong> practice.</p>
 <hr>
 <p><strong>Third</strong>, say every politician in the world agreed to decarbonize by 2025.  What do you imagine would happen next?</p>
 <p>We’d see homes being retrofitted and insulated.  Renewable energy installations going up.  Schools, teachers, and students taking leadership of local climate projects.  Neighbors organizing local food production and local economies.</p>
 <p>But who would be leading those processes?  Would it be government planners and contractors coming into your neighborhood, to do a job and tick a box?</p>
-<p>Or would it be led by <strong>you, plural</strong> — the people in your community, designing the future of the place you live together?</p>
+<p>Or would it be led by <strong>us</strong> — the people that make up our communities, designing the future of the places we live together?</p>
 <p>Which would you prefer?  And which approach do you think would turn out better, in the long-term?</p>
 <p>We have more challenges than climate change.  We’re currently in a paradigm where the people who make decisions are far removed from the consequences of them — a world lacking skin in the game.  And from neighborhoods getting torn down for “economic development”, to corporations pushing addictive technologies and poisoning our land and oceans, we know this has to change too.</p>
 <p>What about a a world where people who are <em>closest</em> to a problem are empowered to solve it?  Where people who <em>live</em> in a place determine the future their places hold?  Supported by all of the knowhow, experience, perspective, and capacities that our modern world has to offer?</p>
-<p>If that’s a world we want, it doesn’t come for free.  We can’t have local leadership, while sitting isolated behind a social media feed or binge-watching Netflix over the weekend.  If we want to determine our futures, we need to be engaged in the process of creating them.  <strong>We need to organize</strong>.</p>
-<p>Once we start, we’ll probably have a lot of fun doing it too.</p>
+<p>If that’s a world we want, it doesn’t come for free.  We can’t have local leadership, while sitting behind a social media feed or binge-watching Netflix over the weekend.  If we want to determine our futures, we need to be engaged in the process of creating them.  <strong>We need to organize</strong>.</p>
+<p>Once we start, we’ll probably have a lot of fun doing it too. </p>
 <hr>
 <p>Beyond climate change, if there’s change we want to make in the world — in our homes, our neighborhoods, our cities, our regions, our digital networks — it probably starts with organizing.  If I held any kind of leadership position in a community, and I wanted to build wealth, solve challenges, and create better futures, I would probably just support/fund the community to organize and make decisions themselves.  Doesn’t it sound right, just reading it?</p>
-<p>This is the future that Just Start is working to empower.  If you want to make a difference, make change, make life better, or create the future, Just Start is a tool to meet you where you are — so you can just start.  Don’t know what to do, or where to show up?  Find a local event happening this week <strong>— and just go.</strong>  Nothing happening around you?  Message a few friends, <strong>make a plan to meet up</strong>, put it on the calendar, and share it on social media — so others in your community can join you.  Don’t know where to begin?  Learn about <strong>ways communities are organizing</strong> around the world, and discover local data to help you understand <strong> what matters to you locally.</strong>  Looking for another tool / capability, or have a different problem?  More is on the way — let us know anything that would <strong>support your work</strong>, and feel free to <strong>schedule a conversation as well.</strong></p>
+<p>This is the future that we're working to realize.  If you want to make a difference, make change, make life better, or create the future, Just Start meets you where you are — to help you <strong>just start</strong>.  Don’t know what to do, or where to show up?  Find a local event happening this week — <strong> and just go.</strong>  Nothing happening around you?  Message a few friends, <strong>make a plan to meet up</strong>, put it on the calendar, and share it on social media — so others in your community can join you.  Don’t know where to begin?  Learn about <strong>ways communities are organizing</strong> around the world, and discover local data to help you understand <strong> what matters to you locally.</strong>  Looking for another tool / capability, or have a different problem?  More is on the way — let us know anything that would <strong>support your work</strong>, and feel free to <strong>schedule a conversation as well.</strong></p>
 <p>And we know there are other important questions as well.  In communities which are facing some of the greatest challenges – environmental pollution, economic inequality, systemic violence, injustice, genocide, and oppression — people may have the least time and capacity to engage in local organizing.  We’re working to understand everyone's challenges and overcome them — whether it's a lack of childcare support, food and poverty, housing or transportation inequity, or political violence and threats.  It’s important for everyone to be part of the process, sharing their perspectives and capacity, and helping lead change together.</p>
 <p>That’s not lip service. Everybody has a story, a perspective, a set of skills and capacities, to help us get where we’re trying to go.  The more people who show up, the more hands we have together, the more likely we are to get where we want to go.</p>
-<p>Many communities may not even have the time or digital access to be reading something like this.  So you can print this and put it up in the place you live.  It’s a small step — but an important one, in understanding <em>who isn’t in the room, why aren’t they here, and how can we make sure everyone has the opportunity to be involved, if there are obstacles in the way?</em></p>
-<p>(If you're reading this — on a screen, on a paper, on a wall — and you’re facing barriers to local organizing or know what could support you, feel free to reach us at ###-###-#### or sam@sambutler.us.)</p>
+<p>Many communities may not even have the time or digital access to be reading something like this.  So you can <button class="underline text-blue-700 relative" on:click={printPage}>print this page</button> and share it that way too.  It’s a small step — but an important one, in understanding <em>who isn’t in the room, why aren’t they here, and how can we make sure everyone can be involved, if there are obstacles in the way?</em></p>
+<!-- <p>(If you're reading this — on a screen, on a paper, on a wall — and you’re facing barriers to local organizing or know what could support you, feel free to reach us at ###-###-#### or sam@sambutler.us.)</p> -->
 <p>This is what it’s all about.</p>
   <p>... So what now?  How will we address climate change, wealth inequality, COVID, violence and injustice, and all the other issues that matter to us?  The futures we want to create, the gifts we want to give, the lives we want to experience?  The future of the places we call home?</p>
-<p><a class="font-bold" href="/">Just start.</a></p>
+<p><a class="font-bold" href="/">Just start today.</a></p>
 <hr>
 <ol>
-<li><p>1. If you want to find how you can just start, <a href="/">hit the link</a> and find a local event, or call a few friends and add your own event to the calendar.</p>
+<li><p>1. If you want to just start, <a href="/">hit the main page</a> and find a local event, or call a few friends and add your own event to the calendar.</p>
 </li>
 <li><p>2. If you want more people to see this perspective, <button class="underline text-blue-700 relative" on:click={copyPostLink}><span href="https://www.rebrand.ly/just-start-intro" on:click={clickLink}>share this post</span>
 {#if copy_tooltip}
   <p class="absolute top-6 rounded text-black bg-gray-100 px-2 py-1">Link copied!</p>
 {/if}
-</button> with friends and neighbors in your community, and start discussions around it.</p>
+</button> with people in your community, and start a discussion around these ideas.</p>
 </li>
 <li><p>3. Do you have ideas to strengthen Just Start and make it a more useful tool?  Want to support the vision and help make it happen?  Jump in our community and share what’s on your mind, send us an email, or share your thoughts on Twitter / LinkedIn, to help others discover and engage in the discussion as well.</p>
   <p class="italic">In terms of value creation, impact, or any other metric, there may not be anything better than local organizing. So if you’re involved in a municipality, charity, or philanthropy, let’s talk about how communities can <a href="">empower your outcomes</a> — and for anybody who has ideas on how we can support more people getting engaged in local organizing, we’d love to <a href="">hear from you too.</a></p>
