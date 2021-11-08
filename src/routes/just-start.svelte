@@ -31,6 +31,7 @@ function copyPostLink() {
   function clickLink() {
     return false;
   }
+  
 </script>
 <svelte:head>
   <title>Just Start</title>
@@ -80,8 +81,10 @@ function copyPostLink() {
         </a>
 
         </div>
-    <h1 class="text-2xl mb-2 md:mt-0 mt-4">Not sure how to take action?</h1>
-    <h1 class="text-2xl mb-2">Just start.</h1>
+    <a href="/" style="text-decoration: none; color: white;">
+    <h1 class="text-2xl mb-2 md:mt-0 mt-4"><a href="/" style="text-decoration: none; color: white;">Not sure how to take action?</a></h1>
+    <h1 class="text-2xl mb-2"><a href="/" style="text-decoration: none; color: white;">Just start.</a></h1>
+    </a>
 </div>
 
 <div class="m-auto md:px-0 px-6 md:w-8/12 text-black text-left">
