@@ -111,13 +111,17 @@ function copyPostLink() {
 <p><strong>First</strong>, each of us have limited perspectives.  By listening, connecting, and sharing perspectives with others, we can see more of the world and see more possibilities.  In the words of Donella Meadows, the ability to change paradigms (ways we see the world) is <a href="https://donellameadows.org/archives/leverage-points-places-to-intervene-in-a-system/">the most impactful change we can make</a>.</p>
 <p class="">If we can evaluate and explore more perspectives, we’ll have more possibilities to choose from, which gives us the opportunity to find better courses of action.</p>
 <p>As David Graeber puts it, when we’re working together to solve problems, <em>"our differences are a resource"</em> — because diversity of thinking means more ways to get things done.</p>
-<iframe class="mb-4" width="560" height="315" src="https://www.youtube.com/embed/5eR_95slEFw?start=177" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<div class="embed-youtube mb-4">
+<iframe class="" src="https://www.youtube.com/embed/5eR_95slEFw?start=177" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 <!-- <iframe src="https://youtu.be/5eR_95slEFw?t=177"></iframe> -->
 <hr>
 <p><strong>Second,</strong> there is a difference between <em>technological capacity</em> and <em>adaptive capacity</em>.  Knowing the right thing to do is not the same as knowing how to adopt it.  Consider that for any habit you’ve struggled to adopt — you know it’s good for you, why don’t you just do it?</p>
 <p>We know clean electricity, plant-based diets, buying local, driving less are all good for us.  Why don’t we just do them?</p>
 <p>According to Karen O’Brien, when we struggle to make important changes in our lives and communities, we are missing <strong>adaptive capacity</strong>.  That could reside in an attachment to worldviews, distraction (e.g. digital addiction), despair and hopelessness, or lack of awareness / understanding of the challenges we’re facing.</p>
-<iframe class="mb-4" width="560" height="315" src="https://www.youtube.com/embed/Znu1IfxvBKc?start=558" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<div class="embed-youtube mb-4">
+<iframe class="mb-4" src="https://www.youtube.com/embed/Znu1IfxvBKc?start=558" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 <p>How can we build adaptive capacity in our communities?  How we can explore new worldviews, look up from our phones, find hope and inspiration, and learn about what’s happenings around us?</p>
 <p><strong><em>Organizing</em> in our communities.</strong></p>
 <p>As O’Brien highlights, this may not only unlock systems-level change in our communities.  The organizing processes in themselves — connection, listening, sharing, solving problems together — may also widen perspectives, prompt self-inquiry and reflection, and lead to <em>individual transformation</em> as well (more fulfilling lives, less consumption, more engagement).</p>
@@ -174,5 +178,40 @@ function copyPostLink() {
   a {
     color: rgb(29 78 216);
     text-decoration: underline;
+  }
+
+  /* @media only screen and (max-width: 600px) { */
+
+
+  .embed-youtube {
+    position: relative;
+    padding-bottom: 56.25%; /* - 16:9 aspect ratio (most common) */
+    /* padding-bottom: 62.5%; - 16:10 aspect ratio */
+    /* padding-bottom: 75%; - 4:3 aspect ratio */
+    padding-top: 30px;
+    height: 0;
+    overflow: hidden;
+    width: 100%;
+}
+
+.embed-youtube iframe,
+.embed-youtube object,
+.embed-youtube embed {
+    border: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+  /* } */
+
+  @media only screen and (min-width: 601px) {
+    
+    /* .embed-youtube {
+      width: 100% !important;
+      height: auto !important;
+    } */
+    
   }
 </style>
