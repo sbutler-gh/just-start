@@ -1,6 +1,10 @@
 /* Write your global styles here, in PostCSS syntax */
 @tailwind base;
 @tailwind components;
-@tailwind utilities
+@tailwind utilities;
+
+body {
+    background: white;
+}
 
 /* .fc-toolbar-title { font-size: 1rem !important;} */
