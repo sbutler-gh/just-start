@@ -703,7 +703,7 @@ function copyEventLink() {
 
 <div class="text-center bg-black text-white p-8 md:mt-0 relative">
 
-    <div class="absolute top-3 md:top-2 left-10 flex">
+    <div class="absolute top-3 md:top-2 left-4 md:left-10 flex">
         <a href="/just-start" class="cursor-pointer underline" style="color: #ffffff;">About</a>
       </div>
 
