@@ -63,6 +63,10 @@ function copyPostLink() {
 <div style="" class="text-center m-auto md:w-8/12">
 <div class="text-center bg-black text-white p-8 md:mt-0 relative">
 
+  <div class="absolute top-3 md:top-2 left-10 flex">
+    <a href="/" class="cursor-pointer" style="color: #ffffff;">Home</a>
+  </div>
+
     <div class="absolute top-3 md:top-2 right-10 flex">
 
         <a href="mailto:juststart@sambutler.us" class="cursor-pointer" style="margin-top: -3px; color: white !important;" target="_blank">
