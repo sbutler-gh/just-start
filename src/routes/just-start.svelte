@@ -96,6 +96,9 @@ function copyPostLink() {
 
 <div class="m-auto md:px-0 px-6 md:w-8/12 text-black text-left">
 <h2 class="text-2xl text-center mt-8 font-semibold">Just Start.</h2>
+
+<div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/639909728?h=bce9097e6c&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;" title="finaal v6.mov"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+
 <h2 class="text text-center mt-4 font-semibold">How can we connect to create change?  Just start.</h2>
 <!-- <p>Just Start is a tool to help you organize with your community.  Find activities near you, straight from the calendars of local organizations.  Discover resources and best practices to come together and make change.  Publish your own activities and events to the broader community.  Find important insights and data, to learn more about local issues and what matters to you.</p> -->
 <p>After 3 years of grappling with <em>what we can do about climate change</em>, I’ve come around to a simple perspective:</p>
