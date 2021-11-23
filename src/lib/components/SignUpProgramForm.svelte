@@ -16,11 +16,6 @@
       method: 'post',
       body: formData
     })
-
-        // const {data, error} = await supabase
-        // .from('support_responses')
-        // .insert({support_info: formData.get('support_info'), introduction: formData.get('introduction'), contact: formData.get('contact'), loaded_location: loaded_address, searched_location: address})
-
         response.ok ? ( form_submit = "success" ) : (form_submit = "error" )
 
     }

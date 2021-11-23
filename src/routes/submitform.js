@@ -4,7 +4,7 @@ import { variables } from '$lib/variables';
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient( import.meta.env.VITE_SUPABASE_URL,
-    import.meta.env.VITE_SUPABASE_ANON_KEY, { fetch: fetch })
+    import.meta.env.VITE_SUPABASE_ANON_KEY, { fetch: (...args) => fetch(...args) })
 
 export async function post(request) {
 
