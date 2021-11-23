@@ -17,6 +17,8 @@ import turfPoint from 'turf-point';
 import turfBooleanContains from '@turf/boolean-contains';
 import Carousel from '@beyonk/svelte-carousel'
 import { variables } from '$lib/variables';
+import SignUpProgramForm from "$lib/components/SignUpProgramForm.svelte"
+
 
 let data_theme = "light";
 
@@ -36,6 +38,8 @@ let event_area;
 let point;
 let coordinates;
 let cal_coordinates;
+
+let loaded_address;
 
 let add_to_calendar_url;
 
@@ -125,6 +129,7 @@ async function ipToCoordinates() {
 
         address = `${json.city}, ${json.region}, ${json.postal}`;
         address_display = `${json.city}, ${json.region}, ${json.postal}`;
+        loaded_address = `${json.city}, ${json.region}, ${json.postal}`;
 
         console.log(json.loc);
         coordinates = json.loc.split(',');
@@ -1073,8 +1078,15 @@ function copyEventLink() {
                 </div>
             {/if}
         </div>
+        <hr style="margin: 2rem;">
+        <p style="font-style: inherit; font-size: 18px; margin: 2rem;">Interested in organizing in your community, to create local change together?</p>
+        <p style="font-style: inherit; font-size: 16px; margin: 1.5rem;">We're starting a program to support people who want to organize, in whatever ways you'd like support.</p>
+        <p style="font-style: inherit; font-size: 16px; margin: 1.5rem;">We're also inviting people to organize <strong>with us</strong> and design this program together.</p>
+        <p style="font-style: inherit; font-size: 16px; margin: 1.5rem;">If you want to organize, or help design this program, submit the form below.</p>
+        <SignUpProgramForm loaded_address={loaded_address} address={address}></SignUpProgramForm>
+        <hr style="margin: 2rem;">
         <div class="carousel-section mb-2">
-        <p class="text-xl mt-8 mb-4">What do you want to organize?</p>
+        <p class="text-xl mt-8 mb-4">Resources and Inspiration</p>
         <Carousel perPage={{ 800: 3, 500: 2 }} dots={false}>
             <div class="md:mr-2 slide-content">
                 <div class="rounded bg-gray-200 h-64 px-4 py-2">
