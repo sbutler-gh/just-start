@@ -659,7 +659,7 @@ function copyEventLink() {
 
 </svelte:head>
 
-<div style="" class="text-center m-auto md:w-8/12">
+<div style="" class="text-center m-auto md:w-8/12 mb-12">
 <!-- <div class="absolute top-1 right-1">
 {#if $user_store?.id}
 <p class="font-semibold">{$user_store.full_name}</p>
@@ -1079,26 +1079,26 @@ function copyEventLink() {
             {/if}
         </div>
         <hr style="margin: 2rem;">
-        <p style="font-style: inherit; font-size: 18px; margin: 2rem;">Interested in organizing in your community, to create local change together?</p>
+        <p id="organize" style="font-style: inherit; font-size: 18px; margin: 2rem;" >Interested in organizing in your community, to create local change together?</p>
         <p style="font-style: inherit; font-size: 16px; margin: 1.5rem;">We're starting a program to support people who want to organize, in whatever ways you'd like support.</p>
-        <p style="font-style: inherit; font-size: 16px; margin: 1.5rem;">We're also inviting people to organize <strong>with us</strong> and design this program together.</p>
-        <p style="font-style: inherit; font-size: 16px; margin: 1.5rem;">If you want to organize, or help design this program, submit the form below.</p>
+        <p style="font-style: inherit; font-size: 16px; margin: 1.5rem;">We're also inviting you to organize <strong>with us</strong> and design this program together.</p>
+        <p style="font-style: inherit; font-size: 16px; margin: 1.5rem;">If you want to organize locally or help design this program, submit the form below.</p>
         <SignUpProgramForm loaded_address={loaded_address} address={address}></SignUpProgramForm>
         <hr style="margin: 2rem;">
         <div class="carousel-section mb-2">
-        <p class="text-xl mt-8 mb-4">Resources and Inspiration</p>
+        <p class="text-xl mt-8 mb-4">Looking for inspiration to organize?</p>
         <Carousel perPage={{ 800: 3, 500: 2 }} dots={false}>
             <div class="md:mr-2 slide-content">
                 <div class="rounded bg-gray-200 h-64 px-4 py-2">
                     <h3 class="text-xl font-semibold my-2">Identify local issues, desires, and priorities.</h3>
-                    <p class="mb-2">Convene with friends and neighbors in your community, listen and share to understand what each other are seeing and wanting, and start organizing for action.</p>
+                    <p class="mb-2">Convene with friends and neighbors in your community, listen and share perspectives, and start organizing for action.</p>
                     <a href="https://www.youtube.com/watch?v=uEzKUW95t28" target="_blank" class="underline text-blue-500">Learn more</a>
                 </div>
             </div>
             <div class="md:mr-2 slide-content">
                 <div class="rounded bg-gray-200 h-64 px-4 py-2">
-                   <h3 class="text-xl font-semibold my-2">Climate Role-Play Event</h3>
-                    <p class="mb-2">Want a live role-playing game, where you and your peers can take climate action towards the Paris Agreement?</p>
+                   <h3 class="text-xl font-semibold my-2">Climate Role-Play Game</h3>
+                    <p class="mb-2">A live role-playing game, where you and your peers play as international stakeholders and realize the Paris Agreement together.</p>
                     <!-- <p>Here's how.</p> -->
                     <a href="https://www.youtube.com/watch?v=V4U3obbn0fA" target="_blank" class="underline text-blue-500">Learn more</a>
                 </div>
@@ -1107,7 +1107,7 @@ function copyEventLink() {
                 <div class="rounded bg-gray-200 h-64 px-4 py-2">
                     <h3 class="text-xl font-semibold my-2">C.A.N.</h3>
                     <p class="mb-2">Citizens Action Network.  Community Action Network.  Cities and Neighborhoods.  Climate Action Network.</p>
-                    <p class="mb-2">Whatever CAN means to you, you and your community can make it happen.</p>
+                    <p class="mb-2">You and your community can make it happen.</p>
                     <a href="https://www.youtube.com/watch?v=HMHMr_o4y4s" target="_blank" class="underline text-blue-500">Learn more</a>
                 </div>
             </div>
@@ -1129,7 +1129,7 @@ function copyEventLink() {
             <div class="md:mr-2 slide-content">
                 <div class="rounded bg-gray-200 h-64 px-4 py-2">
                     <h3 class="text-xl font-semibold my-2">Come Together</h3>
-                    <p class="mb-2">Message some friends and neighbors, tell them where and when, and start connecting, learning about each other, and building community together.</p>
+                    <p class="mb-2">Message some friends and neighbors, tell them where and when, and start connecting and building community together.</p>
                     <!-- <p class="mb-2">Walk around your community, discuss policies and solutions, and imagine from the perspective and on behalf of the people to come.</p> -->
                     <a href="https://www.youtube.com/watch?v=WdHBWL4LK88" target="_blank" class="underline text-blue-500">Learn more</a>
                 </div>
