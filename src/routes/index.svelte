@@ -1086,7 +1086,7 @@ function copyEventLink() {
         <SignUpProgramForm loaded_address={loaded_address} address={address}></SignUpProgramForm>
         <hr style="margin: 2rem;">
         <div class="carousel-section mb-2">
-        <p class="text-xl mt-8 mb-4">Looking for inspiration to organize?</p>
+        <p class="text-xl mt-8 mb-4">Looking for ways to organize?</p>
         <Carousel perPage={{ 800: 3, 500: 2 }} dots={false}>
             <div class="md:mr-2 slide-content">
                 <div class="rounded bg-gray-200 h-64 px-4 py-2">
@@ -1132,6 +1132,53 @@ function copyEventLink() {
                     <p class="mb-2">Message some friends and neighbors, tell them where and when, and start connecting and building community together.</p>
                     <!-- <p class="mb-2">Walk around your community, discuss policies and solutions, and imagine from the perspective and on behalf of the people to come.</p> -->
                     <a href="https://www.youtube.com/watch?v=WdHBWL4LK88" target="_blank" class="underline text-blue-500">Learn more</a>
+                </div>
+            </div>
+        </Carousel>
+        </div>
+        <hr style="margin: 2rem;">
+        <div class="carousel-section mb-2">
+        <p class="text-xl mt-8 mb-4">Ideas for Action</p>
+        <p class="mt-4 mb-4">Based on current location ({address?.substring(0, address?.indexOf(","))})</p>
+        <Carousel perPage={{ 800: 3, 500: 2 }} dots={false}>
+            <div class="md:mr-2 slide-content">
+                <div class="rounded bg-gray-200 h-64 px-4 py-2">
+                    <h3 class="text-xl font-semibold my-2">3D Printing Plastic Waste.</h3>
+                    <!-- <p class="mb-2">Why does plastic end up in our oceans, our water, our food?  Because we ship it across the world, instead of taking care of it ourselves — and putting it to better use.</p> -->
+                    <p class="mb-2">Instead of ocean waste, what could our plastic be instead?  Beams.  Walls.  Bricks.  Art.  Toys!</p>
+                    <p class="mb-2">And we can build the machines to recycle plastic in our own garages, with open designs.</p>
+                    <a href="https://preciousplastic.com/" target="_blank" class="underline text-blue-500">Learn more</a>
+                </div>
+            </div>
+            <div class="md:mr-2 slide-content">
+                <div class="rounded bg-gray-200 h-64 px-4 py-2">
+                   <h3 class="text-xl font-semibold my-2">Floating Flood Shelters</h3>
+                    <p class="mb-2">Learn from the Vietnamese knowledge/practice of floating flood shelters, to build resilience in flood-prone areas.</p>
+                    <!-- <p>Here's how.</p> -->
+                    <a href="https://vietnamnet.vn/en/society/floating-shelters-house-people-in-vietnam-s-flood-hit-areas-683378.html" target="_blank" class="underline text-blue-500">See the shelters</a>
+                </div>
+            </div>
+            <div class="md:mr-2 slide-content">
+                <div class="rounded bg-gray-200 h-64 px-4 py-2">
+                    <h3 class="text-xl font-semibold my-2">Print Your Own (Cargo) Bikes</h3>
+                    <p class="mb-2">An open-source design for cargo bike frames, which you can build in your own community.</p>
+                    <p class="mb-2">(You might even be able to print them from plastic!)</p>
+                    <a href="https://en.oho.wiki/wiki/Tricycle_cargo_bike" target="_blank" class="underline text-blue-500">Get the designs</a>
+                </div>
+            </div>
+            <div class="md:mr-2 slide-content">
+                <div class="rounded bg-gray-200 h-64 px-4 py-2">
+                    <h3 class="text-xl font-semibold my-2">Go HVAC 2.0</h3>
+                    <p class="mb-2">Swap your air conditioner for a heat pump.  You'll be more comfortable, with less emissions, and the savings pay for itself.</p>
+                    <a href="https://www.hvac20.com/#/" target="_blank" class="underline text-blue-500">Check out HVAC 2.0</a>
+                </div>
+            </div>
+            <div class="md:mr-2 slide-content">
+                <div class="rounded bg-gray-200 h-64 px-4 py-2">
+                    <h3 class="text-xl font-semibold my-2">Lower Consumption, Together</h3>
+                    <p class="mb-2">Lowering the meat, flights, car trips, we consume is important.  Making this change together, and finding systemic alternatives, is even more important.  How?</p>
+                    <!-- <p class="mb-2">The lucky part is, when we have the choice — all it takes is letting it go.</p> -->
+                    <a href="/just-start" target="_blank" class="underline text-blue-500">Just Start</a>
                 </div>
             </div>
         </Carousel>
