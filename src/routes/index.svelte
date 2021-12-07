@@ -156,56 +156,57 @@ function loadUser() {
 
 async function fetchEventSources() {
 
+const response = await fetch('/fetch_event_sources');
 
-    let { data: eventSources, error } = await supabase
-        .from('eventSources')
-        .select('*')
+if (response) {
+    let data = await response.json();
+    console.log(data);
+    let eventSources = data.data;
 
-        if (eventSources) {
-            console.log(eventSources);
+        console.log(eventSources);
 
-            console.log(event_area);
+        console.log(event_area);
 
-            eventSourcesArray = [];
-            eventsArray = [];
+        eventSourcesArray = [];
+        eventsArray = [];
 
-            for (var i=0; i<eventSources.length; i++) {
+        for (var i=0; i<eventSources.length; i++) {
 
-                let calendar_coordinates = turfPoint([eventSources[i].coordinates['lng'], eventSources[i].coordinates['lat']]);
+            let calendar_coordinates = turfPoint([eventSources[i].coordinates['lng'], eventSources[i].coordinates['lat']]);
 
-                console.log(calendar_coordinates);
+            console.log(calendar_coordinates);
 
-                if (turfBooleanContains(event_area, calendar_coordinates)) {
-                    console.log('match');
+            if (turfBooleanContains(event_area, calendar_coordinates)) {
+                console.log('match');
 
-                    if (eventSources[i].event_object) {
-                        eventsArray.push(
-                            eventSources[i].event_object
-                        )
-                    }
-                    else {
-                        eventSourcesArray.push({
-                        googleCalendarId: eventSources[i].url
-                        })
-                    }
+                if (eventSources[i].event_object) {
+                    eventsArray.push(
+                        eventSources[i].event_object
+                    )
                 }
-                
-                // eventSourcesArray.push({
-                //     googleCalendarId: eventSources[i].url
-                // })
+                else {
+                    eventSourcesArray.push({
+                    googleCalendarId: eventSources[i].url
+                    })
+                }
             }
-            eventSourcesArray = JSON.stringify(eventSourcesArray, null, 2);
-            console.log(eventSourcesArray);
-            eventsArray = JSON.stringify(eventsArray, null, 2);
-            console.log(eventsArray);
-            console.log(eventSourcesArray);
-
-            initializeCalendarOptions();
-
+            
+            // eventSourcesArray.push({
+            //     googleCalendarId: eventSources[i].url
+            // })
         }
-        else {
-            console.log(error);
-        }
+        eventSourcesArray = JSON.stringify(eventSourcesArray, null, 2);
+        console.log(eventSourcesArray);
+        eventsArray = JSON.stringify(eventsArray, null, 2);
+        console.log(eventsArray);
+        console.log(eventSourcesArray);
+
+        initializeCalendarOptions();
+
+    }
+    else {
+        console.log(error);
+    }
 }
 
 async function initializeCalendarOptions() {
