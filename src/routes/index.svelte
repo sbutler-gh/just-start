@@ -18,6 +18,7 @@ import turfBooleanContains from '@turf/boolean-contains';
 import Carousel from '@beyonk/svelte-carousel'
 import { variables } from '$lib/variables';
 import SignUpProgramForm from "$lib/components/SignUpProgramForm.svelte"
+import { uuid } from "@supabase/supabase-js/src/lib/helpers";
 
 
 let data_theme = "light";
@@ -285,6 +286,7 @@ function toggleWeekends() {
         }
 
     async function addEventToCalendar(e) {
+
         console.log(e);
         var formData = new FormData(e.target);
         console.log([...formData]);
@@ -307,13 +309,19 @@ function toggleWeekends() {
             url: `http://www.google.com/calendar/event?action=TEMPLATE&dates=${formData.get("when")}&text=${formData.get("name")}&location=${formData.get('where')}&details=${encodeURI(formData.get('description'))}`
         }
 
-        const { data, error } = await supabase
-        .from('eventSources')
-        .insert([
-            { id: generateUUID(), coordinates: coordinates, event_object: new_event, cal_format: 'event' },
-        ])
+        formData.append('coordinates', JSON.stringify(coordinates));
+        formData.append('event_object', JSON.stringify(new_event));
 
-        if (data) {
+        console.log([...formData]);
+
+        let response = await fetch('/insert_event', {
+            method: "post",
+            body: formData
+        })
+
+        if (response) {
+            let data = await response.json();
+
             console.log(data);
 
             let api = calendar.getAPI();
@@ -404,17 +412,22 @@ async function getCalendarCoordinates(address) {
         .then(async () => {
 
             console.log(cal_coordinates);
+            formData.append('cal_coordinates', JSON.stringify(cal_coordinates));
 
-            const { data, error } = await supabase
-        .from('eventSources')
-        .insert([
-            { id: generateUUID(), coordinates: cal_coordinates, url: formData.get('url'), organization: formData.get('organization')  },
-        ])
+            let response = await fetch ('insert_event_source', {
+                method: "post",
+                body: formData
+            })
 
-        if (data) {
+        if (response) {
+            let data = await response.json();
+
             console.log(data);
 
             let api = calendar.getAPI();
+
+            // When FullCalendar attempts to load this new URL immediately, the get request will fail (You will see it in console.log)
+            // Upon refreshing the page, the calendar should be showing as expected.  Make sure you put a real city name or address in the location field when testing, because the application generates coordinates from that location string — so you will only see it for your location on page load, if it's a location/address/string that returns coordinates around you.
 
             api.addEventSource(formData.get('url'));
 
@@ -428,47 +441,47 @@ async function getCalendarCoordinates(address) {
         })
     }
 
-    async function signUp(e) {
-        var formData = new FormData(e.target);
+    // async function signUp(e) {
+    //     var formData = new FormData(e.target);
 
-        let { user, error } = await supabase.auth.signUp({
-        email: formData.get('email_phone'),
-        password: formData.get('password')
-        })
+    //     let { user, error } = await supabase.auth.signUp({
+    //     email: formData.get('email_phone'),
+    //     password: formData.get('password')
+    //     })
 
-        if (user) {
-            console.log(user);
+    //     if (user) {
+    //         console.log(user);
 
-            $user_store.id = user.id;
-            $user_store.email = user.email;
+    //         $user_store.id = user.id;
+    //         $user_store.email = user.email;
 
-            let { data: profiles, error } = await supabase
-            .from('profiles')
-            .update({ full_name: formData.get('name') })
-            .eq('user_id', user.id)
+    //         let { data: profiles, error } = await supabase
+    //         .from('profiles')
+    //         .update({ full_name: formData.get('name') })
+    //         .eq('user_id', user.id)
 
-            if (profiles) {
-                console.log(profiles);
-                $user_store.full_name = formData.get('name');
+    //         if (profiles) {
+    //             console.log(profiles);
+    //             $user_store.full_name = formData.get('name');
 
-                user = {
-                    id: user.id,
-                    email: user.email,
-                    full_name: formData.get('name')
-                }
+    //             user = {
+    //                 id: user.id,
+    //                 email: user.email,
+    //                 full_name: formData.get('name')
+    //             }
 
-                localStorage.setItem('user', JSON.stringify(user));
+    //             localStorage.setItem('user', JSON.stringify(user));
 
-                console.log(JSON.parse(localStorage.getItem('user')));
-            }
-            else {
-             console.log(error);   
-            }
-            }
-        else {
-            console.log(error);
-        }
-    }
+    //             console.log(JSON.parse(localStorage.getItem('user')));
+    //         }
+    //         else {
+    //          console.log(error);   
+    //         }
+    //         }
+    //     else {
+    //         console.log(error);
+    //     }
+    // }
 
     async function coordinatesToGeoID(coordinates) {
 
@@ -538,14 +551,14 @@ async function coordinatesToAirQuality(coordinates) {
 async function fetchCREandSVIdata(geo_id) {
 
     console.log(geo_id);
-    let { data: svi_cre, error } = await supabase
-    .from('svi_cre')
-    .select('*')
-    .eq('GEO_ID', geo_id.slice(0,-1))
+    let response = await fetch('/fetch_cre_svi_data', {
+        method: "POST",
+        body: geo_id.slice(0,-1)})
 
-    if (svi_cre) {
-        console.log(svi_cre);
-        svi_cre_data = svi_cre[0];
+    if (response) {
+        let data = await response.json();
+        console.log(data);
+        svi_cre_data = data.data[0];
     }
     else {
         console.log(error);
@@ -556,31 +569,21 @@ async function fetchEJData(geo_id) {
 
 console.log(geo_id);
 
-let { data: ej, error } = await supabase
-.from('ejscreen_percentiles')
-.select('*')
-.eq('ID', geo_id);
+let response = await fetch('/fetch_ej_data', {
+        method: "POST",
+        body: geo_id})
 
-if (ej) {
-    console.log(ej);
-    local_data = ej[0];
+if (response) {
+    let data = await response.json();
+    console.log(data);
+    local_data = data.data[0];
 
     fetchCREandSVIdata(geo_id);
 
-    if (!ej[0]) {
+    if (!data.data[0]) {
 
         console.log('No data found for this location.  Try searching a more specific address.');
         local_data = "no_data";
-
-    //     if (geo_id.slice(0,-2) == "01") {
-    //         geo_id = geo_id.slice(0,-2) + "02";
-    //         fetchEJData(geo_id);
-    //     }
-    //     else if (geo_id.slice(0,-2) != "01") {
-    //         geo_id = geo_id.slice(0,-2) + "02";
-    //         fetchEJData(geo_id);
-    //     }
-    // }
     }
 }
 else {
