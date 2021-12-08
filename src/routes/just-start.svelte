@@ -159,8 +159,6 @@ function copyPostLink() {
 <p>That’s not lip service. Everybody has a story, a perspective, a set of skills and capacities, to help us get where we’re trying to go.  The more people who show up, the more hands we have together, the more likely we are to get where we want to go.</p>
 <p>To that end, one of the possibilities I'm most excited about is funding for local organizing. <em>Would you like funding to organize in your community?  How much would you like?</em>  I'm not sure if there's any better bang for our bucks, in terms of building local wealth and creating positive outcomes, than supporting local organizing and enabling our communities to create outcomes ourselves.  So if you're a municipality, philanthropy, creative funder, or any old person who's who wants to see outcomes — let's talk about empowering communities to make it happen. (And if you have any ideas for other ways to support local organizing, let us know!)</p>
 
-<!-- <p>(If you're reading this — on a screen, on a paper, on a wall — and you’re facing barriers to local organizing or know what could support you, feel free to reach us at ###-###-#### or sam@sambutler.us.)</p> -->
-<!-- <p>This is what it’s all about.</p> -->
   <p>... So what now?  How will we address climate change, wealth inequality, COVID, violence and injustice, and all the other issues that matter to us?  The futures we want to create, the gifts we want to give, the lives we want to experience?  The future of the places we call home?</p>
 <p><a class="font-bold" href="/">Just start — today.</a></p>
 <hr>
