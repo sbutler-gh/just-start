@@ -18,8 +18,6 @@ import turfBooleanContains from '@turf/boolean-contains';
 import Carousel from '@beyonk/svelte-carousel'
 import { variables } from '$lib/variables';
 import SignUpProgramForm from "$lib/components/SignUpProgramForm.svelte"
-import { uuid } from "@supabase/supabase-js/src/lib/helpers";
-
 
 let data_theme = "light";
 
