@@ -6,7 +6,7 @@ import { get } from 'svelte/store';
 import FullCalendar, { CalendarApi } from 'svelte-fullcalendar';
 import dayGridPlugin from '@fullcalendar/daygrid';
 // import iCalendarPlugin from '$lib/icalendar';
-// import iCalendarPlugin from '@fullcalendar/icalendar';
+import iCalendarPlugin from '@fullcalendar/icalendar';
 import googleCalendarPlugin from '@fullcalendar/google-calendar';
 import listPlugin from '@fullcalendar/list';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -218,13 +218,23 @@ plugins: [
         (await import('@fullcalendar/list')).default,
         (await import('@fullcalendar/timegrid')).default,
         // (await import('$lib/icalendar')).default,
-        // (await import('@fullcalendar/icalendar')).default,
+        (await import('@fullcalendar/icalendar')).default,
         (await import('@fullcalendar/google-calendar')).default,
     ],
 weekends: true,
 googleCalendarApiKey: variables.googleCalendar,
 eventSources: JSON.parse(eventSourcesArray),
 events: JSON.parse(eventsArray),
+// events: {
+//     url: 'https://serene-journey-42564.herokuapp.com/https://dweb.events/feed.ics',
+//     format: 'ics',
+//     // If headers are needed, can be addressed using this fix: https://stackoverflow.com/questions/58700821/fullcalendar-4-x-adding-header-x-requested-with-xmlhttprequest
+// //     extraParams: {
+// //         headers: [
+// //             {"Access-Control-Allow-Origin":"*"}
+// //         ]
+// // }
+//   },
 eventClick: function(info) {
 info.jsEvent.preventDefault(); // don't let the browser navigate
 
