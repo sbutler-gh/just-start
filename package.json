@@ -4,8 +4,7 @@
 	"scripts": {
 		"dev": "svelte-kit dev",
 		"build": "svelte-kit build",
-		"preview": "svelte-kit preview",
-		// "postinstall": "node postinstall"
+		"preview": "svelte-kit preview"
 	},
 	"devDependencies": {
 		"@beyonk/svelte-carousel": "^2.8.0",
