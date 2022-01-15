@@ -25,6 +25,9 @@ let data = [];
 let parsed_data = [];
 let string_data;
 
+let screen_width;
+$: outerWidth = 0;
+
 let geo_id;
 
 let svi_cre_data;
@@ -37,6 +40,8 @@ let event_area;
 let point;
 let coordinates;
 let cal_coordinates;
+
+let todays_event;
 
 let loaded_address;
 
@@ -86,6 +91,8 @@ now = now.toISOString();
 now = now.slice(0, -8);
 console.log(now);
 
+let today_date = new Date();
+
 let event = {
         when: now,
 }
@@ -98,7 +105,7 @@ let event = {
         ipToCoordinates()
         .then(() => {
 
-            updateLocalData();
+            // updateLocalData();
 
             updateCalendarEvents();
         });
@@ -134,6 +141,8 @@ async function ipToCoordinates() {
         coordinates = json.loc.split(',');
         console.log(coordinates);
         coordinates = {"lat": coordinates[0], "lng": coordinates[1]};
+        // Seattle coordinates for testing
+        // coordinates = {"lat": 47.6083, "lng": -122.335167};
 //         coordinates = {
 //     "lat": 37.7790262,
 //     "lng": -122.419906
@@ -184,9 +193,19 @@ if (response) {
                     )
                 }
                 else {
-                    eventSourcesArray.push({
+                    if (eventSources[i].cal_format == "google") {
+                        eventSourcesArray.push({
                     googleCalendarId: eventSources[i].url
                     })
+                    }
+
+                    if (eventSources[i].cal_format == "ical") {
+                        console.log('ical cal');
+                        eventSourcesArray.push({
+                    url: "https://serene-journey-42564.herokuapp.com/" + eventSources[i].url,
+                    format: 'ics'
+                    })
+                    }
                 }
             }
             
@@ -194,6 +213,8 @@ if (response) {
             //     googleCalendarId: eventSources[i].url
             // })
         }
+        console.log(eventSourcesArray);
+        console.log(eventsArray);
         eventSourcesArray = JSON.stringify(eventSourcesArray, null, 2);
         console.log(eventSourcesArray);
         eventsArray = JSON.stringify(eventsArray, null, 2);
@@ -211,8 +232,22 @@ if (response) {
 async function initializeCalendarOptions() {
     calendarAPI = calendar.getAPI();
 
+    // If you want to set the calendary initialView option according to screen size
+    // let initialViewValue;
+
+    // // console.log(screen.width);
+
+    // // Checks the window width.  If window is less than 600px (e.g. narrow / mobile), then initialize calendar with listmonth display.
+    // if (window.innerWidth < 600) {
+    //     initialViewValue = 'listMonth'
+    // }
+    // // Otherwise, initialize calendar with standard month display.
+    // else {
+    //     initialViewValue = 'dayGridMonth'
+    // }
+
 options = {
-initialView: 'listWeek',
+initialView: 'listMonth',
 plugins: [
         (await import('@fullcalendar/daygrid')).default,
         (await import('@fullcalendar/list')).default,
@@ -225,6 +260,13 @@ weekends: true,
 googleCalendarApiKey: variables.googleCalendar,
 eventSources: JSON.parse(eventSourcesArray),
 events: JSON.parse(eventsArray),
+initialDate: Date.now(),
+validRange: function() {
+    return {
+      start: Date.now(),
+      end: (Date.now() + 31557600000)
+    };
+  },
 // events: {
 //     url: 'https://serene-journey-42564.herokuapp.com/https://dweb.events/feed.ics',
 //     format: 'ics',
@@ -255,13 +297,65 @@ console.log(calendar_popup_show);
 //       calendar_popup_show = false;
 //   }
 };
+
+// reset todays_event, so it can be found with new data;
+todays_event = "";
+
+// set calendar to today, in case we're going from different city
+calendarAPI.today();
+}
+
+function getTodaysEvent() {
+    setTimeout(() => {
+    let calendarAPI = calendar.getAPI();
+    console.log(calendarAPI);
+    console.log(calendarAPI.getEventSources());
+
+    if (calendarAPI.getEventSources().length > 0) {
+        let clientEvents = calendarAPI.getEvents();
+        console.log(clientEvents);
+
+        clientEvents.sort(function (a,b) {
+            if (a._instance.range.start < b._instance.range.start) {
+                return -1;
+            }
+            if (a._instance.range.start > b._instance.range.start) {
+                return 1;
+            }
+        })
+
+        console.log(clientEvents);
+
+            for (var i = 0; i < clientEvents.length; i++) {
+                let event = clientEvents[i];
+                console.log(event);
+
+                if (event._context.dateProfileGenerator.nowDate < event._instance.range.start) {
+                    console.log('today is before the event' + i);
+                    todays_event = event;
+                    break;
+                }
+                else {
+                    console.log('today is after the event');
+                }
+            }
+
+            if (!todays_event) {
+                calendarAPI.next();
+                // getTodaysEvent();
+            }
+            else {
+                console.log(todays_event);
+            }
+    }
+  }, 2000)
 }
 
 async function updateCalendarEvents() {
     fetchEventSources()
-    // .then(()=> {
-    //     initializeCalendarOptions();
-    // })
+    .then(()=> {
+        getTodaysEvent();
+    })
 }
 
 async function updateLocalData() {
@@ -712,7 +806,9 @@ function copyEventLink() {
     </div>
     {/if}
     {#if calendar_popup?.details}
+    <div class="event-popup-details">
     {@html calendar_popup?.details}
+    </div>
     {/if}
     <a href={add_to_calendar_url} target="_blank" class="mt-2 block underline text-blue-500">Add to Calendar</a>
 </div>
@@ -760,23 +856,51 @@ function copyEventLink() {
 </div>
 
 <div class="text-black">
-<p class="text-xl my-8">Find an event near your, or grab some friends and start your own.</p>
+<!-- <p class="text-xl my-8">Find an event near your, or grab some friends and start your own.</p> -->
 
 <!-- <p class="font-semibold mb-2">{address_display}</p> -->
 
-<input class="rounded border-2 w-64 my-4" bind:value={address} placeholder="Enter full address (incl. street number)"> <button on:click={updateLocation} class="cursor-pointer rounded border-2 bg-gray-200 px-2 py-1">Update Location</button>
+<div class="block m-auto my-2 "><input style="padding: 5px;" class="rounded border-2 w-9/12 md:w-64 mr-2" bind:value={address} placeholder="Search a location"> <button on:click={updateLocation} style="padding: 5px;" class="cursor-pointer rounded border-2 bg-gray-200 px-1">Search</button></div>
 
+{#if todays_event}
+<br>
+<div class="m-auto mx-4 md:mx-auto">
+<h4 class="text-xl font-bold mb-2">{todays_event.start.toString().slice(0,33)}</h4>
+<div class="block m-auto text-center">
+{#if !todays_event.extendedProps?.location}
+<!-- <svg xmlns="http://www.w3.org/2000/svg" class="inline-flex" height="20px" width="20px" viewBox="0 0 20 20" fill="gray">
+    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+  </svg><p class="inline-flex text-sm font-semibold mb-4">See Details for Location</p> -->
+{:else}
+<svg xmlns="http://www.w3.org/2000/svg" class="inline-flex" height="20px" width="20px" viewBox="0 0 20 20" fill="gray">
+    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+  </svg><p class="inline-flex text-sm font-semibold mb-4">{todays_event.extendedProps?.location}</p>
+{/if}
+</div>
+
+<div class="rounded p-4 text-left bg-yellow-200">
+    <p class="text-lg font-bold">{todays_event.title}</p>
+    <!-- <p class="text-sm"><strong>Start:</strong> {todays_event.start.toString().slice(0,33)}</p> -->
+    {#if todays_event.extendedProps.description}
+        <details class="todays-event-details"><summary>Event Details</summary>
+        {@html todays_event.extendedProps.description}
+        </details>
+    {/if}
+    <a href={todays_event.url} target="_blank" class="mt-2 block underline text-blue-500">Open in Calendar</a>
+</div>
+</div>
+{/if}
 
 <!-- <p class="text-lg">Start an event, invite a few friends and neighbors, and bring possibilities to life.</p> -->
 <!-- Or rich media message.  Could also include rich media message at the top. -->
 <div class="md:flex my-8">
-<div class="md:w-5/12 xs:h-64 md:h-auto xs:text-center md:m-auto my-5">
+<div class="w-full xs:h-64 md:h-auto xs:text-center md:m-auto my-5">
     <p class="text-xl mb-4">Events near you</p>
 
     <FullCalendar bind:this="{calendar}" {options} />
 </div>
 
-<div class="local-awareness m-auto text-center md:w-6/12">
+<div class="hidden local-awareness m-auto text-center md:w-6/12">
     {#if coordinates}
     <iframe title="Local Air Quality" class="text-center m-auto" height="230" width="230" src='https://widget.airnow.gov/aq-dial-widget/?latitude={coordinates['lat']}&longitude={coordinates['lng']}&transparent=true' style="border: none; border-radius: 25px;"></iframe>
         {#if local_data && local_data != "no_data"}
@@ -1199,10 +1323,12 @@ function copyEventLink() {
         </div>
 </div>
 <style>
+    .event-details a {
+        color: rgb(229 231 235) !important;
+    }
 
-.styled-table {
+/* .styled-table {
     border-collapse: collapse;
-    /* margin: 25px 0; */
     font-size: 0.9em;
     font-family: sans-serif;
     min-width: 300px;
@@ -1230,5 +1356,5 @@ function copyEventLink() {
 
 .styled-table tbody tr:last-of-type {
     border-bottom: 2px solid #009879;
-}
+} */
 </style>

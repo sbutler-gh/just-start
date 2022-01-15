@@ -1,10 +1,55 @@
-/* Write your global styles here, in PostCSS syntax */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 body {
     background: white;
 }
 
+/*
+  Josh's Custom CSS Reset
+  https://www.joshwcomeau.com/css/custom-css-reset/
+*/
+/* *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  * {
+    margin: 0;
+  }
+  html, body {
+    height: 100%;
+  }
+  body {
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+  }
+  input, button, textarea, select {
+    font: inherit;
+  }
+  p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+  }
+  #root, #__next {
+    isolation: isolate;
+  } */
+
+  .event-popup-details a {
+    color: rgb(67 134 248) !important;
+    font-weight: 500;
+    }
+
+    .todays-event-details a {
+        color: rgb(67 134 248) !important;
+        font-weight: 500;
+    }
+
+  .todays-event-details *, .event-popup-details * {
+    word-break: break-all;
+  }
+
 /* .fc-toolbar-title { font-size: 1rem !important;} */
+
+/* Write your global styles here, in PostCSS syntax */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
