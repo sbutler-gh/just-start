@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 fs.readFile('node_modules/ical.js/build/ical.js', 'utf8', (err, data) => {
     if (err) {
