@@ -494,7 +494,7 @@ else {
 }
 
 async function getCalendarCoordinates(address) {
-    const request = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURI(address)}&key=${variables.openCage}`);
+    const request = await fetch(`https://api.opencagedata.com/geocode/v1/json?key=${variables.openCage}&q=${encodeURI(address)}`);    
     const json = await request.json()
     console.log(json);
     console.log(json?.results[0]?.geometry);
