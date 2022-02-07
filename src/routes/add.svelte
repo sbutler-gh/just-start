@@ -35,6 +35,15 @@
 
         eventSources = events.data;
 
+        eventSources.sort(function(a, b) {
+        var keyA = a.organization,
+            keyB = b.organization;
+        // Compare the 2 dates
+        if (keyA < keyB) return -1;
+        if (keyA > keyB) return 1;
+        return 0;
+        });
+
         console.log(eventSources);
 
     };
@@ -218,26 +227,32 @@ else {
 {#if eventSources}
 <table>
     <thead>
-        <th data-key="id">Organization</th>
-        <th data-key="first_name">Organization<br>URL</th>
+        <th data-key="id">Existing Organizations</th>
+        <th data-key="last_name">City</th>
+        <th data-key="ip_address">Country</th>
+        <!-- <th data-key="first_name">Organization<br>URL</th>
         <th data-key="last_name">City</th>
         <th data-key="email">State/<br>Province</th>
-        <th data-key="ip_address">Country</th>
-        <th data-key="ip_address">Calendar<br>URL</th>
+        <th data-key="ip_address">Calendar<br>URL</th> -->
     </thead>
     <tbody>
         {#each eventSources as row}
             <tr>
                 <td>{row.organization}</td>
-                <td>{row.org_url}</td>
+                <td>{#if row.city}
+                    {row.city}
+                    {/if}</td>
+                <td>{#if row.country}
+                    {row.country}
+                    {/if}</td>
+                <!-- <td>{row.org_url}</td>
                 <td>{row.city}</td>
                 <td>{row.state_province}</td>
                 <td>{row.country}</td>
-                <td>{row.url}</td>
+                <td>{row.url}</td> -->
             </tr>
         {/each}
     </tbody>
 </table>
-<!-- {JSON.stringify(events)} -->
 {/if}
 </main>
