@@ -18,6 +18,7 @@ import turfBooleanContains from '@turf/boolean-contains';
 import Carousel from '@beyonk/svelte-carousel'
 import { variables } from '$lib/variables';
 import SignUpProgramForm from "$lib/components/SignUpProgramForm.svelte"
+import AddCalendar from "$lib/components/AddCalendar.svelte";
 
 let data_theme = "light";
 
@@ -42,8 +43,13 @@ let coordinates;
 let cal_coordinates;
 
 let todays_event;
+let calendar_next_month_counter = 0;
+
+let no_events = false;
 
 let loaded_address;
+
+let add_calendar = false;
 
 let add_to_calendar_url;
 
@@ -301,6 +307,15 @@ console.log(calendar_popup_show);
 // reset todays_event, so it can be found with new data;
 todays_event = "";
 
+// reset no_events value
+no_events = false;
+
+// reset calendar_month_next_counter, so it will only advance to next calendar for next two months
+calendar_next_month_counter = 0;
+
+// // check if there are eventSources.  If not, we'll recommend trying Seattle to get a feel.
+// console.log(eventSourcesArray);
+
 // set calendar to today, in case we're going from different city
 calendarAPI.today();
 }
@@ -333,6 +348,9 @@ function getTodaysEvent() {
                 if (event._context.dateProfileGenerator.nowDate < event._instance.range.start) {
                     console.log('today is before the event' + i);
                     todays_event = event;
+                    let time = new Date(todays_event.start.toString());
+                    todays_event.local_start = time;
+                    // todays_event.start = todays_event.start.toString();
                     break;
                 }
                 else {
@@ -341,8 +359,17 @@ function getTodaysEvent() {
             }
 
             if (!todays_event) {
+                calendar_next_month_counter = calendar_next_month_counter + 1;
+                console.log(calendar_next_month_counter);
+                if (calendar_next_month_counter < 2)
+                {
+                    console.log(calendar_next_month_counter);
                 calendarAPI.next();
-                // getTodaysEvent();
+                getTodaysEvent();
+                }
+                else {
+                    no_events = true;
+                }
             }
             else {
                 console.log(todays_event);
@@ -814,283 +841,18 @@ function copyEventLink() {
 </div>
 {/if}
 
-<div class="text-center bg-black text-white p-8 md:mt-0 relative">
-
-    <div class="absolute top-3 md:top-2 left-4 md:left-10 flex">
-        <a href="/just-start" class="cursor-pointer underline" style="color: #ffffff;">About</a>
-      </div>
-
-    <div class="absolute top-3 md:top-2 right-10 flex">
-
-        <a href="mailto:juststart@sambutler.us" class="cursor-pointer" style="margin-top: -3px" target="_blank">
-        <svg xmlns="http://www.w3.org/2000/svg" class="mr-4 md:mr-4 h-6 w-6 cursor-pointer hover:opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
-        </a>
-          
-          <a href="https://github.com/sbutler-gh/just-start" target="_blank">
-          <svg role="img" class="mr-4 md:mr-4 cursor-pointer hover:fill-current" style="width: 18px; text-color: #dca0ff !important;" fill="#b953f4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>    <div class="hover:cursor-pointer">
-          </a>
-
-        <a href="https://discord.gg/dTSmGuBXt8" target="_blank"> <svg xmlns="http://www.w3.org/2000/svg" style="padding-top: 1px" class="absolute hover:cursor-pointer" width="22" viewBox="0 0 71 55" fill="none">
-        <g clip-path="url(#clip0)">
-        <path class="hover:fill-current hover:cursor-pointer" style="color: #7783ff" d="M60.1045 4.8978C55.5792 2.8214 50.7265 1.2916 45.6527 0.41542C45.5603 0.39851 45.468 0.440769 45.4204 0.525289C44.7963 1.6353 44.105 3.0834 43.6209 4.2216C38.1637 3.4046 32.7345 3.4046 27.3892 4.2216C26.905 3.0581 26.1886 1.6353 25.5617 0.525289C25.5141 0.443589 25.4218 0.40133 25.3294 0.41542C20.2584 1.2888 15.4057 2.8186 10.8776 4.8978C10.8384 4.9147 10.8048 4.9429 10.7825 4.9795C1.57795 18.7309 -0.943561 32.1443 0.293408 45.3914C0.299005 45.4562 0.335386 45.5182 0.385761 45.5576C6.45866 50.0174 12.3413 52.7249 18.1147 54.5195C18.2071 54.5477 18.305 54.5139 18.3638 54.4378C19.7295 52.5728 20.9469 50.6063 21.9907 48.5383C22.0523 48.4172 21.9935 48.2735 21.8676 48.2256C19.9366 47.4931 18.0979 46.6 16.3292 45.5858C16.1893 45.5041 16.1781 45.304 16.3068 45.2082C16.679 44.9293 17.0513 44.6391 17.4067 44.3461C17.471 44.2926 17.5606 44.2813 17.6362 44.3151C29.2558 49.6202 41.8354 49.6202 53.3179 44.3151C53.3935 44.2785 53.4831 44.2898 53.5502 44.3433C53.9057 44.6363 54.2779 44.9293 54.6529 45.2082C54.7816 45.304 54.7732 45.5041 54.6333 45.5858C52.8646 46.6197 51.0259 47.4931 49.0921 48.2228C48.9662 48.2707 48.9102 48.4172 48.9718 48.5383C50.038 50.6034 51.2554 52.5699 52.5959 54.435C52.6519 54.5139 52.7526 54.5477 52.845 54.5195C58.6464 52.7249 64.529 50.0174 70.6019 45.5576C70.6551 45.5182 70.6887 45.459 70.6943 45.3942C72.1747 30.0791 68.2147 16.7757 60.1968 4.9823C60.1772 4.9429 60.1437 4.9147 60.1045 4.8978ZM23.7259 37.3253C20.2276 37.3253 17.3451 34.1136 17.3451 30.1693C17.3451 26.225 20.1717 23.0133 23.7259 23.0133C27.308 23.0133 30.1626 26.2532 30.1066 30.1693C30.1066 34.1136 27.28 37.3253 23.7259 37.3253ZM47.3178 37.3253C43.8196 37.3253 40.9371 34.1136 40.9371 30.1693C40.9371 26.225 43.7636 23.0133 47.3178 23.0133C50.9 23.0133 53.7545 26.2532 53.6986 30.1693C53.6986 34.1136 50.9 37.3253 47.3178 37.3253Z" fill="#5865F2"/>
-        </g>
-        <defs>
-        <clipPath id="clip0">
-        <rect width="71" height="55" fill="white"/>
-        </clipPath>
-        </defs>
-        </svg>
-        </a>
-
-        </div>
-    <!-- <h1 class="text-2xl mb-2">Want to make a difference?</h1>
-    <h1 class="text-2xl mb-2">You're right on time.</h1> -->
-    <!-- <h1 class="text-xl mb-2">Possibilities are all around us.</h1>
-    <h1 class="text-xl mb-2">You're right on time.</h1> -->
-    <a href="/" style="text-decoration: none; color: white;">
-        <h1 class="text-2xl mb-2 md:mt-0 mt-4"><a href="/" style="text-decoration: none; color: white;">Not sure how to take action?</a></h1>
-        <h1 class="text-2xl mb-2"><a href="/" style="text-decoration: none; color: white;">Just start.</a></h1>
-        </a>
-</div>
-
 <div class="text-black">
 <!-- <p class="text-xl my-8">Find an event near your, or grab some friends and start your own.</p> -->
 
 <!-- <p class="font-semibold mb-2">{address_display}</p> -->
 
-<div class="block m-auto my-2 "><input style="padding: 5px;" class="rounded border-2 w-9/12 md:w-64 mr-2" bind:value={address} placeholder="Search a location"> <button on:click={updateLocation} style="padding: 5px;" class="cursor-pointer rounded border-2 bg-gray-200 px-1">Search</button></div>
-
-{#if todays_event}
-<br>
-<div class="m-auto mx-4 md:mx-auto">
-<h4 class="text-xl font-bold mb-2">{todays_event.start.toString().slice(0,33)}</h4>
-<div class="block m-auto text-center">
-{#if !todays_event.extendedProps?.location}
-<!-- <svg xmlns="http://www.w3.org/2000/svg" class="inline-flex" height="20px" width="20px" viewBox="0 0 20 20" fill="gray">
-    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-  </svg><p class="inline-flex text-sm font-semibold mb-4">See Details for Location</p> -->
-{:else}
-<svg xmlns="http://www.w3.org/2000/svg" class="inline-flex" height="20px" width="20px" viewBox="0 0 20 20" fill="gray">
-    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-  </svg><p class="inline-flex text-sm font-semibold mb-4">{todays_event.extendedProps?.location}</p>
-{/if}
-</div>
-
-<div class="rounded p-4 text-left bg-yellow-200">
-    <p class="text-lg font-bold">{todays_event.title}</p>
-    <!-- <p class="text-sm"><strong>Start:</strong> {todays_event.start.toString().slice(0,33)}</p> -->
-    {#if todays_event.extendedProps.description}
-        <details class="todays-event-details"><summary>Event Details</summary>
-        {@html todays_event.extendedProps.description}
-        </details>
-    {/if}
-    <a href={todays_event.url} target="_blank" class="mt-2 block underline text-blue-500">Open in Calendar</a>
-</div>
-</div>
-{/if}
-
-<!-- <p class="text-lg">Start an event, invite a few friends and neighbors, and bring possibilities to life.</p> -->
-<!-- Or rich media message.  Could also include rich media message at the top. -->
-<div class="md:flex my-8">
-<div class="w-full xs:h-64 md:h-auto xs:text-center md:m-auto my-5">
-    <p class="text-xl mb-4">Events near you</p>
-
-    <FullCalendar bind:this="{calendar}" {options} />
-</div>
-
-<div class="hidden local-awareness m-auto text-center md:w-6/12">
-    {#if coordinates}
-    <iframe title="Local Air Quality" class="text-center m-auto" height="230" width="230" src='https://widget.airnow.gov/aq-dial-widget/?latitude={coordinates['lat']}&longitude={coordinates['lng']}&transparent=true' style="border: none; border-radius: 25px;"></iframe>
-        {#if local_data && local_data != "no_data"}
-            <!-- <p class="font-semibold mb-2 text-xl">{address_display}</p> -->
-        {#if !display_ej_table}
-        <button class="underline text-blue-500" on:click={toggleEJTable}>Show More Local Data</button>
-        {:else}
-       <div class="m-auto text-center md:mt-2" style="height: fit-content">
-        <table id="table-example-1" class="m-auto text-center styled-table">
-            <caption class="text-center">
-                <!-- <p class="font-semibold mb-1">{address_display?.slice(0,-7)}</p> -->
-                <p class="font-semibold mb-2">Environmental Justice Indicators</p>
-                <p class="mb-2 italic">0 to 100, lower is better. <a href="https://ejscreen.epa.gov/mapper/" target="_blank" class="underline text-blue-800">Explore the map</a></p>
-            </caption>
-            <thead>
-                <tr class="">
-                <td class="">Traffic proximity</td>
-                <td class="">PM2.5 level</td>
-                <td class="">Ozone level</td>
-                <td class="">Diesel particulates</td>
-                <td class="">Cancer risks</td>
-                <!-- <td>Respiratory hazards (air)</td>
-                <td>Lead paint indicator</td>
-                <td>Risk management projects</td>
-                <td>National priority sites</td>
-                <td>TSD Facilities</td>
-                <td>Water dischargers</td>
-                <td>Vulnerable populations</td> -->
-                </tr>
-            </thead>
-            <tbody>
-                  <tr>
-                      <td class="{`bg-${local_data.P_PTRAF_D2}`}">{local_data.P_PTRAF_D2}</td>
-                      <td class="">{local_data.P_PM25_D2}</td>
-                      <td>{local_data.P_OZONE_D2}</td>
-                      <td>{local_data.P_DSLPM_D2}</td>
-                      <td>{local_data.P_CANCR_D2}</td>
-                  </tr>
-              </tbody>
-        </table>
-
-        <table id="table-example-1" class="m-auto text-center styled-table mt-4">
-            <caption class="text-center">
-                <!-- <p class="font-semibold mb-1">{address_display?.slice(0,-7)}</p> -->
-                <p class="font-semibold mb-2">Social Vulnerability Indicators</p>
-                <p class="mb-2 italic">0 to 1, closer to 1 means higher vulnerability. <a href="https://svi.cdc.gov/map.html" target="_blank" class="underline text-blue-800">Explore the map</a></p>
-            </caption>
-            <thead>
-                <tr class="">
-                    <!-- {
-                        "GEO_ID": 51107611005,
-                        "AREA_SQMI": 6.193283030672,
-                        "RPL_THEME1": 0.1115,
-                        "RPL_THEME2": 0.1095,
-                        "RPL_THEME3": 0.6096,
-                        "RPL_THEME4": 0.1314,
-                        "RPL_THEMES": 0.1118,
-                        "F_THEME1": "0",
-                        "F_THEME2": "0",
-                        "F_THEME3": "0",
-                        "F_THEME4": "0",
-                        "F_TOTAL": "0",
-                        "GINI_IND_Inequality_E": 0.3543,
-                        "GINI_IND_Inequality_M": 0.0233,
-                        "GINI_IND_Inequality_F": "-1",
-                        "Blw_Pov_Lvl_PE": 2.2,
-                        "Blw_Pov_Lvl_PF": "-1",
-                        "Female_no_partner_w_child_PE": 3.2,
-                        "Female_no_partner_w_child_PF": "0",
-                        "Male_no_partner_w_child_PE": 1.9,
-                        "Male_no_partner_w_child_PF": "0",
-                        "crowd_occ_PE": "0",
-                        "crowd_occ_PF": "0",
-                        "HS_Grad_PE": 97.7,
-                        "HS_Grad_PF": "1",
-                        "ENG_LVW_PM": 1.3,
-                        "ENG_LVW_PF": -1,
-                        "WRK_FT_YR_PE": 62.2,
-                        "WRK_FT_YR_PF": "1",
-                        "No_Health_Ins_PE": 1.3,
-                        "No_Health_Ins_PF": "-1",
-                        "Broadband_PE": 97.6,
-                        "Broadband_PF": "1",
-                        "No_Veh_PE": 1.4,
-                        "No_Veh_PF": -1,
-                        "HO_Vac_PE": "2.7",
-                        "HO_Vac_PF": "0",
-                        "Rent_Vac_PE": "15.9",
-                        "Rent_Vac_PF": "0"
-                    } -->
-                <td class="">Socio
-                    economics</td>
-                <td class="">Household Composition</td>
-                <td class="">Minority / Language</td>
-                <td class="">Housing and Transportation</td>
-                <td class="">Overall</td>
-                <!-- <td>Respiratory hazards (air)</td>
-                <td>Lead paint indicator</td>
-                <td>Risk management projects</td>
-                <td>National priority sites</td>
-                <td>TSD Facilities</td>
-                <td>Water dischargers</td>
-                <td>Vulnerable populations</td> -->
-                </tr>
-            </thead>
-            <tbody>
-                  <tr>
-                        <td class="">{svi_cre_data.RPL_THEME1}</td>
-                        <td class="">{svi_cre_data.RPL_THEME2}</td>
-                        <td class="">{svi_cre_data.RPL_THEME3}</td>
-                        <td class="">{svi_cre_data.RPL_THEME4}</td>
-                        <td class="">{svi_cre_data.RPL_THEMES}</td>
-                  </tr>
-              </tbody>
-        </table>
-
-        <table id="table-example-1" class="m-auto text-center styled-table mt-4">
-            <caption class="text-center">
-                <!-- <p class="font-semibold mb-1">{address_display?.slice(0,-7)}</p> -->
-                <p class="font-semibold mb-2">Community Resilience Indicators</p>
-                <p class="mb-2 italic">Percentage of population in different categories</p>
-                <!-- <p class="mb-2 italic">0 to 100, lower is better. <a href="https://ejscreen.epa.gov/mapper/" target="_blank" class="underline text-blue-800">Explore the map</a></p> -->
-            </caption>
-            <thead>
-                <tr class="">
-                    <!-- {
-                        "GINI_IND_Inequality_E": 0.3543,
-                        "GINI_IND_Inequality_M": 0.0233,
-                        "GINI_IND_Inequality_F": "-1",
-                        "Blw_Pov_Lvl_PE": 2.2,
-                        "Blw_Pov_Lvl_PF": "-1",
-                        "Female_no_partner_w_child_PE": 3.2,
-                        "Female_no_partner_w_child_PF": "0",
-                        "Male_no_partner_w_child_PE": 1.9,
-                        "Male_no_partner_w_child_PF": "0",
-                        "crowd_occ_PE": "0",
-                        "crowd_occ_PF": "0",
-                        "HS_Grad_PE": 97.7,
-                        "HS_Grad_PF": "1",
-                        "ENG_LVW_PM": 1.3,
-                        "ENG_LVW_PF": -1,
-                        "WRK_FT_YR_PE": 62.2,
-                        "WRK_FT_YR_PF": "1",
-                        "No_Health_Ins_PE": 1.3,
-                        "No_Health_Ins_PF": "-1",
-                        "Broadband_PE": 97.6,
-                        "Broadband_PF": "1",
-                        "No_Veh_PE": 1.4,
-                        "No_Veh_PF": -1,
-                        "HO_Vac_PE": "2.7",
-                        "HO_Vac_PF": "0",
-                        "Rent_Vac_PE": "15.9",
-                        "Rent_Vac_PF": "0"
-                    } -->
-                <!-- <td class="">Income Inequality Index (0-1)</td> -->
-                <td class="">Poverty</td>
-                <td class="">Single Mothers</td>
-                <td class="">Single Fathers</td>
-                <td class="">HS Graduation</td>
-                <td class="">No Health Insurance</td>
-                <!-- <td>Respiratory hazards (air)</td>
-                <td>Lead paint indicator</td>
-                <td>Risk management projects</td>
-                <td>National priority sites</td>
-                <td>TSD Facilities</td>
-                <td>Water dischargers</td>
-                <td>Vulnerable populations</td> -->
-                </tr>
-            </thead>
-            <tbody>
-                  <tr>
-                      <!-- <td >{svi_cre_data.GINI_IND_Inequality_E}</td> -->
-                      <td class="">{svi_cre_data.Blw_Pov_Lvl_PE} %</td>
-                      <td class="">{svi_cre_data.Female_no_partner_w_child_PE} %</td>
-                      <td class="">{svi_cre_data.Male_no_partner_w_child_PE} %</td>
-                      <td class="">{svi_cre_data.HS_Grad_PE} %</td>
-                      <td>{svi_cre_data.No_Health_Ins_PE}% </td>
-                  </tr>
-              </tbody>
-        </table>
-        <button class="underline text-blue-500 mt-1" on:click={toggleEJTable}>Hide</button>
-        </div>
-        {/if}
-        {:else if local_data == "no_data"}
-        <p class="bg-red-200 px-2 py-1 mt-3">No data found for geo_id {geo_id}.  Try searching a different address.</p>
-        {/if}
-    {/if}
-</div>
-</div>
+<p>Events in ...</p>
+<div class="block m-auto my-2 "><input style="padding: 5px;" class="rounded border-2 w-9/12 md:w-64 mr-2" bind:value={address} placeholder="Search a location"> <button on:click={updateLocation} style="padding: 5px;" class="cursor-pointer rounded border-2 bg-gray-200 px-1">Update</button></div>
     
+{#if no_events}
+<p class="block my-4">Not much happening near you?  <span on:click={function(){ add_calendar = true}} class="link">Add a calendar</span> for a local organization, or try a city with more data like <span class="link" on:click={function() {address = "Seattle, Washington"; updateLocation()}}>Seattle</span>, <span class="link" on:click={function() {address = "New York City, New York"; updateLocation()}}>New York</span>, or <span class="link" on:click={function() {address = "Los Angeles, California"; updateLocation()}}>Los Angeles</span>.</p>
+{/if}
+
     {#if create_menu == "Success"}
     <div class="bg-green-200 text-green w-5/12 m-auto p-4 pt-6 relative">
         <button class="absolute top-1 right-1 cursor-pointer" on:click={closeEventDialogBox}><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -1136,9 +898,65 @@ function copyEventLink() {
     </div>
     {/if}
     <div class="flex m-auto text-center mt-2">
-<button on:click={toggleEventForm} class="ml-auto text-center rounded bg-gray-200 px-2 py-1">Start your own event</button>
-<button on:click={toggleCalendarForm} class="ml-2 m-auto rounded bg-gray-200 px-2 py-1">Share your calendar feed</button>
+<!-- <button on:click={toggleEventForm} class="m-auto text-center rounded bg-gray-200 px-2 py-1">+ Add new event</button> -->
+<!-- <button on:click={toggleCalendarForm} class="ml-2 m-auto rounded bg-gray-200 px-2 py-1">Share your calendar feed</button> -->
     </div>
+    <div class="my-2">
+    {#if add_calendar}
+<button class="rounded bg-gray-200 px-2 py-1" on:click={function() { add_calendar ? (add_calendar = false) : (add_calendar = true)}}>Cancel</button>
+<AddCalendar></AddCalendar>
+{:else}
+<button class="m-auto rounded bg-gray-200 px-2 py-1" on:click={function() { add_calendar ? (add_calendar = false) : (add_calendar = true)}}>+ Add new calendar</button>
+{/if}
+</div>
+
+{#if todays_event}
+<br>
+<div class="m-auto mx-4 md:mx-auto">
+<h4>Next event:</h4>
+<!-- <h4 class="text-xl font-bold mb-2">{todays_event.local_start.toLocaleString({hour: 'numeric', minute: 'numeric',
+    hour12: true}).slice(0,24)} -->
+     <!-- ({timezone} Timezone) -->
+    <!-- </h4> -->
+
+<div class="rounded p-4 text-left bg-yellow-200">
+    <p class="text-lg font-bold">{todays_event.title}</p>
+    <!-- <p class="text-sm"><strong>Start:</strong> {todays_event.start.toString().slice(0,33)}</p> -->
+        {#if !todays_event.extendedProps?.location}
+        <!-- <svg xmlns="http://www.w3.org/2000/svg" class="inline-flex" height="20px" width="20px" viewBox="0 0 20 20" fill="gray">
+            <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+          </svg><p class="inline-flex text-sm font-semibold mb-4">See Details for Location</p> -->
+        {:else}
+        <svg xmlns="http://www.w3.org/2000/svg" class="inline-flex" height="20px" width="20px" viewBox="0 0 20 20" fill="gray">
+            <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+          </svg>    <p class="inline font-semibold mb-4">{todays_event.extendedProps?.location}</p>
+          <br>
+        <!-- <p class="font-semibold">{todays_event.extendedProps?.location}</p> -->
+        {/if}
+        <svg xmlns="http://www.w3.org/2000/svg" class="inline-flex icon icon-tabler icon-tabler-clock" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <circle cx="12" cy="12" r="9" />
+            <polyline points="12 7 12 12 15 15" />
+          </svg>    <p class="font-semibold mb-2 inline">{todays_event.local_start.toLocaleString().slice(0,24)}</p>
+        <!-- <p class="font-semibold mb-2">{todays_event.local_start.toLocaleString().slice(0,24)}</p> -->
+          <br>
+    {#if todays_event.extendedProps.description}
+        <details class="todays-event-details ml-1 mt-2"><summary>Event Details</summary>
+        {@html todays_event.extendedProps.description}
+        </details>
+    {/if}
+    <a href={todays_event.url} target="_blank" class="mt-2 block underline text-blue-500">Open in Calendar</a>
+</div>
+</div>
+{/if}
+
+<!-- <p class="text-lg">Start an event, invite a few friends and neighbors, and bring possibilities to life.</p> -->
+<!-- Or rich media message.  Could also include rich media message at the top. -->
+<div class="md:flex my-8">
+<div class="w-full xs:h-64 md:h-auto xs:text-center md:m-auto my-5">
+    <FullCalendar bind:this="{calendar}" {options} />
+</div>
+</div>
 
 
 
@@ -1214,117 +1032,18 @@ function copyEventLink() {
                 </div>
             {/if}
         </div>
-        <hr style="margin: 2rem;">
-        <p id="organize" style="font-style: inherit; font-size: 18px; margin: 2rem;" >Interested in organizing in your community, to create local change together?</p>
-        <p style="font-style: inherit; font-size: 16px; margin: 1.5rem;">We're starting a program to support people who want to organize, in whatever ways you'd like support.</p>
-        <p style="font-style: inherit; font-size: 16px; margin: 1.5rem;">We're also inviting you to organize <strong>with us</strong> and design this program together.</p>
-        <p style="font-style: inherit; font-size: 16px; margin: 1.5rem;">If you want to organize locally or help design this program, submit the form below.</p>
-        <SignUpProgramForm loaded_address={loaded_address} address={address}></SignUpProgramForm>
-        <hr style="margin: 2rem;">
-        <div class="carousel-section mb-2">
-        <p class="text-xl mt-8 mb-4">Looking for ways to organize?</p>
-        <Carousel perPage={{ 800: 3, 500: 2 }} dots={false}>
-            <div class="md:mr-2 slide-content">
-                <div class="rounded bg-gray-200 h-64 px-4 py-2">
-                    <h3 class="text-xl font-semibold my-2">Identify local issues, desires, and priorities.</h3>
-                    <p class="mb-2">Convene with friends and neighbors in your community, listen and share perspectives, and start organizing for action.</p>
-                    <a href="https://www.youtube.com/watch?v=uEzKUW95t28" target="_blank" class="underline text-blue-500">Learn more</a>
-                </div>
-            </div>
-            <div class="md:mr-2 slide-content">
-                <div class="rounded bg-gray-200 h-64 px-4 py-2">
-                   <h3 class="text-xl font-semibold my-2">Climate Role-Play Game</h3>
-                    <p class="mb-2">A live role-playing game, where you and your peers play as international stakeholders and realize the Paris Agreement together.</p>
-                    <!-- <p>Here's how.</p> -->
-                    <a href="https://www.youtube.com/watch?v=V4U3obbn0fA" target="_blank" class="underline text-blue-500">Learn more</a>
-                </div>
-            </div>
-            <div class="md:mr-2 slide-content">
-                <div class="rounded bg-gray-200 h-64 px-4 py-2">
-                    <h3 class="text-xl font-semibold my-2">C.A.N.</h3>
-                    <p class="mb-2">Citizens Action Network.  Community Action Network.  Cities and Neighborhoods.  Climate Action Network.</p>
-                    <p class="mb-2">You and your community can make it happen.</p>
-                    <a href="https://www.youtube.com/watch?v=HMHMr_o4y4s" target="_blank" class="underline text-blue-500">Learn more</a>
-                </div>
-            </div>
-            <!-- <div class="ml-2 slide-content">
-                <div class="rounded bg-gray-200 h-48 px-4 py-2">
-                    <h3 class="text-xl font-semibold">Strong Town</h3>
-                    <p>Strong Towns are about living well in the places we live, today and for future generations.  </p>
-                    <p>Whatever CAN means to you, you and your community can make it happen.</p>
-                </div>
-            </div> -->
-            <div class="md:mr-2 slide-content">
-                <div class="rounded bg-gray-200 h-64 px-4 py-2">
-                    <h3 class="text-xl font-semibold my-2">Future Design Walk</h3>
-                    <p class="mb-2">Put yourselves in the minds of the people living 60 years in the future.</p>
-                    <p class="mb-2">Walk around your community, discuss policies and solutions, and imagine from the perspective on behalf of the people to come.</p>
-                    <a href="https://www.thealternative.org.uk/dailyalternative/2020/10/25/future-design-japan-time-rebels" target="_blank" class="underline text-blue-500">Learn more</a>
-                </div>
-            </div>
-            <div class="md:mr-2 slide-content">
-                <div class="rounded bg-gray-200 h-64 px-4 py-2">
-                    <h3 class="text-xl font-semibold my-2">Come Together</h3>
-                    <p class="mb-2">Message some friends and neighbors, tell them where and when, and start connecting and building community together.</p>
-                    <!-- <p class="mb-2">Walk around your community, discuss policies and solutions, and imagine from the perspective and on behalf of the people to come.</p> -->
-                    <a href="https://www.youtube.com/watch?v=WdHBWL4LK88" target="_blank" class="underline text-blue-500">Learn more</a>
-                </div>
-            </div>
-        </Carousel>
-        </div>
-        <hr style="margin: 2rem;">
-        <div class="carousel-section mb-2">
-        <p class="text-xl mt-8 mb-4">Ideas for Action</p>
-        <p class="mt-4 mb-4">Based on current location ({address?.substring(0, address?.indexOf(","))})</p>
-        <Carousel perPage={{ 800: 3, 500: 2 }} dots={false}>
-            <div class="md:mr-2 slide-content">
-                <div class="rounded bg-gray-200 h-64 px-4 py-2">
-                    <h3 class="text-xl font-semibold my-2">3D Printing Plastic Waste.</h3>
-                    <!-- <p class="mb-2">Why does plastic end up in our oceans, our water, our food?  Because we ship it across the world, instead of taking care of it ourselves — and putting it to better use.</p> -->
-                    <p class="mb-2">Instead of ocean waste, what could our plastic be instead?  Beams.  Walls.  Bricks.  Art.  Toys!</p>
-                    <p class="mb-2">And we can build the machines to recycle plastic in our own garages, with open designs.</p>
-                    <a href="https://preciousplastic.com/" target="_blank" class="underline text-blue-500">Learn more</a>
-                </div>
-            </div>
-            <div class="md:mr-2 slide-content">
-                <div class="rounded bg-gray-200 h-64 px-4 py-2">
-                   <h3 class="text-xl font-semibold my-2">Floating Flood Shelters</h3>
-                    <p class="mb-2">Learn from the Vietnamese knowledge/practice of floating flood shelters, to build resilience in flood-prone areas.</p>
-                    <!-- <p>Here's how.</p> -->
-                    <a href="https://vietnamnet.vn/en/society/floating-shelters-house-people-in-vietnam-s-flood-hit-areas-683378.html" target="_blank" class="underline text-blue-500">See the shelters</a>
-                </div>
-            </div>
-            <div class="md:mr-2 slide-content">
-                <div class="rounded bg-gray-200 h-64 px-4 py-2">
-                    <h3 class="text-xl font-semibold my-2">Print Your Own (Cargo) Bikes</h3>
-                    <p class="mb-2">An open-source design for cargo bike frames, which you can build in your own community.</p>
-                    <p class="mb-2">(You might even be able to print them from plastic!)</p>
-                    <a href="https://en.oho.wiki/wiki/Tricycle_cargo_bike" target="_blank" class="underline text-blue-500">Get the designs</a>
-                </div>
-            </div>
-            <div class="md:mr-2 slide-content">
-                <div class="rounded bg-gray-200 h-64 px-4 py-2">
-                    <h3 class="text-xl font-semibold my-2">Go HVAC 2.0</h3>
-                    <p class="mb-2">Swap your air conditioner for a heat pump.  You'll be more comfortable, with less emissions, and the savings pay for itself.</p>
-                    <a href="https://www.hvac20.com/#/" target="_blank" class="underline text-blue-500">Check out HVAC 2.0</a>
-                </div>
-            </div>
-            <div class="md:mr-2 slide-content">
-                <div class="rounded bg-gray-200 h-64 px-4 py-2">
-                    <h3 class="text-xl font-semibold my-2">Lower Consumption, Together</h3>
-                    <p class="mb-2">Lowering the meat, flights, car trips, we consume is important.  Making this change together, and finding systemic alternatives, is even more important.  How?</p>
-                    <!-- <p class="mb-2">The lucky part is, when we have the choice — all it takes is letting it go.</p> -->
-                    <a href="/just-start" target="_blank" class="underline text-blue-500">Just Start</a>
-                </div>
-            </div>
-        </Carousel>
-        </div>
-        
+
         </div>
 </div>
 <style>
     .event-details a {
         color: rgb(229 231 235) !important;
+    }
+
+    .link {
+        color: royalblue;
+        text-decoration: underline;
+        cursor: pointer;
     }
 
 /* .styled-table {
