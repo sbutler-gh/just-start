@@ -8,14 +8,16 @@ let display_menu = false;
 
 </script>
 <header class="bg-black p-4 text-white text-center mb-8">
-<h1 on:click={function() {goto("/"); display_menu = false;}} class="text-2xl font-bold mb-4">JustStart.<span class="text-yellow-200">do</span></h1>
+<h1 on:click={function() {goto("/"); display_menu = false;}} class="cursor-pointer text-2xl font-bold mb-4">JustStart.<span class="text-yellow-200">do</span></h1>
 <p class="text">Events from community and climate groups near you.</p>
 <MenuHamburger display_menu={display_menu} class="menu"></MenuHamburger>
 </header>
 <slot></slot>
-<!-- <footer class="bg-black p-4 text-gray-300 text-left mt-8">
-    <p class="text-sm"><em>By interacting with this website, inputting data, and inputting calendar information, you agree to all terms and conditions.</em></p>
-</footer> -->
+<footer class="p-4 text-gray-500 m-auto text-center bottom-0 mt-8">
+    <!-- <p class="text-sm"><em>By interacting with this website, inputting data, and adding calendar information, you agree to the <a href="/docs/terms">Terms of Service</a> and <a href="/docs/privacy">Privacy Policy</a>.</em></p> -->
+    <p class="text-sm">hello@juststart.do</p>
+    <p class="text-sm"><em><a href="/docs/terms">Terms of Service</a> and <a href="/docs/privacy">Privacy Policy</a>. (c) 2021</em></p>
+</footer>
 <style>
     nav {
         margin-left: auto;

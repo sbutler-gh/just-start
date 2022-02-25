@@ -955,7 +955,7 @@ function copyEventLink() {
 <!-- <p class="text-lg">Start an event, invite a few friends and neighbors, and bring possibilities to life.</p> -->
 <!-- Or rich media message.  Could also include rich media message at the top. -->
 <div class="md:flex my-8">
-<div class="w-full xs:h-64 md:h-auto xs:text-center md:m-auto my-5">
+<div class="cal w-full xs:h-64 md:h-auto xs:text-center md:m-auto my-5">
     <FullCalendar bind:this="{calendar}" {options} />
 </div>
 </div>
@@ -1047,6 +1047,33 @@ function copyEventLink() {
         text-decoration: underline;
         cursor: pointer;
     }
+
+    
+  @media only screen and (min-width: 601px) {
+    
+    /* .embed-youtube {
+      width: 100% !important;
+      height: auto !important;
+    } */
+
+    .cal {
+        min-height: 400px;
+    }
+    
+  }
+
+  @media only screen and (max-width: 600px) {
+    
+    /* .embed-youtube {
+      width: 100% !important;
+      height: auto !important;
+    } */
+
+    .cal {
+        min-height: 300px;
+    }
+    
+  }
 
 /* .styled-table {
     border-collapse: collapse;
