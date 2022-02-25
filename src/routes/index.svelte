@@ -644,6 +644,8 @@ async function calculateEventAreaBuffer(coordinates) {
 
 async function updateLocation() {
 
+    add_calendar = false;
+
     geocodeAddress(address)
     .then(() => {
 
