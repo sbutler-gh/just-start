@@ -133,7 +133,7 @@ else {
 <!-- Want to preview to make sure address looks okay. -->
 <div class="text-left p-4">
 <h3 class="text-bold text-xl mb-2">Add new calendar feed</h3>
-<p class="">Enter the fields below and click <strong>Share Calendar</strong>.  If successful, the events from your calendar will be displayed with other local events, when people load nearby locations.</p>
+<p class="">Enter the fields below and click <strong>Add Calendar</strong>.  If successful, the events from your calendar will be displayed with other local events, when people load nearby locations.</p>
 
 <div class="rounded-md border-2 mt-4 p-2 w-12/12 md:w-7/12 mb-2">
     <form on:submit|preventDefault={shareCalendarFeed} class="text-left">
@@ -169,7 +169,7 @@ else {
                 <li>Coordinates: {JSON.stringify(preview_address.coordinates)}</li>
             </ul>
         {/if}
-        <button type="submit" class="mt-2 mb-2 rounded-full shadow bg-blue-200 px-2 py-1 text-right block ml-auto">Share Calendar</button>
+        <button type="submit" class="mt-2 mb-2 rounded-full shadow bg-blue-200 px-2 py-1 text-right block ml-auto">Add Calendar</button>
         {#if submission}
         <div class="text-right">
         <svg on:click={function() { submission = ""}} xmlns="http://www.w3.org/2000/svg" class="cursor-pointer block ml-auto icon icon-tabler icon-tabler-x" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
