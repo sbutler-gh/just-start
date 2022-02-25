@@ -170,6 +170,7 @@ else {
             </ul>
         {/if}
         <button type="submit" class="mt-2 mb-2 rounded-full shadow bg-blue-200 px-2 py-1 text-right block ml-auto">Add Calendar</button>
+        <p class="text-xs text-gray-500 text-right">You affirm this data is publically accessible or you have permission to share it, and you agree to the <a href="docs/terms" class="underline">terms of service</a>.</p>
         {#if submission}
         <div class="text-right">
         <svg on:click={function() { submission = ""}} xmlns="http://www.w3.org/2000/svg" class="cursor-pointer block ml-auto icon icon-tabler icon-tabler-x" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
