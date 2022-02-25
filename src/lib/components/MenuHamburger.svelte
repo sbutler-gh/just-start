@@ -2,7 +2,7 @@
   import { variables } from "$lib/variables";
   export let display_menu;
 </script>
-<div class="menu">
+<div class="top-2 right-4 md:right-80 md:top-4 menu">
 <svg on:click={ function() { display_menu? (display_menu = false) : (display_menu = true)}} xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
     <line x1="4" y1="6" x2="20" y2="6" />
@@ -25,8 +25,8 @@
   <style>
         .menu {
         position: absolute;
-        right: 5%;
-        top: 2%;
+        /* right: 5%;
+        top: 2%; */
         text-align: right;
         width: 100px;
     }
