@@ -777,19 +777,19 @@ function copyEventLink() {
 
 <svelte:head>
 <title>Just Start</title>
-<meta name="description" content="How can you take action?  Just start organizing!  Find where you can plug-in, and start your own organizing events as well."/>
+<meta name="description" content="Local events from climate and community action groups near you, helping us show up and get engaged."/>
 
 <meta property="og:title" content="Just Start" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://www.rebrand.ly/just-start" />
-<meta property="og:description" content="How can you take action?  Just start organizing!  Discover local events where you can make a difference, and start your own organizing for change as well."/>
+<meta property="og:description" content="Local events from climate and community action groups near you, helping us show up and get engaged."/>
 <meta property="og:image" content="https://thefriend.org/assets/ugc/images/growing-pains.jpg">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta property="twitter:domain" content="rebrand.ly">
 <meta property="twitter:url" content="https://rebrand.ly/just-start/">
 <meta name="twitter:title" content="Just Start">
-<meta name="twitter:description" content="How can you take action?  Just start organizing!  Discover local events where you can make a difference, and start your own organizing for change as well.">
+<meta name="twitter:description" content="Local events from climate and community action groups near you, helping us show up and get engaged.">
 <meta name="twitter:image" content="https://thefriend.org/assets/ugc/images/growing-pains.jpg">
 
 </svelte:head>
